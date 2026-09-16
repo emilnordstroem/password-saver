@@ -1,0 +1,177 @@
+/* CSS Custom Properties (Variables) */
+
+/* ===== Font ===== */
+:root {
+  /* Font family - using system fonts for better performance */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  
+  /* Font sizes */
+  --font-size-xs: 0.75rem;  /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-md: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem;  /* 20px */
+  --font-size-2xl: 1.5rem;  /* 24px */
+  
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Line heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+}
+
+/* ===== Colors ===== */
+:root {
+  /* Primary colors */
+  --color-primary: #3b82f6;       /* Blue 500 */
+  --color-primary-hover: #2563eb; /* Blue 600 */
+  --color-primary-light: #60a5fa; /* Blue 400 */
+  --color-primary-dark: #1d4ed8;  /* Blue 700 */
+  
+  /* Semantic colors */
+  --color-success: #22c55e;        /* Green 500 */
+  --color-success-hover: #16a34a; /* Green 600 */
+  --color-warning: #f59e0b;        /* Amber 500 */
+  --color-warning-hover: #d97706; /* Amber 600 */
+  --color-danger: #ef4444;         /* Red 500 */
+  --color-danger-hover: #dc2626;  /* Red 600 */
+  
+  /* Text colors */
+  --color-text-primary: #1e293b;   /* Slate 800 */
+  --color-text-secondary: #64748b; /* Slate 500 */
+  --color-text-muted: #94a3b8;     /* Slate 400 */
+  --color-text-inverse: #ffffff;  /* White */
+  --color-text-link: var(--color-primary);
+  
+  /* Background colors */
+  --color-background-primary: #f8fafc; /* Slate 50 */
+  --color-background-secondary: #ffffff; /* White */
+  --color-background-tertiary: #f1f5f9; /* Slate 100 */
+  --color-background-hover: #e2e8f0; /* Slate 200 */
+  
+  /* Border colors */
+  --color-border-primary: #e2e8f0; /* Slate 200 */
+  --color-border-secondary: #cbd5e1; /* Slate 300 */
+  
+  /* Surface colors (cards, modals) */
+  --color-surface: var(--color-background-secondary);
+  --color-surface-hover: var(--color-background-hover);
+  
+  /* Overlay colors */
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-overlay-light: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== Dark Mode Colors ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Primary colors remain the same */
+    
+    /* Semantic colors remain the same */
+    
+    /* Text colors - dark mode */
+    --color-text-primary: #f1f5f9;     /* Slate 100 */
+    --color-text-secondary: #94a3b8;   /* Slate 400 */
+    --color-text-muted: #64748b;       /* Slate 500 */
+    --color-text-inverse: #1e293b;    /* Slate 800 */
+    
+    /* Background colors - dark mode */
+    --color-background-primary: #0f172a; /* Slate 900 */
+    --color-background-secondary: #1e293b; /* Slate 800 */
+    --color-background-tertiary: #334155; /* Slate 700 */
+    --color-background-hover: #475569; /* Slate 600 */
+    
+    /* Border colors - dark mode */
+    --color-border-primary: #334155; /* Slate 700 */
+    --color-border-secondary: #475569; /* Slate 600 */
+    
+    /* Surface colors - dark mode */
+    --color-surface: #1e293b; /* Slate 800 */
+    --color-surface-hover: #334155; /* Slate 700 */
+    
+    /* Overlay colors - dark mode */
+    --color-overlay: rgba(0, 0, 0, 0.7);
+    --color-overlay-light: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ===== Spacing ===== */
+:root {
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+}
+
+/* ===== Border Radius ===== */
+:root {
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.375rem;  /* 6px */
+  --radius-lg: 0.5rem;    /* 8px */
+  --radius-xl: 0.75rem;   /* 12px */
+  --radius-2xl: 1rem;     /* 16px */
+  --radius-full: 9999px; /* Pill shape */
+}
+
+/* ===== Shadows ===== */
+:root {
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-none: 0 0 #0000;
+}
+
+/* ===== Z-Index Scale ===== */
+:root {
+  --z-index-base: 0;
+  --z-index-dropdown: 100;
+  --z-index-sticky: 200;
+  --z-index-fixed: 300;
+  --z-index-modal-backdrop: 400;
+  --z-index-modal: 500;
+  --z-index-popover: 600;
+  --z-index-tooltip: 700;
+  --z-index-toast: 800;
+}
+
+/* ===== Transitions ===== */
+:root {
+  --transition-fast: 100ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Sizing ===== */
+:root {
+  --size-xs: 1.5rem;     /* 24px */
+  --size-sm: 2rem;       /* 32px */
+  --size-md: 2.5rem;     /* 40px */
+  --size-lg: 3rem;       /* 48px */
+  --size-xl: 4rem;       /* 64px */
+  
+  /* Max widths */
+  --max-width-xs: 20rem;   /* 320px */
+  --max-width-sm: 24rem;   /* 384px */
+  --max-width-md: 28rem;   /* 448px */
+  --max-width-lg: 32rem;   /* 512px */
+  --max-width-xl: 36rem;   /* 576px */
+  --max-width-2xl: 42rem;  /* 672px */
+  --max-width-3xl: 48rem;  /* 768px */
+  --max-width-4xl: 56rem;  /* 896px */
+  --max-width-5xl: 64rem;  /* 1024px */
+  --max-width-6xl: 72rem;  /* 1152px */
+  --max-width-full: 100%;
+}

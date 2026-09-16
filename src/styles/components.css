@@ -1,0 +1,511 @@
+/* Component-specific styles */
+
+/* ===== App ===== */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  padding: var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.app-error {
+  background-color: var(--color-danger-light);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-danger);
+}
+
+.app-error button {
+  background: var(--color-danger);
+  color: white;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+/* ===== Header ===== */
+.header-navbar {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.header-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.header-search-toggle {
+  margin-right: var(--spacing-sm);
+}
+
+/* ===== SearchBar ===== */
+.search-bar {
+  width: 100%;
+}
+
+.search-bar-input {
+  width: 100%;
+}
+
+.search-bar-icon {
+  color: var(--color-text-muted);
+}
+
+.search-bar-clear-button {
+  padding: 0;
+  min-width: auto;
+}
+
+/* ===== Password List ===== */
+.password-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.password-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  gap: var(--spacing-md);
+  color: var(--color-text-secondary);
+}
+
+/* ===== Password Card ===== */
+.password-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  border: 1px solid var(--color-border-primary);
+}
+
+.password-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.password-card-header {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.password-card-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.password-card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+}
+
+.password-card-url-button {
+  flex-shrink: 0;
+  min-width: auto;
+  padding: var(--spacing-xs);
+}
+
+.password-card-body {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.password-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.password-card-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-right: var(--spacing-xs);
+}
+
+.password-card-value {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  word-break: break-all;
+}
+
+.password-card-url-text {
+  color: var(--color-primary);
+}
+
+.password-card-password {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.password-card-password-masked {
+  font-family: monospace;
+  letter-spacing: 0.1em;
+}
+
+.password-card-copy-button {
+  flex-shrink: 0;
+  min-width: auto;
+  padding: var(--spacing-xs);
+}
+
+.password-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+}
+
+/* ===== Password Form ===== */
+.password-form-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.password-form-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.password-form-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.password-form-input {
+  width: 100%;
+}
+
+.password-form-password-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.password-form-password-actions button {
+  min-width: auto;
+  padding: var(--spacing-xs);
+}
+
+.password-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+/* ===== Password Detail ===== */
+.password-detail-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.password-detail-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.password-detail-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.password-detail-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.password-detail-body {
+  padding: var(--spacing-md);
+}
+
+.password-detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.password-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.password-detail-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.password-detail-value-container {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.password-detail-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.password-detail-input input {
+  background-color: transparent;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.password-detail-notes {
+  margin-top: var(--spacing-sm);
+}
+
+.password-detail-notes-input {
+  min-height: 60px;
+}
+
+.password-detail-divider {
+  margin: var(--spacing-md) 0;
+}
+
+.password-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+}
+
+.password-detail-copied-notification {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-success);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-index-toast);
+}
+
+/* ===== Delete Confirm ===== */
+.delete-confirm-card {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.delete-confirm-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.delete-confirm-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-confirm-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.delete-confirm-body {
+  padding: var(--spacing-md);
+}
+
+.delete-confirm-message {
+  font-size: var(--font-size-md);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.delete-confirm-message strong {
+  color: var(--color-danger);
+}
+
+.delete-confirm-warning {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-lg);
+}
+
+.delete-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.empty-state-icon-container {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+}
+
+.empty-state-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-state-description {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+  max-width: 400px;
+}
+
+.empty-state-button {
+  min-width: 150px;
+}
+
+/* ===== Modal ===== */
+.modal-backdrop {
+  background-color: var(--color-overlay);
+  backdrop-filter: blur(4px);
+}
+
+.modal-base {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-wrapper {
+  padding: var(--spacing-md);
+}
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-primary);
+}
+
+.modal-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-primary);
+}
+
+.modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.modal-body {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.modal-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border-primary);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 768px) {
+  .app-main {
+    padding: var(--spacing-md);
+  }
+
+  .password-list {
+    grid-template-columns: 1fr;
+  }
+
+  .header-navbar {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .password-form-card,
+  .password-detail-card,
+  .delete-confirm-card {
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: var(--font-size-lg);
+  }
+
+  .password-card-title {
+    font-size: var(--font-size-md);
+  }
+
+  .password-form-actions,
+  .password-detail-actions,
+  .delete-confirm-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .password-form-actions button,
+  .password-detail-actions button,
+  .delete-confirm-actions button {
+    width: 100%;
+  }
+}
