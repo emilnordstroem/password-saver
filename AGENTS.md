@@ -4,6 +4,20 @@ This file provides instructions for language models (AI assistants) working on t
 
 ---
 
+## CRITICAL: Git Operations Prohibited
+
+**AGENTS MUST NEVER commit to git, push to remotes, or perform any git operations unless the user explicitly instructs them to do so in their prompt.**
+
+- Do NOT run: `git add`, `git commit`, `git push`, `git rebase`, `git merge`
+- Do NOT create branches, tags, or any git objects
+- Do NOT stage or commit any changes automatically
+- DO wait for explicit user instruction for any git-related action
+
+This applies even to documentation changes like this AGENTS.md file itself.
+
+---
+
+
 ## Project Overview
 
 **Password Saver** is a secure, cross-platform password manager built with:
@@ -611,7 +625,13 @@ sqlite3 ~/.local/share/password-saver/passwords.db "SELECT * FROM passwords;"
 
 For questions or issues, refer to the project's GitHub repository.
 
-When contributing:
+### IMPORTANT: Git Commit Policy
+**Agents MUST NEVER commit anything to git unless explicitly instructed to do so through the user's prompt.**
+- Do not run `git add`, `git commit`, `git push`, or any git commands
+- Do not create commits, even for documentation changes
+- Wait for explicit user instruction before any git operations
+
+When contributing (for human contributors):
 1. Create a feature branch
 2. Make minimal, focused changes
 3. Add tests for new functionality
