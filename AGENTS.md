@@ -14,7 +14,7 @@ This file provides instructions for language models (AI assistants) working on t
 | Frontend | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/) |
 | Backend | [Rust 2021 Edition](https://www.rust-lang.org/) |
 | Database | [SQLite](https://www.sqlite.org/) via [rusqlite](https://github.com/rusqlite/rusqlite) |
-| Styling | (Not yet implemented - project in early stages) |
+| Styling | [NextUI v2](https://nextui.org/) (React component library) |
 
 ### Purpose
 A local-first password manager that stores credentials securely on the user's device using SQLite encryption.
@@ -69,6 +69,9 @@ password-saver/
 ```bash
 # Install frontend dependencies
 npm install
+
+# Install NextUI (required for all frontend components)
+npm install @nextui-org/react framer-motion
 
 # Install Rust toolchain (if not already installed)
 # See: https://www.rust-lang.org/tools/install
@@ -142,6 +145,23 @@ npm run tauri build    # Production build
 - Type all props and state explicitly
 - Use `interface` for object shapes, `type` for unions/aliases
 - Import Tauri APIs from `@tauri-apps/api`
+
+#### UI Components - **MANDATORY: Use NextUI v2**
+- **ALL** React components must use [NextUI v2](https://nextui.org/) for styling and UI elements
+- Import from `nextui-org/react` (e.g., `import { Button, Input, Card } from "nextui-org/react"`)
+- Use NextUI's `Button`, `Input`, `Card`, `Modal`, `Table`, `Dropdown`, etc. instead of raw HTML or other libraries
+- Use NextUI's theming system for consistent styling across the application
+- Follow NextUI's component props API and patterns
+- For forms, use NextUI's `Input`, `Select`, `Checkbox`, `Radio`, `Textarea` components
+- For layouts, use NextUI's `Container`, `Grid`, `Row`, `Col`, `Spacer` components
+- For feedback, use NextUI's `useDisclosure`, `useToast`, `Snippet`, `Tooltip`
+- For data display, use NextUI's `Table`, `List`, `Avatar`, `Badge`, ` Chip`
+
+**Do NOT use**:
+- Plain HTML elements for interactive components (use NextUI equivalents)
+- Other UI libraries (Material-UI, Chakra, Ant Design, etc.)
+- Custom CSS for component styling (use NextUI's props)
+- Inline styles for layout and spacing (use NextUI's spacing props)
 
 ### Common Patterns in This Project
 
@@ -471,6 +491,8 @@ Test the Tauri commands by:
 - [ ] Create `src/` directory for React frontend
 - [ ] Set up React entry point (`src/main.tsx`)
 - [ ] Create App component (`src/App.tsx`)
+- [ ] Install NextUI: `npm install @nextui-org/react framer-motion`
+- [ ] Configure NextUI provider in `main.tsx`
 - [ ] Configure ESLint and Prettier
 - [ ] Implement password encryption
 - [ ] Add master password functionality
@@ -481,25 +503,39 @@ Test the Tauri commands by:
 
 ### Frontend Setup (Not Yet Created)
 
-When creating the frontend, the following structure is recommended:
+When creating the frontend, the following structure is recommended. **All components MUST use NextUI v2**:
 
 ```
 src/
-├── main.tsx                    # React entry point
+├── main.tsx                    # React entry point with NextUI provider
 ├── App.tsx                     # Main application component
 ├── types/
 │   └── password.ts             # TypeScript interfaces for PasswordEntry
 ├── components/
-│   ├── PasswordList.tsx        # List of password entries
-│   ├── PasswordForm.tsx        # Add/edit password form
-│   ├── PasswordView.tsx        # View single password
-│   └── SearchBar.tsx           # Search functionality
+│   ├── PasswordList.tsx        # List of password entries (use NextUI Table/Card)
+│   ├── PasswordForm.tsx        # Add/edit password form (use NextUI Input/Button/Modal)
+│   ├── PasswordView.tsx        # View single password (use NextUI Card/Modal)
+│   └── SearchBar.tsx           # Search functionality (use NextUI Input)
 ├── hooks/
 │   └── usePasswords.ts         # Custom hook for password operations
 ├── utils/
 │   └── api.ts                  # Tauri API wrapper functions
 └── styles/
-    └── global.css              # Global styles
+    └── global.css              # Global styles (minimal - use NextUI theming)
+```
+
+#### NextUI Provider Setup (main.tsx)
+
+```typescript
+import { NextUIProvider } from '@nextui-org/react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+createRoot(document.getElementById('root')!).render(
+  <NextUIProvider>
+    <App />
+  </NextUIProvider>
+);
 ```
 
 ---
