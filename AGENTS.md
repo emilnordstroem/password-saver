@@ -103,7 +103,7 @@ npm run tauri build    # Production build
 - Follow [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/)
 
 #### Style
-- **Naming**: Use `snake_case` for variables, functions, and modules
+- **Naming**: Use `PascalCase` for variables, functions, and modules
 - **Types**: Use `PascalCase` for structs, enums, and traits
 - **Constants**: Use `SCREAMING_SNAKE_CASE`
 - **Error handling**: Use `Result<T, E>` with descriptive error types
