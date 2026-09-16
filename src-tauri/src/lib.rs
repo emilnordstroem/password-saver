@@ -72,12 +72,6 @@ impl From<PasswordEntry> for db::PasswordEntry {
     }
 }
 
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
-
 #[tauri::command]
 fn add_password(state: tauri::State<'_, AppState>, entry: PasswordEntry) -> Result<PasswordEntry, String> {
     let db = state.db.lock().map_err(|e| e.to_string())?;
@@ -148,7 +142,6 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            greet,
             add_password,
             get_password,
             list_passwords,
