@@ -41,6 +41,7 @@ export function ScrollableMenu({
                         key={index}
                         className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}
                         shadow="sm"
+                        radius="sm"
                         isDisabled={isEmpty}
                         isHoverable={!isEmpty}
                         isPressable={!isEmpty}

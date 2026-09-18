@@ -22,6 +22,7 @@ export function PasswordOverview({ password = null }: PasswordOverviewProps) {
         <Card
             className="w-full h-full"
             shadow="sm"
+            radius="sm"
             isDisabled={isEmpty}
         >
             <CardHeader className="flex gap-2">
