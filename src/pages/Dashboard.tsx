@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { PasswordOverview } from "../components/PasswordOverview";
 import { ScrollableMenu } from "../components/ScrollableMenu";
-import { IPasswordDTO } from "../types/passwordDTO";
+import { PasswordEntry } from "@src/types/password";
 import { NavigationBar } from "../components/NavigationBar";
 
 export function Dashboard() {
     const [selectedPassword, setSelectedPassword] =
-        useState<IPasswordDTO | null>(null);
+        useState<PasswordEntry | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleSearch = (value: string) => {

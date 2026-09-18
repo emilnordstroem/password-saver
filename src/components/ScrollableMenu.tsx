@@ -1,10 +1,10 @@
 import { Card, CardBody, CardHeader, Divider, ScrollShadow } from "@nextui-org/react";
-import { IPasswordDTO } from "../types/passwordDTO";
+import { PasswordEntry } from "@src/types/password";
 
 interface ScrollableMenuProps {
-    passwords?: IPasswordDTO[];
-    selectedPassword?: IPasswordDTO | null;
-    onSelectPassword?: (password: IPasswordDTO | null) => void;
+    passwords?: PasswordEntry[];
+    selectedPassword?: PasswordEntry | null;
+    onSelectPassword?: (password: PasswordEntry | null) => void;
 }
 
 export function ScrollableMenu({ 
@@ -16,15 +16,18 @@ export function ScrollableMenu({
     
     const displayPasswords = isEmpty
         ? Array(3).fill(null).map(() => ({
+              id: null,
               title: "",
               username: "",
               password: "",
               url: "",
-              note: "",
-          } as IPasswordDTO))
+              notes: "",
+              created_at: "",
+              updated_at: "",
+          } as PasswordEntry))
         : passwords;
 
-    const handleSelect = (password: IPasswordDTO | null) => {
+    const handleSelect = (password: PasswordEntry | null) => {
         if (!isEmpty) {
             onSelectPassword(password);
         }

@@ -1,20 +1,23 @@
 import { Card, CardBody, CardHeader, Divider, Input } from "@nextui-org/react";
-import { IPasswordDTO } from "../types/passwordDTO";
+import { PasswordEntry } from "@src/types/password";
 
 interface PasswordOverviewProps {
-    password?: IPasswordDTO | null;
+    password?: PasswordEntry | null;
 }
 
 export function PasswordOverview({ password = null }: PasswordOverviewProps) {
     const isEmpty = password === null;
 
-    const displayPassword: IPasswordDTO = isEmpty
+    const displayPassword: PasswordEntry = isEmpty
         ? {
+              id: null,
               title: "",
               username: "",
               password: "",
               url: "",
-              note: "",
+              notes: "",
+              created_at: "",
+              updated_at: "",
           }
         : password;
 
@@ -65,8 +68,8 @@ export function PasswordOverview({ password = null }: PasswordOverviewProps) {
                     variant="bordered"
                 />
                 <Input
-                    label="Note"
-                    value={displayPassword.note}
+                    label="Notes"
+                    value={displayPassword.notes}
                     isDisabled={isEmpty}
                     className="w-full"
                     variant="bordered"
