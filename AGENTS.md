@@ -238,6 +238,78 @@ npm run tauri build
 - Use ESLint for linting (recommended - not yet configured)
 - TypeScript compiler options: `strict: true` (already configured)
 
+---
+
+## Design Conventions
+
+### Theme
+- **Mode**: Light mode only
+- **Provider**: Use NextUI's `NextUIProvider` with `theme` prop set to `light` theme
+- **No dark mode toggle**: Do not implement dark mode switching
+
+### Color Palette
+- **Source**: Use NextUI's default color palette
+- **Primary**: Use default NextUI primary color
+- **Semantic colors**: Use NextUI's built-in semantic colors (success, warning, danger, etc.)
+
+### Typography
+- **Font family**: NextUI default (Inter)
+- **No custom fonts**: Do not add custom Google Fonts or local font files
+- **Follow NextUI typography scale**: Use NextUI's built-in heading and text sizes
+
+### Spacing
+- **System**: Tailwind-like spacing via NextUI props
+- **Use NextUI spacing props**: `p`, `m`, `gap`, `w`, `h` with sizes: `sm`, `md`, `lg`, etc.
+- **Avoid inline styles**: Never use inline `style` prop for spacing
+- **Consistent spacing tokens**: Prefer NextUI spacing tokens over raw pixel values
+
+### Layout
+- **Containers**: Full-width containers with padding
+- **Structure**: Use NextUI layout components (`Container`, `Grid`, `Row`, `Col`, `Spacer`)
+- **Responsive**: Use NextUI's built-in responsive props (`xs`, `sm`, `md`, `lg`, `xl`)
+- **No custom breakpoints**: Do not define custom pixel breakpoints
+
+### Component Styling
+- **Border radius**: Slightly rounded - use `radius="sm"` for most components
+- **Cards**: Default NextUI Card styling with `radius="sm"`
+- **Buttons**: NextUI default Button styling
+- **Form inputs**: NextUI default Input/Select/Checkbox styling (not underlined, not flat)
+
+### Animations
+- **Style**: Minimal animations only
+- **Use cases**: Loading states, transitions, modal open/close
+- **Source**: Use NextUI's built-in framer-motion animations
+- **Avoid excessive animations**: No unnecessary hover effects or transitions
+
+### Accessibility
+- **Standard**: Basic accessibility only
+- **Rely on NextUI**: Use NextUI's built-in accessibility features
+- **Keyboard navigation**: Ensure all interactive elements are keyboard accessible
+- **Focus states**: Use NextUI's default focus indicators
+
+### Design System Implementation
+```typescript
+// Example NextUIProvider setup with design conventions
+import { NextUIProvider, createTheme } from '@nextui-org/react';
+
+const theme = createTheme({
+  type: 'light', // Light mode only
+});
+
+createRoot(document.getElementById('root')!).render(
+  <NextUIProvider theme={theme}>
+    <App />
+  </NextUIProvider>
+);
+```
+
+**Do NOT**:
+- Add custom themes or theme switching
+- Use Tailwind CSS or any other styling library
+- Create custom CSS files
+- Override NextUI's default styles unless explicitly required
+- Add animations beyond minimal functional transitions
+
 #### Style
 - **Naming**: `camelCase` for variables and functions
 - **Types/Interfaces**: `PascalCase`
@@ -458,12 +530,16 @@ src/
 ### NextUI Provider Setup (main.tsx)
 
 ```typescript
-import { NextUIProvider } from '@nextui-org/react';
+import { NextUIProvider, createTheme } from '@nextui-org/react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
+const theme = createTheme({
+  type: 'light', // Light mode only per design conventions
+});
+
 createRoot(document.getElementById('root')!).render(
-  <NextUIProvider>
+  <NextUIProvider theme={theme}>
     <App />
   </NextUIProvider>
 );
@@ -674,3 +750,4 @@ cargo run -- --verbose
 
 *Last updated: 2026-09-18*
 *Project status: Backend complete, Frontend to be created, Encryption mandatory before production*
+*Design conventions: Light theme, NextUI defaults, Tailwind-like spacing via NextUI props, Minimal animations, Slightly rounded borders (radius="sm")*
