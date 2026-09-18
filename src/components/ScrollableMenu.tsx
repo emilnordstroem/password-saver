@@ -3,17 +3,32 @@ import { IPasswordDTO } from "../types/passwordDTO";
 
 interface ScrollableMenuProps {
     passwords?: IPasswordDTO[];
+    selectedPassword?: IPasswordDTO | null;
+    onSelectPassword?: (password: IPasswordDTO | null) => void;
 }
 
-export function ScrollableMenu({ passwords = [] }: ScrollableMenuProps) {
+export function ScrollableMenu({ 
+    passwords = [], 
+    selectedPassword = null,
+    onSelectPassword = () => {} 
+}: ScrollableMenuProps) {
     const isEmpty = passwords.length === 0;
     
     const displayPasswords = isEmpty
-        ? Array(3).fill(null).map((_, i) => ({
+        ? Array(3).fill(null).map(() => ({
               title: "",
               username: "",
+              password: "",
+              url: "",
+              note: "",
           } as IPasswordDTO))
         : passwords;
+
+    const handleSelect = (password: IPasswordDTO | null) => {
+        if (!isEmpty) {
+            onSelectPassword(password);
+        }
+    };
 
     return (
         <ScrollShadow
@@ -24,10 +39,12 @@ export function ScrollableMenu({ passwords = [] }: ScrollableMenuProps) {
                 {displayPasswords.map((password, index) => (
                     <Card
                         key={index}
-                        className="w-full"
+                        className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}
                         shadow="sm"
                         isDisabled={isEmpty}
                         isHoverable={!isEmpty}
+                        isPressable={!isEmpty}
+                        onClick={() => handleSelect(isEmpty ? null : password)}
                     >
                         <CardHeader className="flex gap-2">
                             <div className="flex flex-col">
