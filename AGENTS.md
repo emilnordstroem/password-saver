@@ -143,6 +143,7 @@ password-saver/
 ### When Working on Tasks
 - Open with a brief plan before acting
 - Read all relevant files before making changes
+- **ALWAYS build and run the application to check for errors**: Run `npm run build` to verify TypeScript compilation, then `npm run tauri dev` to test the application. Fix any occurring issues before completing the task.
 - Prove it works (test commands, verify output)
 - Report what changed and why
 - Do NOT make assumptions about unstated requirements
