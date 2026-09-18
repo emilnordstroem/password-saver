@@ -113,12 +113,17 @@ password-saver/
     ├── main.tsx                 # React entry point with NextUI provider
     ├── App.tsx                  # Main application component
     ├── types/                   # TypeScript interfaces
-    │   └── password.ts          # PasswordEntry type definitions
+    │   ├── password.ts          # PasswordEntry type definitions
+    │   └── passwordDTO.ts       # DTO interface for password data (convention)
+    ├── pages/                   # Page components
+    │   └── Dashboard.tsx        # Main dashboard page
     ├── components/              # React components (ALL MUST USE NEXTUI V2)
+    │   ├── NavigationBar.tsx    # Navigation bar component
     │   ├── PasswordList.tsx     # List view of password entries
     │   ├── PasswordForm.tsx     # Add/edit password form
     │   ├── PasswordView.tsx     # View single password details
-    │   └── SearchBar.tsx        # Basic text search component
+    │   ├── PasswordOverview.tsx # Password details overview
+    │   └── ScrollableMenu.tsx   # Scrollable menu for password list
     ├── hooks/                   # Custom React hooks
     │   └── usePasswords.ts      # Password data operations
     └── utils/                   # Utility functions
@@ -243,8 +248,8 @@ npm run tauri build
 ## Design Conventions
 
 ### Theme
-- **Mode**: Light mode only
-- **Provider**: Use NextUI's `NextUIProvider` with `theme` prop set to `light` theme
+- **Mode**: Light mode only (default in NextUI v2)
+- **Provider**: Use NextUI's `NextUIProvider` (light mode is automatic)
 - **No dark mode toggle**: Do not implement dark mode switching
 
 ### Color Palette
@@ -289,18 +294,26 @@ npm run tauri build
 
 ### Design System Implementation
 ```typescript
-// Example NextUIProvider setup with design conventions
-import { NextUIProvider, createTheme } from '@nextui-org/react';
-
-const theme = createTheme({
-  type: 'light', // Light mode only
-});
+// Example NextUIProvider setup with design conventions (NextUI v2)
+// Light mode is the default in NextUI v2, no explicit theme creation needed
+import { NextUIProvider } from '@nextui-org/react';
 
 createRoot(document.getElementById('root')!).render(
-  <NextUIProvider theme={theme}>
+  <NextUIProvider>
     <App />
   </NextUIProvider>
 );
+
+// For NextUI v1 (if used), explicit theme configuration:
+// import { NextUIProvider, createTheme } from '@nextui-org/react';
+// const theme = createTheme({
+//   type: 'light',
+// });
+// createRoot(document.getElementById('root')!).render(
+//   <NextUIProvider theme={theme}>
+//     <App />
+//   </NextUIProvider>
+// );
 ```
 
 **Do NOT**:
@@ -515,12 +528,17 @@ src/
 ├── main.tsx                    # React entry point with NextUI provider
 ├── App.tsx                     # Main application component
 ├── types/
-│   └── password.ts             # TypeScript interfaces for PasswordEntry
+│   ├── password.ts             # TypeScript interfaces for PasswordEntry
+│   └── passwordDTO.ts          # DTO interface for password data (convention)
+├── pages/
+│   └── Dashboard.tsx           # Main dashboard page
 ├── components/
+│   ├── NavigationBar.tsx       # Navigation bar component
 │   ├── PasswordList.tsx        # List of password entries (use NextUI Table/Card)
 │   ├── PasswordForm.tsx        # Add/edit password form (use NextUI Input/Button/Modal)
 │   ├── PasswordView.tsx        # View single password (use NextUI Card/Modal)
-│   └── SearchBar.tsx           # Basic text search (use NextUI Input)
+│   ├── PasswordOverview.tsx    # Password details overview
+│   └── ScrollableMenu.tsx      # Scrollable menu for password list
 ├── hooks/
 │   └── usePasswords.ts         # Custom hook for password CRUD operations
 └── utils/
@@ -530,16 +548,13 @@ src/
 ### NextUI Provider Setup (main.tsx)
 
 ```typescript
-import { NextUIProvider, createTheme } from '@nextui-org/react';
+import { NextUIProvider } from '@nextui-org/react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
-const theme = createTheme({
-  type: 'light', // Light mode only per design conventions
-});
-
+// Light mode is the default in NextUI v2
 createRoot(document.getElementById('root')!).render(
-  <NextUIProvider theme={theme}>
+  <NextUIProvider>
     <App />
   </NextUIProvider>
 );
@@ -558,6 +573,19 @@ export interface PasswordEntry {
     notes?: string;
     created_at: string;        // RFC3339 format
     updated_at: string;        // RFC3339 format
+}
+```
+
+### DTO Type Definition (types/passwordDTO.ts) - Convention
+
+```typescript
+// DTO interface for password data transfer
+export interface IPasswordDTO {
+    title: string;
+    username: string;
+    password: string;
+    url: string;
+    note: string;
 }
 ```
 
