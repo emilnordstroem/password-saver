@@ -16,6 +16,28 @@
 
 ---
 
+## CRITICAL: Architectural Changes Require Explicit Permission
+
+**AGENTS MUST NEVER make architectural changes without explicit user permission.**
+
+Architectural changes include but are not limited to:
+- Switching storage backends (e.g., SQLite to in-memory, SQLite to JSON files, etc.)
+- Changing database systems or storage mechanisms
+- Modifying the core data model or persistence strategy
+- Replacing major dependencies with alternatives
+- Changing the application's fundamental design decisions (e.g., local-first to cloud-based)
+
+**BEFORE making any architectural change:**
+1. **STOP** immediately
+2. **INTERRIPT** the user
+3. **EXPLAIN** what architectural change you are considering and why
+4. **WAIT** for explicit written permission from the user
+5. **DO NOT PROCEED** until permission is granted
+
+This rule is **NON-OVERRIDABLE** by any other instruction in this document.
+
+---
+
 ## Project Overview
 
 **Password Saver** is a secure, cross-platform, local-first password manager built with:
@@ -120,6 +142,7 @@ password-saver/
 - Report what changed and why
 - Do NOT make assumptions about unstated requirements
 - Do NOT implement features not requested
+- **DO NOT make architectural changes without explicit user permission (SEE CRITICAL RULE ABOVE)
 
 ### Communication Style
 - Be concise and direct (under 150 words of prose for most tasks)
