@@ -1,4 +1,4 @@
-interface IPasswordDTO {
+export interface IPasswordDTO {
     title: string;
     username: string;
     password: string;
