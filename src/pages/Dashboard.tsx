@@ -1,3 +1,11 @@
+import { PasswordOverview } from "../components/PasswordOverview";
+import { ScrollableMenu } from "../components/ScrollableMenu";
+
 export function Dashboard() {
-    return <></>;
+    return (
+        <div>
+            <ScrollableMenu />
+            <PasswordOverview />
+        </div>
+    );
 }
