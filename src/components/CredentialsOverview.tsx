@@ -139,6 +139,7 @@ export function CredentialsOverview({
                 isOpen={isGenerateModalOpen}
                 onClose={() => setIsGenerateModalOpen(false)}
                 onGenerate={handleGeneratePassword}
+                hasExistingPassword={!!editableCredentials.password}
             />
         </Card>
     );
