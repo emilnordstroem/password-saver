@@ -37,17 +37,23 @@ export function PasswordInput({
     };
 
     return (
-        <div>
-            <Input
-                label={label}
-                value={title}
-                isDisabled={isDisabled}
-                className="w-full"
-                variant="bordered"
-                type={type}
-                startContent={getIcon()}
-                onValueChange={(value) => handleChange(getFieldName(), value)}
-            />
+        <div className="flex items-start gap-2 w-full">
+            <div className="pt-2">
+                {getIcon()}
+            </div>
+            <div className="flex-1">
+                <label className="block text-sm font-medium mb-1">
+                    {label}
+                </label>
+                <Input
+                    value={title}
+                    isDisabled={isDisabled}
+                    className="w-full"
+                    variant="bordered"
+                    type={type}
+                    onValueChange={(value) => handleChange(getFieldName(), value)}
+                />
+            </div>
         </div>
     );
 }
