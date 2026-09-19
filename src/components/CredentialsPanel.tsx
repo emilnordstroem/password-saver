@@ -12,7 +12,7 @@ import { CredentialsOverview } from "./CredentialsOverview";
 import { ScrollableMenu } from "./ScrollableMenu";
 import { ICredentialsEntry } from "@src/types/credentials";
 import { GripVertical } from "lucide-react";
-import { addPassword, updatePassword } from "@src/utils/api";
+import { addPassword, updatePassword, listPasswords } from "@src/utils/api";
 
 interface CredentialPanelProps {
     onAddCredentials?: () => void;
@@ -45,6 +45,19 @@ export const CredentialsPanel = forwardRef<
         const [isResizing, setIsResizing] = useState(false);
         const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
         const containerRef = useRef<HTMLDivElement>(null);
+
+        // Load credentials from database on mount
+        useEffect(() => {
+            const loadCredentials = async () => {
+                try {
+                    const savedCredentials = await listPasswords();
+                    setCredentials(savedCredentials);
+                } catch (error) {
+                    console.error("Failed to load credentials:", error);
+                }
+            };
+            loadCredentials();
+        }, []);
 
         // Track which credentials have been saved (have an id)
         const savedCredentials = useMemo(() => {
