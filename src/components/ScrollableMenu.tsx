@@ -17,7 +17,7 @@ interface ScrollableMenuProps {
     onSelectCredential?: (credential: ICredentialsEntry | null) => void;
     onAddCredentials?: () => void;
     onDeleteCredentials?: (credential: ICredentialsEntry) => void;
-    onSaveCredentials?: (credential: ICredentialsEntry) => void;
+    onSaveCredentials?: (credential: ICredentialsEntry) => Promise<boolean>;
     hasCredentials?: boolean;
     onClearSearch?: () => void;
     savedCredentials?: Set<number>;
@@ -29,7 +29,7 @@ export function ScrollableMenu({
     onSelectCredential: onSelectCredential = () => {},
     onAddCredentials: onAddCredential = () => {},
     onDeleteCredentials: onDeleteCredential = () => {},
-    onSaveCredentials: onSaveCredential = () => {},
+    onSaveCredentials: onSaveCredentials = async () => true,
     hasCredentials: hasCredentialsFlag = false,
     onClearSearch = () => {},
     savedCredentials = new Set<number>(),
@@ -42,9 +42,13 @@ export function ScrollableMenu({
         onSelectCredential(credential);
     };
 
-    const handleSave = (e: React.MouseEvent, credential: ICredentialsEntry) => {
+    const handleSave = async (e: React.MouseEvent, credential: ICredentialsEntry) => {
+        console.log("ScrollableMenu handleSave called for credential:", credential.id, credential.title);
         e.stopPropagation();
-        onSaveCredential(credential);
+        if (onSaveCredentials) {
+            const result = await onSaveCredentials(credential);
+            console.log("Save result:", result);
+        }
     };
 
     const handleDelete = (
@@ -111,7 +115,7 @@ export function ScrollableMenu({
                     ) : (
                         credentialsList.map((credential, index) => (
                             <CredentialsMenuItem
-                                key={index}
+                                key={credential.id || `new-${index}`}
                                 credential={credential}
                                 index={index}
                                 selectedCredential={selectedCredential}

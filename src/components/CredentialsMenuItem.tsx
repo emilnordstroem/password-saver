@@ -34,11 +34,12 @@ export function CredentialsMenuItem({
             shadow="sm"
             radius="sm"
             isHoverable
-            isPressable
-            onClick={() => handleSelect(credential)}
         >
             <CardHeader className="flex gap-2 justify-between">
-                <div className="flex flex-row gap-2 items-center">
+                <div 
+                    className="flex flex-row gap-2 items-center flex-1 cursor-pointer"
+                    onClick={() => handleSelect(credential)}
+                >
                     {selectedCredential === credential ? (
                         <LockOpen size={16} className="text-default-400" />
                     ) : (
@@ -59,13 +60,16 @@ export function CredentialsMenuItem({
                         </p>
                     </div>
                 </div>
-                <div>
+                <div className="flex gap-1">
                     <Button
                         isIconOnly
                         size="sm"
                         variant="light"
                         color={isSaved ? "success" : "default"}
-                        onClick={(event) => handleSave(event, credential)}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            handleSave(event, credential);
+                        }}
                         aria-label="Save password"
                     >
                         {isSaved ? (
@@ -79,7 +83,10 @@ export function CredentialsMenuItem({
                         size="sm"
                         variant="light"
                         color="danger"
-                        onClick={(event) => handleDelete(event, credential)}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            handleDelete(event, credential);
+                        }}
                         aria-label="Delete password"
                     >
                         <Trash size={16} />

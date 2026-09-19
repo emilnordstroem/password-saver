@@ -8,6 +8,8 @@ export interface ICredentialInputProps {
     isDisabled: boolean;
     handleChange: any;
     placeholder?: string;
+    isInvalid?: boolean;
+    errorMessage?: string;
 }
 
 export function CredentialInput({
@@ -16,6 +18,8 @@ export function CredentialInput({
     isDisabled,
     handleChange,
     placeholder,
+    isInvalid = false,
+    errorMessage,
 }: ICredentialInputProps) {
     const getIcon = () => {
         const lowerLabel = label.toLowerCase();
@@ -72,6 +76,8 @@ export function CredentialInput({
                         onValueChange={(value) =>
                             handleChange(getFieldName(), value)
                         }
+                        isInvalid={isInvalid}
+                        errorMessage={errorMessage}
                     />
                     {isPasswordField && (
                         <CopyToClipboardButton

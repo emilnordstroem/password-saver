@@ -12,6 +12,7 @@ import { CredentialsOverview } from "./CredentialsOverview";
 import { ScrollableMenu } from "./ScrollableMenu";
 import { ICredentialsEntry } from "@src/types/credentials";
 import { GripVertical } from "lucide-react";
+import { addPassword, updatePassword } from "@src/utils/api";
 
 interface CredentialPanelProps {
     onAddCredentials?: () => void;
@@ -42,7 +43,17 @@ export const CredentialsPanel = forwardRef<
             useState<ICredentialsEntry | null>(null);
         const [leftWidth, setLeftWidth] = useState(50);
         const [isResizing, setIsResizing] = useState(false);
+        const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
         const containerRef = useRef<HTMLDivElement>(null);
+
+        // Track which credentials have been saved (have an id)
+        const savedCredentials = useMemo(() => {
+            return new Set(
+                credentials
+                    .filter((c) => c.id !== null)
+                    .map((c) => c.id as number)
+            );
+        }, [credentials]);
 
         const filteredCredentials = useMemo(() => {
             const query = searchQuery.toLowerCase().trim();
@@ -122,6 +133,70 @@ export const CredentialsPanel = forwardRef<
             setSelectedCredential(updatedCredentials);
         };
 
+        // Validate the credential (title is required)
+        const validateCredential = (cred: ICredentialsEntry): boolean => {
+            const errors: Record<string, string> = {};
+            if (!cred.title || cred.title.trim() === "") {
+                errors.title = "Title is required";
+            }
+            setValidationErrors(errors);
+            return Object.keys(errors).length === 0;
+        };
+
+        // Save credential to database
+        const handleSaveCredentials = async (cred: ICredentialsEntry): Promise<boolean> => {
+            console.log("Saving credential:", cred);
+            // Validate first
+            if (!validateCredential(cred)) {
+                console.log("Validation failed");
+                return false;
+            }
+
+            try {
+                let savedCred: ICredentialsEntry;
+                if (cred.id === null) {
+                    // Create new entry with timestamps
+                    const credWithTimestamps = {
+                        ...cred,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString(),
+                    };
+                    savedCred = await addPassword(credWithTimestamps);
+                } else {
+                    // Update existing entry
+                    const credWithTimestamp = {
+                        ...cred,
+                        updated_at: new Date().toISOString(),
+                    };
+                    savedCred = await updatePassword(cred.id, credWithTimestamp);
+                }
+
+                // Update local state
+                if (cred.id === null) {
+                    // New credential - replace the temporary one with the saved one
+                    const updated = credentials.map((p) =>
+                        p.id === null ? savedCred : p,
+                    );
+                    setCredentials(updated);
+                    setSelectedCredential(savedCred);
+                } else {
+                    // Updated credential
+                    const updated = credentials.map((p) =>
+                        p.id === savedCred.id ? savedCred : p,
+                    );
+                    setCredentials(updated);
+                    setSelectedCredential(savedCred);
+                }
+
+                // Clear validation errors
+                setValidationErrors({});
+                return true;
+            } catch (error) {
+                console.error("Failed to save credential:", error);
+                return false;
+            }
+        };
+
         const startResizing = (e: MouseEvent) => {
             setIsResizing(true);
             e.preventDefault();
@@ -162,8 +237,10 @@ export const CredentialsPanel = forwardRef<
                         selectedCredential={selectedCredential}
                         onAddCredentials={handleAddCredentials}
                         onDeleteCredentials={handleDeleteCredentials}
+                        onSaveCredentials={handleSaveCredentials}
                         hasCredentials={credentials.length > 0}
                         onClearSearch={onClearSearch}
+                        savedCredentials={savedCredentials}
                     />
                 </div>
                 <div
@@ -178,6 +255,7 @@ export const CredentialsPanel = forwardRef<
                         credentials={selectedCredential}
                         isEditing={selectedCredential !== null}
                         onUpdate={handleUpdateCredentials}
+                        validationErrors={validationErrors}
                     />
                 </div>
             </div>

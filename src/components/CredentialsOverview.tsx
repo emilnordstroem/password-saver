@@ -9,12 +9,14 @@ interface CredentialsOverviewProps {
     credentials?: ICredentialsEntry | null;
     isEditing?: boolean;
     onUpdate?: (credential: ICredentialsEntry) => void;
+    validationErrors?: Record<string, string>;
 }
 
 export function CredentialsOverview({
     credentials = null,
     isEditing = false,
     onUpdate = () => {},
+    validationErrors: externalValidationErrors = {},
 }: CredentialsOverviewProps) {
     const isEmpty = credentials === null;
 
@@ -31,6 +33,10 @@ export function CredentialsOverview({
         });
 
     const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+    const [internalValidationErrors, setInternalValidationErrors] = useState<Record<string, string>>({});
+    
+    // Combine external and internal validation errors
+    const combinedValidationErrors = { ...internalValidationErrors, ...externalValidationErrors };
 
     useEffect(() => {
         if (credentials) {
@@ -53,6 +59,11 @@ export function CredentialsOverview({
         const updated = { ...editableCredentials, [field]: value };
         setEditableCredential(updated);
         onUpdate(updated);
+        
+        // Clear internal validation error for this field when it changes
+        if (internalValidationErrors[field as string]) {
+            setInternalValidationErrors({ ...internalValidationErrors, [field]: "" });
+        }
     };
 
     const isInputDisabled = isEmpty && !isEditing;
@@ -74,6 +85,8 @@ export function CredentialsOverview({
                     title={editableCredentials.title || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
+                    isInvalid={!!combinedValidationErrors.title}
+                    errorMessage={combinedValidationErrors.title}
                 />
             </CardHeader>
             <Divider />
@@ -83,12 +96,16 @@ export function CredentialsOverview({
                     title={editableCredentials.username || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
+                    isInvalid={!!combinedValidationErrors.username}
+                    errorMessage={combinedValidationErrors.username}
                 />
                 <CredentialInput
                     label="Password"
                     title={editableCredentials.password || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
+                    isInvalid={!!combinedValidationErrors.password}
+                    errorMessage={combinedValidationErrors.password}
                 />
                 <Button
                     variant="light"
@@ -106,12 +123,16 @@ export function CredentialsOverview({
                     title={editableCredentials.url || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
+                    isInvalid={!!combinedValidationErrors.url}
+                    errorMessage={combinedValidationErrors.url}
                 />
                 <CredentialInput
                     label="Note"
                     title={editableCredentials.note || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
+                    isInvalid={!!combinedValidationErrors.note}
+                    errorMessage={combinedValidationErrors.note}
                 />
             </CardBody>
             <GeneratePasswordModal

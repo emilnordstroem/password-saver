@@ -48,7 +48,8 @@ This rule is **NON-OVERRIDABLE** by any other instruction in this document.
 | Frontend | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/) |
 | Backend | [Rust 2021 Edition](https://www.rust-lang.org/) |
 | Database | [SQLite](https://www.sqlite.org/) via [rusqlite](https://github.com/rusqlite/rusqlite) |
-| Styling | [NextUI v2](https://nextui.org/) (React component library) |
+| Styling | [NextUI v2](https://nextui.org/) (React component library) + [Tailwind CSS](https://tailwindcss.com/) |
+| Icons | [Lucide React](https://lucide.dev/) |
 
 ### Purpose
 A local-first password manager that stores credentials securely on the user's device. **All data remains local - no cloud sync or network transmission.**
@@ -183,6 +184,9 @@ npm install
 # Install NextUI (REQUIRED for all frontend work)
 npm install @nextui-org/react framer-motion
 
+# Install Lucide React for icons (REQUIRED)
+npm install lucide-react
+
 # Install Rust toolchain (if not already installed)
 # See: https://www.rust-lang.org/tools/install
 ```
@@ -254,20 +258,21 @@ npm run tauri build
 - **No dark mode toggle**: Do not implement dark mode switching
 
 ### Color Palette
-- **Source**: Use NextUI's default color palette
+- **Source**: Use NextUI's default color palette (primary) and Tailwind CSS color palette (for utility classes)
 - **Primary**: Use default NextUI primary color
-- **Semantic colors**: Use NextUI's built-in semantic colors (success, warning, danger, etc.)
+- **Semantic colors**: Use NextUI's built-in semantic colors (success, warning, danger, etc.) and Tailwind's color classes
 
 ### Typography
 - **Font family**: NextUI default (Inter)
 - **No custom fonts**: Do not add custom Google Fonts or local font files
 - **Follow NextUI typography scale**: Use NextUI's built-in heading and text sizes
+- **Tailwind text classes**: Can use Tailwind's text-size and font-weight classes when needed
 
 ### Spacing
-- **System**: Tailwind-like spacing via NextUI props
+- **System**: Use Tailwind CSS spacing classes for layout and NextUI spacing props for components
 - **Use NextUI spacing props**: `p`, `m`, `gap`, `w`, `h` with sizes: `sm`, `md`, `lg`, etc.
+- **Use Tailwind spacing**: `p-4`, `m-2`, `gap-3`, etc. for general layout
 - **Avoid inline styles**: Never use inline `style` prop for spacing
-- **Consistent spacing tokens**: Prefer NextUI spacing tokens over raw pixel values
 
 ### Layout
 - **Containers**: Full-width containers with padding
@@ -298,12 +303,32 @@ npm run tauri build
 // Example NextUIProvider setup with design conventions (NextUI v2)
 // Light mode is the default in NextUI v2, no explicit theme creation needed
 import { NextUIProvider } from '@nextui-org/react';
+import './index.css'; // Tailwind CSS directives
 
 createRoot(document.getElementById('root')!).render(
   <NextUIProvider>
     <App />
   </NextUIProvider>
 );
+
+// Tailwind CSS configuration (tailwind.config.cjs)
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      borderRadius: {
+        small: '0.25rem',
+        medium: '0.375rem',
+        large: '0.5rem',
+      }
+    },
+  },
+  plugins: [],
+}
 
 // For NextUI v1 (if used), explicit theme configuration:
 // import { NextUIProvider, createTheme } from '@nextui-org/react';
@@ -319,8 +344,7 @@ createRoot(document.getElementById('root')!).render(
 
 **Do NOT**:
 - Add custom themes or theme switching
-- Use Tailwind CSS or any other styling library
-- Create custom CSS files
+- Create custom CSS files (except for global styles in index.css)
 - Override NextUI's default styles unless explicitly required
 - Add animations beyond minimal functional transitions
 
@@ -338,24 +362,29 @@ createRoot(document.getElementById('root')!).render(
 - Use `interface` for object shapes, `type` for unions/aliases
 - Import Tauri APIs from `@tauri-apps/api`
 
-#### UI Components - **STRICT REQUIREMENT: Use NextUI v2 ONLY**
+#### UI Components - **Use NextUI v2 for Components + Tailwind CSS for Layout**
 
-**MANDATORY**: ALL React components MUST use [NextUI v2](https://nextui.org/) for styling and UI elements.
+**MANDATORY**: Use [NextUI v2](https://nextui.org/) for all interactive components combined with [Tailwind CSS](https://tailwindcss.com/) for layout and utility styling.
 
 USE THESE:
 - Import from `@nextui-org/react` (e.g., `import { Button, Input, Card } from "@nextui-org/react"`)
-- Use NextUI's `Button`, `Input`, `Card`, `Modal`, `Table`, `Dropdown`, `Select`, `Checkbox`, `Radio`, `Textarea`
+- Use NextUI's `Button`, `Input`, `Card`, `Modal`, `Table`, `Dropdown`, `Select`, `Checkbox`, `Radio`, `Textarea` for interactive components
 - Use NextUI's theming system (`NextUIProvider`) with default themes
 - Use NextUI's layout components: `Container`, `Grid`, `Row`, `Col`, `Spacer`
 - Use NextUI's feedback components: `useDisclosure`, `useToast`, `Snippet`, `Tooltip`
 - Use NextUI's data display: `Table`, `List`, `Avatar`, `Badge`, `Chip`
+- Use Tailwind CSS classes for layout: `flex`, `grid`, `p-4`, `m-2`, `gap-3`, etc.
+- Import icons from `lucide-react` (e.g., `import { Plus, Trash } from "lucide-react"`)
 
-NEVER USE:
+PREFER:
+- NextUI components for all interactive elements
+- Tailwind CSS for container layouts, padding, margins, and spacing
+- Lucide React for all icons
+
+AVOID:
 - Plain HTML elements for interactive components (use NextUI equivalents)
-- Other UI libraries (Material-UI, Chakra, Ant Design, Bootstrap, Tailwind CSS, etc.)
-- Custom CSS for component styling (use NextUI's props)
-- Inline styles for layout and spacing (use NextUI's spacing props)
-- Any styling approach other than NextUI v2
+- Other UI libraries (Material-UI, Chakra, Ant Design, Bootstrap, etc.)
+- Inline styles for layout and spacing (use Tailwind classes)
 
 ---
 
@@ -777,6 +806,6 @@ cargo run -- --verbose
 
 ---
 
-*Last updated: 2026-09-18*
+*Last updated: 2026-09-19*
 *Project status: Backend complete, Frontend to be created, Encryption mandatory before production*
-*Design conventions: Light theme, NextUI defaults, Tailwind-like spacing via NextUI props, Minimal animations, Slightly rounded borders (radius="sm")*
+*Design conventions: Light theme, NextUI v2 + Tailwind CSS, Minimal animations, Slightly rounded borders (radius="sm")*
