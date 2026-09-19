@@ -35,20 +35,16 @@ export function CopyToClipboardButton({
     };
 
     return (
-        <Tooltip
-            content={isCopied ? tooltipContent.copied : tooltipContent.default}
+        <Button
+            isIconOnly={true}
+            size="sm"
+            variant="solid"
+            onClick={handleCopy}
+            isDisabled={isDisabled || !text}
+            radius="sm"
+            className={`min-w-0 h-8 w-8 ${className || ""}`}
         >
-            <Button
-                isIconOnly={true}
-                size="sm"
-                variant="solid"
-                onClick={handleCopy}
-                isDisabled={isDisabled || !text}
-                radius="sm"
-                className={`min-w-0 h-8 w-8 ${className || ""}`}
-            >
-                {isCopied ? <Check size={14} /> : <Copy size={14} />}
-            </Button>
-        </Tooltip>
+            {isCopied ? <Check size={14} /> : <Copy size={14} />}
+        </Button>
     );
 }
