@@ -8,8 +8,9 @@ import {
     Input,
     Checkbox,
 } from "@nextui-org/react";
-import { Check, Copy, RotateCw } from "lucide-react";
+import { RotateCw } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
+import { CopyToClipboardButton } from "./CopyToClipboardButton";
 
 export interface IGeneratePasswordModalProps {
     isOpen: boolean;
@@ -46,7 +47,6 @@ export function GeneratePasswordModal({
         useNumbers: true,
         useSpecialChars: false,
     });
-    const [copied, setCopied] = useState(false);
 
     const getPasswordStrength = useCallback(() => {
         if (password.length === 0) return "Empty";
@@ -102,18 +102,6 @@ export function GeneratePasswordModal({
         }
     }, [isOpen, generatePassword]);
 
-    const handleCopy = async () => {
-        if (password) {
-            try {
-                await navigator.clipboard.writeText(password);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            } catch (error) {
-                console.error("Failed to copy:", error);
-            }
-        }
-    };
-
     const handleConfirm = () => {
         onGenerate(password);
         onClose();
@@ -155,15 +143,7 @@ export function GeneratePasswordModal({
                                 className="flex-1"
                                 label="Generated Password"
                             />
-                            <Button
-                                radius="sm"
-                                size="md"
-                                onPress={handleCopy}
-                                color={copied ? "success" : "default"}
-                                variant={copied ? "flat" : "solid"}
-                            >
-                                {copied ? <Check /> : <Copy />}
-                            </Button>
+                            <CopyToClipboardButton text={password} />
                             <Button
                                 radius="sm"
                                 size="md"
