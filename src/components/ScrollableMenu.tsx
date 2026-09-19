@@ -6,15 +6,11 @@ import {
     Divider,
     ScrollShadow,
     Button,
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
 } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
 import { MdDelete } from "react-icons/md";
 import { Lock } from "lucide-react";
+import { ConfirmModal } from "./ConfirmModal";
 
 interface ScrollableMenuProps {
     passwords?: PasswordEntry[];
@@ -146,28 +142,11 @@ export function ScrollableMenu({
                     )}
                 </div>
             </ScrollShadow>
-            <Modal
-                isOpen={isDeleteModalOpen}
-                onClose={handleCancelDelete}
-                size="sm"
-                backdrop="blur"
-            >
-                <ModalContent>
-                    <ModalHeader>Delete Password</ModalHeader>
-                    <ModalBody>
-                        Are you sure you want to delete this password? This
-                        action cannot be undone.
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button variant="light" onClick={handleCancelDelete}>
-                            Cancel
-                        </Button>
-                        <Button color="danger" onClick={handleConfirmDelete}>
-                            Delete
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+            <ConfirmModal
+                isModalOpen={isDeleteModalOpen}
+                handleConfirm={handleConfirmDelete}
+                handleCancel={handleCancelDelete}
+            />
         </>
     );
 }
