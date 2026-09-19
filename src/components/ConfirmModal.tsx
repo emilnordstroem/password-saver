@@ -6,17 +6,28 @@ import {
     ModalBody,
     ModalFooter,
 } from "@nextui-org/react";
+import { ReactNode } from "react";
 
 export interface IConfirmModalProps {
     isModalOpen: boolean;
     handleConfirm: any;
     handleCancel: any;
+    title?: string;
+    message?: string | ReactNode;
+    confirmText?: string;
+    cancelText?: string;
+    color?: "danger" | "primary" | "warning" | "success" | "default";
 }
 
 export function ConfirmModal({
     isModalOpen,
     handleConfirm,
     handleCancel,
+    title = "Delete",
+    message = "Are you sure you want to delete this password? This action cannot be undone.",
+    confirmText = "Delete",
+    cancelText = "Cancel",
+    color = "danger",
 }: IConfirmModalProps) {
     return (
         <Modal
@@ -26,17 +37,14 @@ export function ConfirmModal({
             backdrop="blur"
         >
             <ModalContent>
-                <ModalHeader>Delete</ModalHeader>
-                <ModalBody>
-                    Are you sure you want to delete this password? This action
-                    cannot be undone.
-                </ModalBody>
+                <ModalHeader>{title}</ModalHeader>
+                <ModalBody>{message}</ModalBody>
                 <ModalFooter>
                     <Button variant="light" onClick={handleCancel}>
-                        Cancel
+                        {cancelText}
                     </Button>
-                    <Button color="danger" onClick={handleConfirm}>
-                        Delete
+                    <Button color={color} onClick={handleConfirm}>
+                        {confirmText}
                     </Button>
                 </ModalFooter>
             </ModalContent>
