@@ -10,7 +10,7 @@ import {
 
 import { PasswordOverview } from "../components/PasswordOverview";
 import { ScrollableMenu } from "../components/ScrollableMenu";
-import { ILoginEntry } from "@src/types/password";
+import { ILoginEntry } from "@src/types/login";
 import { GripVertical } from "lucide-react";
 
 interface PasswordPanelProps {

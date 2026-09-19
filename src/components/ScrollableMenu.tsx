@@ -7,7 +7,7 @@ import {
     ScrollShadow,
     Button,
 } from "@nextui-org/react";
-import { ILoginEntry } from "@src/types/password";
+import { ILoginEntry } from "@src/types/login";
 import { MdDelete } from "react-icons/md";
 import { Lock, LockOpen } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";

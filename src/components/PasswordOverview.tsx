@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, Divider, Button } from "@nextui-org/react";
-import { ILoginEntry } from "@src/types/password";
+import { ILoginEntry } from "@src/types/login";
 import { PasswordInput } from "./PasswordInput";
 import { GeneratePasswordModal } from "./GeneratePasswordModal";
 import { Shield } from "lucide-react";
