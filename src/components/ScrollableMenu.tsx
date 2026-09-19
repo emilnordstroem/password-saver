@@ -17,8 +17,10 @@ interface ScrollableMenuProps {
     onSelectCredential?: (credential: ICredentialsEntry | null) => void;
     onAddCredentials?: () => void;
     onDeleteCredentials?: (credential: ICredentialsEntry) => void;
+    onSaveCredentials?: (credential: ICredentialsEntry) => void;
     hasCredentials?: boolean;
     onClearSearch?: () => void;
+    savedCredentials?: Set<number>;
 }
 
 export function ScrollableMenu({
@@ -27,8 +29,10 @@ export function ScrollableMenu({
     onSelectCredential: onSelectCredential = () => {},
     onAddCredentials: onAddCredential = () => {},
     onDeleteCredentials: onDeleteCredential = () => {},
+    onSaveCredentials: onSaveCredential = () => {},
     hasCredentials: hasCredentialsFlag = false,
     onClearSearch = () => {},
+    savedCredentials = new Set<number>(),
 }: ScrollableMenuProps) {
     const [credentialToDelete, setCredentialToDelete] =
         useState<ICredentialsEntry | null>(null);
@@ -36,6 +40,11 @@ export function ScrollableMenu({
 
     const handleSelect = (credential: ICredentialsEntry) => {
         onSelectCredential(credential);
+    };
+
+    const handleSave = (e: React.MouseEvent, credential: ICredentialsEntry) => {
+        e.stopPropagation();
+        onSaveCredential(credential);
     };
 
     const handleDelete = (
@@ -107,7 +116,9 @@ export function ScrollableMenu({
                                 index={index}
                                 selectedCredential={selectedCredential}
                                 handleSelect={handleSelect}
+                                handleSave={handleSave}
                                 handleDelete={handleDelete}
+                                isSaved={savedCredentials.has(credential.id || 0)}
                             />
                         ))
                     )}

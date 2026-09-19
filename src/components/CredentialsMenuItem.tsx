@@ -1,6 +1,5 @@
 import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
-import { Lock, LockOpen } from "lucide-react";
-import { MdDelete } from "react-icons/md";
+import { Lock, LockOpen, Save, SaveCheck, Trash } from "lucide-react";
 import { ICredentialsEntry } from "@src/types/credentials";
 
 interface CredentialsMenuItemProps {
@@ -8,7 +7,15 @@ interface CredentialsMenuItemProps {
     index: number;
     selectedCredential: ICredentialsEntry | null;
     handleSelect: (credential: ICredentialsEntry) => void;
-    handleDelete: (e: React.MouseEvent, credential: ICredentialsEntry) => void;
+    handleSave: (
+        event: React.MouseEvent,
+        credential: ICredentialsEntry,
+    ) => void;
+    handleDelete: (
+        event: React.MouseEvent,
+        credential: ICredentialsEntry,
+    ) => void;
+    isSaved: boolean;
 }
 
 export function CredentialsMenuItem({
@@ -16,7 +23,9 @@ export function CredentialsMenuItem({
     index,
     selectedCredential,
     handleSelect,
+    handleSave,
     handleDelete,
+    isSaved,
 }: CredentialsMenuItemProps) {
     return (
         <Card
@@ -50,16 +59,32 @@ export function CredentialsMenuItem({
                         </p>
                     </div>
                 </div>
-                <Button
-                    isIconOnly
-                    size="sm"
-                    variant="light"
-                    color="danger"
-                    onClick={(e) => handleDelete(e, credential)}
-                    aria-label="Delete password"
-                >
-                    <MdDelete size={16} />
-                </Button>
+                <div>
+                    <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        color={isSaved ? "success" : "default"}
+                        onClick={(event) => handleSave(event, credential)}
+                        aria-label="Save password"
+                    >
+                        {isSaved ? (
+                            <SaveCheck size={16} />
+                        ) : (
+                            <Save size={16} />
+                        )}
+                    </Button>
+                    <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        color="danger"
+                        onClick={(event) => handleDelete(event, credential)}
+                        aria-label="Delete password"
+                    >
+                        <Trash size={16} />
+                    </Button>
+                </div>
             </CardHeader>
             <Divider />
             <CardBody></CardBody>
