@@ -187,11 +187,17 @@ export const CredentialsPanel = forwardRef<
             });
         };
 
-        // Validate the credential (title is required)
+        // Validate the credential (title, username, and password are required)
         const validateCredential = (cred: ICredentialsEntry): boolean => {
             const errors: Record<string, string> = {};
             if (!cred.title || cred.title.trim() === "") {
-                errors.title = "Title is required";
+                errors.title = "(required)";
+            }
+            if (!cred.username || cred.username.trim() === "") {
+                errors.username = "(required)";
+            }
+            if (!cred.password || cred.password.trim() === "") {
+                errors.password = "(required)";
             }
             setValidationErrors(errors);
             return Object.keys(errors).length === 0;
