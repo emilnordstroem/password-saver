@@ -1,14 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { NextUIProvider } from '@nextui-org/react';
-import App from './App';
-import './styles/global.css';
+import { NextUIProvider } from "@nextui-org/react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./index.css";
 
-// Render the application
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <NextUIProvider>
-      <App />
-    </NextUIProvider>
-  </React.StrictMode>
+createRoot(document.getElementById("root")!).render(
+  <NextUIProvider>
+    <App />
+  </NextUIProvider>,
 );

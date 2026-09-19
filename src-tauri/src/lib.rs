@@ -1,153 +1,84 @@
-use serde::{Serialize, Deserialize};
-use std::sync::{Arc, Mutex};
-use tauri::Manager;
-use chrono::{DateTime, Utc, FixedOffset};
+// Database module for password CRUD operations
+pub mod db;
 
-mod db;
+use db::{PasswordEntry, create_password, get_password, list_passwords, update_password, delete_password, search_passwords, open_connection};
+use std::path::PathBuf;
 
-// Use Arc<Mutex<...>> to share the database connection across commands
-struct AppState {
-    db: Arc<Mutex<db::DbConnection>>,
+/// Get the database connection path using Tauri's path API
+fn get_db_path() -> Result<PathBuf, String> {
+    // In Tauri 2, we can use tauri::api::path
+    let app_data_dir = std::env::var("APPDATA").or_else(|_| std::env::var("HOME"))
+        .map(|p| PathBuf::from(p).join("password-saver"))
+        .unwrap_or_else(|_| PathBuf::from(".password-saver"));
+    
+    let db_path = app_data_dir.join("passwords.db");
+    
+    // Create parent directory if it doesn't exist
+    std::fs::create_dir_all(&app_data_dir).map_err(|e| e.to_string())?;
+    
+    Ok(db_path)
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct PasswordEntry {
-    pub id: Option<i64>,
-    pub title: String,
-    pub username: Option<String>,
-    pub password: String,
-    pub url: Option<String>,
-    pub notes: Option<String>,
-    pub created_at: String,
-    pub updated_at: String,
-}
-
-impl From<&db::PasswordEntry> for PasswordEntry {
-    fn from(entry: &db::PasswordEntry) -> Self {
-        Self {
-            id: entry.id,
-            title: entry.title.clone(),
-            username: entry.username.clone(),
-            password: entry.password.clone(),
-            url: entry.url.clone(),
-            notes: entry.notes.clone(),
-            created_at: entry.created_at.to_rfc3339(),
-            updated_at: entry.updated_at.to_rfc3339(),
-        }
-    }
-}
-
-impl From<db::PasswordEntry> for PasswordEntry {
-    fn from(entry: db::PasswordEntry) -> Self {
-        Self {
-            id: entry.id,
-            title: entry.title,
-            username: entry.username,
-            password: entry.password,
-            url: entry.url,
-            notes: entry.notes,
-            created_at: entry.created_at.to_rfc3339(),
-            updated_at: entry.updated_at.to_rfc3339(),
-        }
-    }
-}
-
-impl From<PasswordEntry> for db::PasswordEntry {
-    fn from(entry: PasswordEntry) -> Self {
-        let parse_dt = |s: &str| -> DateTime<Utc> {
-            DateTime::parse_from_rfc3339(s)
-                .map(|dt: DateTime<FixedOffset>| dt.with_timezone(&Utc))
-                .unwrap_or(Utc::now())
-        };
-        Self {
-            id: entry.id,
-            title: entry.title,
-            username: entry.username,
-            password: entry.password,
-            url: entry.url,
-            notes: entry.notes,
-            created_at: parse_dt(&entry.created_at),
-            updated_at: parse_dt(&entry.updated_at),
-        }
-    }
-}
-
+/// Create a new password entry
 #[tauri::command]
-fn add_password(state: tauri::State<'_, AppState>, entry: PasswordEntry) -> Result<PasswordEntry, String> {
-    let db = state.db.lock().map_err(|e| e.to_string())?;
-    let db_entry: db::PasswordEntry = entry.into();
-    let created = db.create_password(&db_entry).map_err(|e| e.to_string())?;
-    Ok(created.into())
+fn add_password(entry: PasswordEntry) -> Result<PasswordEntry, String> {
+    let db_path = get_db_path()?;
+    let conn = open_connection(&db_path).map_err(|e| e.to_string())?;
+    create_password(&conn, &entry).map_err(|e| e.to_string())
 }
 
+/// Get a single password by ID
 #[tauri::command]
-fn get_password(state: tauri::State<'_, AppState>, id: i64) -> Result<Option<PasswordEntry>, String> {
-    let db = state.db.lock().map_err(|e| e.to_string())?;
-    let entry = db.get_password(id).map_err(|e| e.to_string())?;
-    Ok(entry.map(|e| e.into()))
+fn get_password_command(id: i64) -> Result<Option<PasswordEntry>, String> {
+    let db_path = get_db_path()?;
+    let conn = open_connection(&db_path).map_err(|e| e.to_string())?;
+    get_password(&conn, id).map_err(|e| e.to_string())
 }
 
+/// List all passwords
 #[tauri::command]
-fn list_passwords(state: tauri::State<'_, AppState>) -> Result<Vec<PasswordEntry>, String> {
-    let db = state.db.lock().map_err(|e| e.to_string())?;
-    let entries = db.get_all_passwords().map_err(|e| e.to_string())?;
-    Ok(entries.into_iter().map(|e| e.into()).collect())
+fn list_passwords_command() -> Result<Vec<PasswordEntry>, String> {
+    let db_path = get_db_path()?;
+    let conn = open_connection(&db_path).map_err(|e| e.to_string())?;
+    list_passwords(&conn).map_err(|e| e.to_string())
 }
 
+/// Update a password entry
 #[tauri::command]
-fn update_password(state: tauri::State<'_, AppState>, id: i64, entry: PasswordEntry) -> Result<PasswordEntry, String> {
-    let db = state.db.lock().map_err(|e| e.to_string())?;
-    let db_entry: db::PasswordEntry = entry.into();
-    let updated = db.update_password(id, &db_entry).map_err(|e| e.to_string())?;
-    Ok(updated.into())
+fn update_password_command(id: i64, entry: PasswordEntry) -> Result<PasswordEntry, String> {
+    let db_path = get_db_path()?;
+    let conn = open_connection(&db_path).map_err(|e| e.to_string())?;
+    update_password(&conn, id, &entry).map_err(|e| e.to_string())
 }
 
+/// Delete a password entry
 #[tauri::command]
-fn delete_password(state: tauri::State<'_, AppState>, id: i64) -> Result<bool, String> {
-    let db = state.db.lock().map_err(|e| e.to_string())?;
-    let deleted = db.delete_password(id).map_err(|e| e.to_string())?;
-    Ok(deleted)
+fn delete_password_command(id: i64) -> Result<bool, String> {
+    let db_path = get_db_path()?;
+    let conn = open_connection(&db_path).map_err(|e| e.to_string())?;
+    delete_password(&conn, id).map_err(|e| e.to_string())
 }
 
+/// Search passwords by query
 #[tauri::command]
-fn search_passwords(state: tauri::State<'_, AppState>, query: &str) -> Result<Vec<PasswordEntry>, String> {
-    let db = state.db.lock().map_err(|e| e.to_string())?;
-    let entries = db.search_passwords(query).map_err(|e| e.to_string())?;
-    Ok(entries.into_iter().map(|e| e.into()).collect())
+fn search_passwords_command(query: String) -> Result<Vec<PasswordEntry>, String> {
+    let db_path = get_db_path()?;
+    let conn = open_connection(&db_path).map_err(|e| e.to_string())?;
+    search_passwords(&conn, &query).map_err(|e| e.to_string())
 }
 
+// Empty Tauri application
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
-            // Get the app data directory
-            let app_data_dir = app.path().app_data_dir()?;
-            
-            // Create the directory if it doesn't exist
-            std::fs::create_dir_all(&app_data_dir)?;
-            
-            // Initialize database connection
-            let db_path = app_data_dir.join("passwords.db");
-            let db = db::DbConnection::new(db_path.to_str().unwrap())?;
-            
-            // Wrap in Arc<Mutex> for thread-safe sharing
-            let app_state = AppState {
-                db: Arc::new(Mutex::new(db)),
-            };
-            
-            // Manage the state
-            app.manage(app_state);
-            
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             add_password,
-            get_password,
-            list_passwords,
-            update_password,
-            delete_password,
-            search_passwords
+            get_password_command,
+            list_passwords_command,
+            update_password_command,
+            delete_password_command,
+            search_passwords_command,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

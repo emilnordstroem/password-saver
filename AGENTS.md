@@ -1,26 +1,46 @@
 # AGENTS.md - Password Saver Project
 
-This file provides instructions for language models (AI assistants) working on the **Password Saver** codebase. Read this first before making changes.
+**Instructions for LLMs (Large Language Models) working on this codebase. READ THIS FIRST.**
 
 ---
 
 ## CRITICAL: Git Operations Prohibited
 
-**AGENTS MUST NEVER commit to git, push to remotes, or perform any git operations unless the user explicitly instructs them to do so in their prompt.**
+**AGENTS MUST NEVER perform any git operation unless explicitly instructed by the user in their prompt.**
 
 - Do NOT run: `git add`, `git commit`, `git push`, `git rebase`, `git merge`
 - Do NOT create branches, tags, or any git objects
 - Do NOT stage or commit any changes automatically
 - DO wait for explicit user instruction for any git-related action
-
-This applies even to documentation changes like this AGENTS.md file itself.
+- This applies even to documentation changes like this AGENTS.md file itself
 
 ---
 
+## CRITICAL: Architectural Changes Require Explicit Permission
+
+**AGENTS MUST NEVER make architectural changes without explicit user permission.**
+
+Architectural changes include but are not limited to:
+- Switching storage backends (e.g., SQLite to in-memory, SQLite to JSON files, etc.)
+- Changing database systems or storage mechanisms
+- Modifying the core data model or persistence strategy
+- Replacing major dependencies with alternatives
+- Changing the application's fundamental design decisions (e.g., local-first to cloud-based)
+
+**BEFORE making any architectural change:**
+1. **STOP** immediately
+2. **INTERRIPT** the user
+3. **EXPLAIN** what architectural change you are considering and why
+4. **WAIT** for explicit written permission from the user
+5. **DO NOT PROCEED** until permission is granted
+
+This rule is **NON-OVERRIDABLE** by any other instruction in this document.
+
+---
 
 ## Project Overview
 
-**Password Saver** is a secure, cross-platform password manager built with:
+**Password Saver** is a secure, cross-platform, local-first password manager built with:
 
 | Component | Technology |
 |-----------|------------|
@@ -28,10 +48,38 @@ This applies even to documentation changes like this AGENTS.md file itself.
 | Frontend | [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/) |
 | Backend | [Rust 2021 Edition](https://www.rust-lang.org/) |
 | Database | [SQLite](https://www.sqlite.org/) via [rusqlite](https://github.com/rusqlite/rusqlite) |
-| Styling | [NextUI v2](https://nextui.org/) (React component library) |
+| Styling | [NextUI v2](https://nextui.org/) (React component library) + [Tailwind CSS](https://tailwindcss.com/) |
+| Icons | [Lucide React](https://lucide.dev/) |
 
 ### Purpose
-A local-first password manager that stores credentials securely on the user's device using SQLite encryption.
+A local-first password manager that stores credentials securely on the user's device. **All data remains local - no cloud sync or network transmission.**
+
+### Current Status
+- Backend (Rust + Tauri commands) - Complete
+- Database schema and operations - Complete
+- Frontend (React + NextUI) - **NOT YET STARTED - PRIORITY**
+- Encryption at rest - **MANDATORY BEFORE PRODUCTION**
+- Password generator - To be implemented
+- Export/import (JSON) - To be implemented
+
+---
+
+## Development Priority & Roadmap
+
+### Phase 1: Core Functionality
+- [x] Database schema and CRUD operations (Backend complete)
+- [x] Tauri command API (Backend complete)
+- [ ] Frontend React components with NextUI
+
+### Phase 2: Critical Security & Features (ALL EQUALLY IMPORTANT)
+- [ ] **Encryption at rest** - MUST be implemented before any production use
+- [ ] **Password generator** - Standard strict password policies
+- [ ] **Export/import** - JSON format only
+- [ ] **UI polish** - Complete the NextUI frontend
+
+### Phase 3: Additional Features
+- [ ] Automatic encrypted backups
+- [ ] Advanced search and filtering
 
 ---
 
@@ -39,17 +87,17 @@ A local-first password manager that stores credentials securely on the user's de
 
 ```
 password-saver/
-├── AGENTS.md                    # This file - AI assistant instructions
-├── README.md                    # Basic project description
+├── AGENTS.md                    # This file - LLM instructions
+├── README.md                    # Project description
 ├── index.html                   # Entry HTML file (Vite root)
 ├── package.json                 # Frontend dependencies and scripts
-├── tsconfig.json                # TypeScript configuration (frontend)
+├── tsconfig.json                # TypeScript configuration
 ├── tsconfig.node.json           # TypeScript configuration (Vite)
 ├── vite.config.ts               # Vite bundler configuration
 ├── node_modules/                # Frontend dependencies
-├── public/                      # Static assets (currently empty)
+├── public/                      # Static assets
 └── src-tauri/                   # Tauri backend (Rust)
-    ├── Cargo.toml               # Rust dependencies and build config
+    ├── Cargo.toml               # Rust dependencies
     ├── Cargo.lock               # Dependency lock file
     ├── build.rs                 # Build script
     ├── tauri.conf.json          # Tauri application configuration
@@ -58,54 +106,107 @@ password-saver/
     ├── gen/                     # Generated files (schemas)
     │   └── schemas/             # JSON schemas for Tauri API
     ├── icons/                   # Application icons
-    ├── src/                     # Rust source code
-    │   ├── main.rs              # Application entry point
-    │   ├── lib.rs               # Tauri commands and state
-    │   └── db.rs                # Database operations (SQLite)
-    └── target/                  # Build artifacts
+    └── src/                     # Rust source code
+        ├── main.rs              # Application entry point
+        ├── lib.rs               # Tauri commands and state
+        └── db.rs                # Database operations (SQLite)
+└── src/                        # React frontend - TO BE CREATED
+    ├── main.tsx                 # React entry point with NextUI provider
+    ├── App.tsx                  # Main application component
+    ├── types/                   # TypeScript interfaces
+    │   ├── password.ts          # PasswordEntry type definitions
+    │   └── passwordDTO.ts       # DTO interface for password data (convention)
+    ├── pages/                   # Page components
+    │   └── Dashboard.tsx        # Main dashboard page
+    ├── components/              # React components (ALL MUST USE NEXTUI V2)
+    │   ├── NavigationBar.tsx    # Navigation bar component
+    │   ├── PasswordList.tsx     # List view of password entries
+    │   ├── PasswordForm.tsx     # Add/edit password form
+    │   ├── PasswordView.tsx     # View single password details
+    │   ├── PasswordOverview.tsx # Password details overview
+    │   └── ScrollableMenu.tsx   # Scrollable menu for password list
+    ├── hooks/                   # Custom React hooks
+    │   └── usePasswords.ts      # Password data operations
+    └── utils/                   # Utility functions
+        └── api.ts               # Tauri API wrapper functions
 ```
-
-**Note**: The frontend `src/` directory for React components does not yet exist and needs to be created.
 
 ---
 
-## Development Guidelines
+## LLM Behavior & Guidelines
 
-### Prerequisites
+### General Approach
+1. **Functionality First** - Make it work, then make it right
+2. **Ask for Clarification Often** - Before making significant changes or assumptions, confirm with the user
+3. **Minimal Changes** - Prefer the smallest possible change that solves the problem
+4. **Security-Conscious** - Always consider security implications, especially for a password manager
 
+### When Working on Tasks
+- Open with a brief plan before acting
+- Read all relevant files before making changes
+- **ALWAYS build and run the application to check for errors**: Run `npm run build` to verify TypeScript compilation, then `npm run tauri dev` to test the application. Fix any occurring issues before completing the task.
+- Prove it works (test commands, verify output)
+- Report what changed and why
+- Do NOT make assumptions about unstated requirements
+- Do NOT implement features not requested
+- **DO NOT make architectural changes without explicit user permission (SEE CRITICAL RULE ABOVE)
+
+### Communication Style
+- Be concise and direct (under 150 words of prose for most tasks)
+- Use clear structure (bullet points, tables, code blocks)
+- State what you will do before doing it
+- Explain the shape of the solution in your closing summary
+
+---
+
+## Prerequisites
+
+### Required
 - **Rust**: 1.70+ (for Tauri 2 compatibility)
 - **Node.js**: 18+ (LTS recommended)
 - **npm**: 9+
 - **Tauri CLI**: `npm install -g @tauri-apps/cli`
+- **NextUI v2**: `npm install @nextui-org/react framer-motion` (MANDATORY)
 
-### Installation
+### Recommended
+- **Rust toolchain**: `rustup`, `cargo`, `rustfmt`, `clippy`
+- **TypeScript tooling**: ESLint, Prettier (not yet configured)
 
+---
+
+## Setup & Running
+
+### Initial Setup
 ```bash
 # Install frontend dependencies
 npm install
 
-# Install NextUI (required for all frontend components)
+# Install NextUI (REQUIRED for all frontend work)
 npm install @nextui-org/react framer-motion
+
+# Install Lucide React for icons (REQUIRED)
+npm install lucide-react
 
 # Install Rust toolchain (if not already installed)
 # See: https://www.rust-lang.org/tools/install
-
-# Install Tauri dependencies
-npm run tauri -- init  # If setting up for the first time
 ```
 
-### Running the Application
-
+### Development
 ```bash
-# Development mode (hot reload)
+# Frontend development mode (hot reload)
 npm run dev
 
-# Build for production
+# Run Tauri application in development
+npm run tauri dev
+```
+
+### Production
+```bash
+# Build frontend
 npm run build
 
-# Run Tauri application
-npm run tauri dev      # Development
-npm run tauri build    # Production build
+# Build Tauri application for production
+npm run tauri build
 ```
 
 ---
@@ -120,9 +221,9 @@ npm run tauri build    # Production build
 - Follow [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/)
 
 #### Style
-- **Naming**: Use `PascalCase` for variables, functions, and modules
-- **Types**: Use `PascalCase` for structs, enums, and traits
-- **Constants**: Use `SCREAMING_SNAKE_CASE`
+- **Naming**: `snake_case` for variables, functions, modules
+- **Types**: `PascalCase` for structs, enums, traits
+- **Constants**: `SCREAMING_SNAKE_CASE`
 - **Error handling**: Use `Result<T, E>` with descriptive error types
 - **Documentation**: Use `///` for documentation comments
 
@@ -134,24 +235,125 @@ npm run tauri build    # Production build
 - Use `Option<T>` for nullable fields
 
 #### Database (SQLite/rusqlite)
-- Use parameterized queries to prevent SQL injection
+- Use **parameterized queries** to prevent SQL injection (MANDATORY)
 - Use `params![]` macro for query parameters
 - Wrap database operations in transactions where appropriate
 - Always handle `rusqlite::Result` errors
+- **Database location**: Tauri app data directory (automatic, secure, OS-specific)
 
 ### TypeScript (Frontend)
 
 #### Formatting & Linting
-- Use Prettier for formatting (not yet configured - recommended)
-- Use ESLint for linting (not yet configured - recommended)
+- Use Prettier for formatting (recommended - not yet configured)
+- Use ESLint for linting (recommended - not yet configured)
 - TypeScript compiler options: `strict: true` (already configured)
 
+---
+
+## Design Conventions
+
+### Theme
+- **Mode**: Light mode only (default in NextUI v2)
+- **Provider**: Use NextUI's `NextUIProvider` (light mode is automatic)
+- **No dark mode toggle**: Do not implement dark mode switching
+
+### Color Palette
+- **Source**: Use NextUI's default color palette (primary) and Tailwind CSS color palette (for utility classes)
+- **Primary**: Use default NextUI primary color
+- **Semantic colors**: Use NextUI's built-in semantic colors (success, warning, danger, etc.) and Tailwind's color classes
+
+### Typography
+- **Font family**: NextUI default (Inter)
+- **No custom fonts**: Do not add custom Google Fonts or local font files
+- **Follow NextUI typography scale**: Use NextUI's built-in heading and text sizes
+- **Tailwind text classes**: Can use Tailwind's text-size and font-weight classes when needed
+
+### Spacing
+- **System**: Use Tailwind CSS spacing classes for layout and NextUI spacing props for components
+- **Use NextUI spacing props**: `p`, `m`, `gap`, `w`, `h` with sizes: `sm`, `md`, `lg`, etc.
+- **Use Tailwind spacing**: `p-4`, `m-2`, `gap-3`, etc. for general layout
+- **Avoid inline styles**: Never use inline `style` prop for spacing
+
+### Layout
+- **Containers**: Full-width containers with padding
+- **Structure**: Use NextUI layout components (`Container`, `Grid`, `Row`, `Col`, `Spacer`)
+- **Responsive**: Use NextUI's built-in responsive props (`xs`, `sm`, `md`, `lg`, `xl`)
+- **No custom breakpoints**: Do not define custom pixel breakpoints
+
+### Component Styling
+- **Border radius**: Slightly rounded - use `radius="sm"` for most components
+- **Cards**: Default NextUI Card styling with `radius="sm"`
+- **Buttons**: NextUI default Button styling
+- **Form inputs**: NextUI default Input/Select/Checkbox styling (not underlined, not flat)
+
+### Animations
+- **Style**: Minimal animations only
+- **Use cases**: Loading states, transitions, modal open/close
+- **Source**: Use NextUI's built-in framer-motion animations
+- **Avoid excessive animations**: No unnecessary hover effects or transitions
+
+### Accessibility
+- **Standard**: Basic accessibility only
+- **Rely on NextUI**: Use NextUI's built-in accessibility features
+- **Keyboard navigation**: Ensure all interactive elements are keyboard accessible
+- **Focus states**: Use NextUI's default focus indicators
+
+### Design System Implementation
+```typescript
+// Example NextUIProvider setup with design conventions (NextUI v2)
+// Light mode is the default in NextUI v2, no explicit theme creation needed
+import { NextUIProvider } from '@nextui-org/react';
+import './index.css'; // Tailwind CSS directives
+
+createRoot(document.getElementById('root')!).render(
+  <NextUIProvider>
+    <App />
+  </NextUIProvider>
+);
+
+// Tailwind CSS configuration (tailwind.config.cjs)
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      borderRadius: {
+        small: '0.25rem',
+        medium: '0.375rem',
+        large: '0.5rem',
+      }
+    },
+  },
+  plugins: [],
+}
+
+// For NextUI v1 (if used), explicit theme configuration:
+// import { NextUIProvider, createTheme } from '@nextui-org/react';
+// const theme = createTheme({
+//   type: 'light',
+// });
+// createRoot(document.getElementById('root')!).render(
+//   <NextUIProvider theme={theme}>
+//     <App />
+//   </NextUIProvider>
+// );
+```
+
+**Do NOT**:
+- Add custom themes or theme switching
+- Create custom CSS files (except for global styles in index.css)
+- Override NextUI's default styles unless explicitly required
+- Add animations beyond minimal functional transitions
+
 #### Style
-- **Naming**: Use `camelCase` for variables and functions
-- **Types/Interfaces**: Use `PascalCase`
-- **Constants**: Use `UPPER_CASE`
-- **Components**: Use `PascalCase` for React component names
-- **Files**: Use `kebab-case` for file names
+- **Naming**: `camelCase` for variables and functions
+- **Types/Interfaces**: `PascalCase`
+- **Constants**: `UPPER_CASE`
+- **Components**: `PascalCase` for React component names
+- **Files**: `kebab-case` for file names
 
 #### Patterns
 - Use functional components with TypeScript
@@ -160,62 +362,95 @@ npm run tauri build    # Production build
 - Use `interface` for object shapes, `type` for unions/aliases
 - Import Tauri APIs from `@tauri-apps/api`
 
-#### UI Components - **MANDATORY: Use NextUI v2**
-- **ALL** React components must use [NextUI v2](https://nextui.org/) for styling and UI elements
-- Import from `nextui-org/react` (e.g., `import { Button, Input, Card } from "nextui-org/react"`)
-- Use NextUI's `Button`, `Input`, `Card`, `Modal`, `Table`, `Dropdown`, etc. instead of raw HTML or other libraries
-- Use NextUI's theming system for consistent styling across the application
-- Follow NextUI's component props API and patterns
-- For forms, use NextUI's `Input`, `Select`, `Checkbox`, `Radio`, `Textarea` components
-- For layouts, use NextUI's `Container`, `Grid`, `Row`, `Col`, `Spacer` components
-- For feedback, use NextUI's `useDisclosure`, `useToast`, `Snippet`, `Tooltip`
-- For data display, use NextUI's `Table`, `List`, `Avatar`, `Badge`, ` Chip`
+#### UI Components - **Use NextUI v2 for Components + Tailwind CSS for Layout**
 
-**Do NOT use**:
+**MANDATORY**: Use [NextUI v2](https://nextui.org/) for all interactive components combined with [Tailwind CSS](https://tailwindcss.com/) for layout and utility styling.
+
+USE THESE:
+- Import from `@nextui-org/react` (e.g., `import { Button, Input, Card } from "@nextui-org/react"`)
+- Use NextUI's `Button`, `Input`, `Card`, `Modal`, `Table`, `Dropdown`, `Select`, `Checkbox`, `Radio`, `Textarea` for interactive components
+- Use NextUI's theming system (`NextUIProvider`) with default themes
+- Use NextUI's layout components: `Container`, `Grid`, `Row`, `Col`, `Spacer`
+- Use NextUI's feedback components: `useDisclosure`, `useToast`, `Snippet`, `Tooltip`
+- Use NextUI's data display: `Table`, `List`, `Avatar`, `Badge`, `Chip`
+- Use Tailwind CSS classes for layout: `flex`, `grid`, `p-4`, `m-2`, `gap-3`, etc.
+- Import icons from `lucide-react` (e.g., `import { Plus, Trash } from "lucide-react"`)
+
+PREFER:
+- NextUI components for all interactive elements
+- Tailwind CSS for container layouts, padding, margins, and spacing
+- Lucide React for all icons
+
+AVOID:
 - Plain HTML elements for interactive components (use NextUI equivalents)
-- Other UI libraries (Material-UI, Chakra, Ant Design, etc.)
-- Custom CSS for component styling (use NextUI's props)
-- Inline styles for layout and spacing (use NextUI's spacing props)
+- Other UI libraries (Material-UI, Chakra, Ant Design, Bootstrap, etc.)
+- Inline styles for layout and spacing (use Tailwind classes)
 
-### Common Patterns in This Project
+---
 
-#### Tauri Command Structure
-```rust
-// In lib.rs
-#[tauri::command]
-fn command_name(state: tauri::State<'_, AppState>, params: Type) -> Result<ReturnType, String> {
-    // Implementation
-}
-```
+## Security Requirements
 
-#### Database Operations
-```rust
-// Use connection pooling via Arc<Mutex<Connection>>
-let db = state.db.lock().map_err(|e| e.to_string())?;
-let result = db.some_operation(params).map_err(|e| e.to_string())?;
-```
+**THIS IS A PASSWORD MANAGER - SECURITY IS CRITICAL**
+
+### Non-Negotiable Rules
+
+1. **Encryption at Rest - MANDATORY BEFORE PRODUCTION**
+   - Plaintext storage is acceptable **ONLY during development**
+   - **MUST implement encryption before any production use**
+   - Use AES-256 or equivalent
+   - Encrypt the `password` field minimum
+   - Consider encrypting `username`, `notes`, `URL` fields
+
+2. **NO LOGGING OF SENSITIVE DATA**
+   - **NEVER log passwords or any sensitive information**
+   - **NEVER include passwords in error messages**
+   - Avoid logging entirely if possible
+   - If logging is necessary, ensure NO sensitive data is captured
+
+3. **Key Management**
+   - Derive encryption key from master password using PBKDF2, Argon2, or similar
+   - Never store the master password
+   - Store only a salt and key derivation parameters
+   - Use `secrecy` crate for sensitive data in Rust
+
+4. **Database Location & Protection**
+   - Store database in **Tauri app data directory** (automatic, secure, OS-specific)
+   - Set appropriate file permissions on the database file
+   - Implement **automatic encrypted backups**
+
+5. **Input Validation & Sanitization**
+   - **Always** use parameterized queries (prevent SQL injection)
+   - **Always** validate input on the backend
+   - **Always** sanitize output to the frontend
+   - Use constant-time comparison for secrets
+
+6. **Field Requirements**
+   - **Title**: REQUIRED (only mandatory field)
+   - **Password**: Optional but recommended
+   - **Username, URL, Notes**: All optional
+
+### Recommended Security Libraries
+- **Rust**: `secrecy`, `aes-gcm`, `argon2`, `pbkdf2`, `zeroize`, `rand`
+- **TypeScript**: Web Crypto API (built-in), `libsodium-wrappers`
 
 ---
 
 ## Database Schema
 
-### Tables
-
-#### `passwords`
+### Table: passwords
 
 | Column | Type | Nullable | Description |
 |--------|------|----------|-------------|
 | `id` | INTEGER | NO | Primary key, auto-increment |
-| `title` | TEXT | NO | Display name for the entry |
+| `title` | TEXT | NO | Display name for the entry (**REQUIRED**) |
 | `username` | TEXT | YES | Username/email for login |
-| `password` | TEXT | NO | The stored password |
+| `password` | TEXT | YES | The stored password |
 | `url` | TEXT | YES | Associated website URL |
 | `notes` | TEXT | YES | Additional notes |
 | `created_at` | TEXT | NO | ISO 8601 timestamp (UTC) |
 | `updated_at` | TEXT | NO | ISO 8601 timestamp (UTC) |
 
 ### Indexes
-
 - `idx_passwords_title`: Index on the `title` column for faster searches
 
 ### Schema SQL
@@ -225,7 +460,7 @@ CREATE TABLE IF NOT EXISTS passwords (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     username TEXT,
-    password TEXT NOT NULL,
+    password TEXT,
     url TEXT,
     notes TEXT,
     created_at TEXT NOT NULL,
@@ -235,44 +470,11 @@ CREATE TABLE IF NOT EXISTS passwords (
 CREATE INDEX IF NOT EXISTS idx_passwords_title ON passwords(title);
 ```
 
-### Data Model (Rust)
-
-```rust
-// In src-tauri/src/db.rs
-pub struct PasswordEntry {
-    pub id: Option<i64>,
-    pub title: String,
-    pub username: Option<String>,
-    pub password: String,
-    pub url: Option<String>,
-    pub notes: Option<String>,
-    pub created_at: DateTime<Utc>,
-    pub updated_at: DateTime<Utc>,
-}
-```
-
-### Serialization Model (Tauri API)
-
-```rust
-// In src-tauri/src/lib.rs
-#[derive(Serialize, Deserialize)]
-pub struct PasswordEntry {
-    pub id: Option<i64>,
-    pub title: String,
-    pub username: Option<String>,
-    pub password: String,
-    pub url: Option<String>,
-    pub notes: Option<String>,
-    pub created_at: String,   // RFC3339 format
-    pub updated_at: String,   // RFC3339 format
-}
-```
-
 ---
 
 ## Tauri Commands (API)
 
-All commands are exposed via Tauri's invoke system and must be registered in `src-tauri/src/lib.rs` in the `invoke_handler`.
+All commands are exposed via Tauri's invoke system and must be registered in `src-tauri/src/lib.rs`.
 
 ### Available Commands
 
@@ -285,10 +487,15 @@ All commands are exposed via Tauri's invoke system and must be registered in `sr
 | `delete_password` | Delete a password by ID | `id: i64` | `bool` (success) |
 | `search_passwords` | Search passwords by query | `query: &str` | `Vec<PasswordEntry>` |
 
+### Search Behavior
+- **Basic text search** across: `title`, `username`, `url` fields
+- Case-insensitive matching recommended
+- Return all matching entries
+
 ### Command Registration
 
 ```rust
-// In src-tauri/src/lib.rs:144-151
+// In src-tauri/src/lib.rs
 .invoke_handler(tauri::generate_handler![
     add_password,
     get_password,
@@ -299,14 +506,14 @@ All commands are exposed via Tauri's invoke system and must be registered in `sr
 ])
 ```
 
-### Frontend Usage
+### Frontend Usage Examples
 
 ```typescript
 import { invoke } from '@tauri-apps/api';
 
-// Add a password
+// Add a password (only title is required)
 const newEntry = await invoke('add_password', { 
-    title: 'My Account',
+    title: 'My Account',        // REQUIRED
     username: 'user@example.com',
     password: 'secure-password',
     url: 'https://example.com',
@@ -329,24 +536,98 @@ const updated = await invoke('update_password', {
     password: 'new-password',
     url: 'https://example.com',
     notes: 'Updated notes',
-    created_at: password.created_at,
+    created_at: password.created_at,  // Preserve original created_at
     updated_at: new Date().toISOString()
 });
 
 // Delete a password
 const deleted = await invoke('delete_password', { id: 1 });
 
-// Search passwords
+// Search passwords (basic text search)
 const results = await invoke('search_passwords', { query: 'example' });
 ```
 
 ---
 
-## Testing Instructions
+## Frontend Requirements
+
+### Mandatory Structure
+
+```
+src/
+├── main.tsx                    # React entry point with NextUI provider
+├── App.tsx                     # Main application component
+├── types/
+│   ├── password.ts             # TypeScript interfaces for PasswordEntry
+│   └── passwordDTO.ts          # DTO interface for password data (convention)
+├── pages/
+│   └── Dashboard.tsx           # Main dashboard page
+├── components/
+│   ├── NavigationBar.tsx       # Navigation bar component
+│   ├── PasswordList.tsx        # List of password entries (use NextUI Table/Card)
+│   ├── PasswordForm.tsx        # Add/edit password form (use NextUI Input/Button/Modal)
+│   ├── PasswordView.tsx        # View single password (use NextUI Card/Modal)
+│   ├── PasswordOverview.tsx    # Password details overview
+│   └── ScrollableMenu.tsx      # Scrollable menu for password list
+├── hooks/
+│   └── usePasswords.ts         # Custom hook for password CRUD operations
+└── utils/
+    └── api.ts                  # Tauri API wrapper functions
+```
+
+### NextUI Provider Setup (main.tsx)
+
+```typescript
+import { NextUIProvider } from '@nextui-org/react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+
+// Light mode is the default in NextUI v2
+createRoot(document.getElementById('root')!).render(
+  <NextUIProvider>
+    <App />
+  </NextUIProvider>
+);
+```
+
+### Type Definitions (types/password.ts)
+
+```typescript
+// Matches the Rust PasswordEntry structure
+export interface PasswordEntry {
+    id: number | null;
+    title: string;              // REQUIRED
+    username?: string;
+    password?: string;
+    url?: string;
+    notes?: string;
+    created_at: string;        // RFC3339 format
+    updated_at: string;        // RFC3339 format
+}
+```
+
+### DTO Type Definition (types/passwordDTO.ts) - Convention
+
+```typescript
+// DTO interface for password data transfer
+export interface IPasswordDTO {
+    title: string;
+    username: string;
+    password: string;
+    url: string;
+    note: string;
+}
+```
+
+---
+
+## Testing Requirements
+
+**TESTS ARE MANDATORY FOR ALL NEW FEATURES**
 
 ### Backend (Rust) Tests
 
-Tests should be added to the Rust source files using `#[cfg(test)]` modules.
+Tests must be added to Rust source files using `#[cfg(test)]` modules.
 
 ```bash
 # Run all tests
@@ -364,7 +645,7 @@ cargo fmt --check
 
 ### Frontend (TypeScript/React) Tests
 
-Testing framework not yet configured. Recommended setup:
+Recommended setup:
 
 ```bash
 # Install testing dependencies
@@ -380,78 +661,18 @@ Test the Tauri commands by:
 1. Running the application in development mode
 2. Using the frontend to call backend commands
 3. Verifying database state changes
+4. Testing edge cases and error conditions
 
 ---
 
-## Security Considerations
-
-**THIS IS A PASSWORD MANAGER - SECURITY IS CRITICAL**
-
-### Data Security
-
-- **Storage**: Passwords are currently stored in plaintext in SQLite (TODO: implement encryption)
-- **Transmission**: All data stays local - no network transmission
-- **Memory**: Passwords are passed through Rust's `String` type (not zeroized after use)
-
-### Required Security Implementations (TODO)
-
-1. **Encryption at Rest**: Implement AES-256 encryption for password entries
-   - Use a master password to derive encryption key
-   - Encrypt the `password` field before storage
-   - Consider encrypting other sensitive fields (username, notes, URL)
-
-2. **Secure Memory Handling**: 
-   - Zeroize password strings after use
-   - Use `secrecy` crate for sensitive data
-
-3. **Key Management**:
-   - Derive encryption key from master password using PBKDF2, Argon2, or similar
-   - Never store the master password
-   - Store only a salt and key derivation parameters
-
-4. **Database Protection**:
-   - Set appropriate file permissions on the database file
-   - Store database in the application's secure data directory
-
-5. **Clipboard Security**:
-   - Clear clipboard after copying passwords
-   - Use secure clipboard APIs
-
-### Current Security Status
-
-| Feature | Status | Priority |
-|---------|--------|----------|
-| Encryption at rest | ❌ Not implemented | **HIGH** |
-| Master password | ❌ Not implemented | **HIGH** |
-| Secure memory handling | ❌ Not implemented | **HIGH** |
-| Database file permissions | ⚠️ Partial (OS-dependent) | Medium |
-| Clipboard clearing | ❌ Not implemented | Medium |
-
-### Security Libraries to Consider
-
-- **Rust**: `secrecy`, `aes-gcm`, `argon2`, `pbkdf2`, `zeroize`
-- **TypeScript**: `libsodium-wrappers`, `crypto-js` (or use Web Crypto API)
-
-### Security Best Practices
-
-1. **Never** log passwords or sensitive data
-2. **Never** include passwords in error messages
-3. **Always** use parameterized queries (prevent SQL injection)
-4. **Always** validate input on the backend
-5. **Always** sanitize output to the frontend
-6. Use secure random number generation for keys/salts
-7. Use constant-time comparison for secrets
-
----
-
-## Common Tasks and Workflows
+## Common Tasks & Workflows
 
 ### Adding a New Tauri Command
 
 1. Add the command function in `src-tauri/src/lib.rs`:
    ```rust
    #[tauri::command]
-   fn new_command(state: tauri::State<'_, AppState>, params: Type) -> Result<ReturnType, String> {
+   fn command_name(state: tauri::State<'_, AppState>, params: Type) -> Result<ReturnType, String> {
        // Implementation
    }
    ```
@@ -460,130 +681,72 @@ Test the Tauri commands by:
    ```rust
    .invoke_handler(tauri::generate_handler![
        // ... existing commands
-       new_command,
+       command_name,
    ])
    ```
 
-3. Define the TypeScript interface for the command in the frontend (recommended):
+3. Define the TypeScript interface in `src/types/`:
    ```typescript
-   // In a types file
-   interface NewCommandParams {
+   export interface CommandParams {
        // params here
    }
-   interface NewCommandResult {
+   export interface CommandResult {
        // result here
    }
    ```
 
-4. Call the command from the frontend:
+4. Create wrapper function in `src/utils/api.ts`:
    ```typescript
-   const result = await invoke('new_command', params);
-   ```
-
-### Adding a New Database Field
-
-1. Update the schema in `src-tauri/src/db.rs`:
-   ```rust
-   const SCHEMA: &str = r#"
-       ALTER TABLE passwords ADD COLUMN new_field TEXT;
-   "#;
-   ```
-
-2. Update the `PasswordEntry` struct in both `db.rs` and `lib.rs`:
-   ```rust
-   pub struct PasswordEntry {
-       // ... existing fields
-       pub new_field: Option<String>,
+   export async function commandName(params: CommandParams): Promise<CommandResult> {
+       return await invoke('command_name', params);
    }
    ```
 
+5. Use the command in components via the custom hook or directly
+
+### Adding a New Frontend Component
+
+1. Create the component file in `src/components/` (PascalCase name)
+2. Import ONLY from `@nextui-org/react` for UI elements
+3. Use TypeScript interfaces for props
+4. Follow React best practices (functional components, hooks)
+5. Add the component to the appropriate parent component
+
+### Adding a New Database Field
+
+1. Update the schema in `src-tauri/src/db.rs`
+2. Update the `PasswordEntry` struct in both `db.rs` and `lib.rs`
 3. Update all database operations (create, read, update)
-4. Update the TypeScript types in the frontend
-
-### Project Initialization Checklist
-
-- [ ] Create `src/` directory for React frontend
-- [ ] Set up React entry point (`src/main.tsx`)
-- [ ] Create App component (`src/App.tsx`)
-- [ ] Install NextUI: `npm install @nextui-org/react framer-motion`
-- [ ] Configure NextUI provider in `main.tsx`
-- [ ] Configure ESLint and Prettier
-- [ ] Implement password encryption
-- [ ] Add master password functionality
-- [ ] Implement secure memory handling
-- [ ] Add unit tests for backend
-- [ ] Add unit tests for frontend
-- [ ] Add integration tests
-
-### Frontend Setup (Not Yet Created)
-
-When creating the frontend, the following structure is recommended. **All components MUST use NextUI v2**:
-
-```
-src/
-├── main.tsx                    # React entry point with NextUI provider
-├── App.tsx                     # Main application component
-├── types/
-│   └── password.ts             # TypeScript interfaces for PasswordEntry
-├── components/
-│   ├── PasswordList.tsx        # List of password entries (use NextUI Table/Card)
-│   ├── PasswordForm.tsx        # Add/edit password form (use NextUI Input/Button/Modal)
-│   ├── PasswordView.tsx        # View single password (use NextUI Card/Modal)
-│   └── SearchBar.tsx           # Search functionality (use NextUI Input)
-├── hooks/
-│   └── usePasswords.ts         # Custom hook for password operations
-├── utils/
-│   └── api.ts                  # Tauri API wrapper functions
-└── styles/
-    └── global.css              # Global styles (minimal - use NextUI theming)
-```
-
-#### NextUI Provider Setup (main.tsx)
-
-```typescript
-import { NextUIProvider } from '@nextui-org/react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-
-createRoot(document.getElementById('root')!).render(
-  <NextUIProvider>
-    <App />
-  </NextUIProvider>
-);
-```
+4. Update the TypeScript types in `src/types/password.ts`
+5. Update any affected frontend components
 
 ---
 
-## Important Files Reference
+## Error Handling
 
-### `src-tauri/src/db.rs`
-- Database schema definition
-- `PasswordEntry` struct (Rust domain model)
-- `DbConnection` struct with all CRUD operations
-- Uses `rusqlite` for SQLite operations
-- Uses `chrono` for datetime handling
+### Backend (Rust)
+- Use descriptive error types (not generic strings)
+- Return `Result<T, String>` for Tauri commands (for now)
+- Consider creating custom error enum for better error handling
+- Never expose sensitive information in error messages
 
-### `src-tauri/src/lib.rs`
-- Tauri commands (API endpoints)
-- `AppState` struct (shared database connection)
-- `PasswordEntry` struct (serializable version for API)
-- Conversion traits between domain and API models
-- Application setup and state management
+### Frontend (TypeScript)
+- Catch all errors from Tauri invoke calls
+- Display **user-friendly messages only** (no technical details)
+- Log errors to console for debugging (but ensure no sensitive data)
+- Provide clear feedback to users about what went wrong
 
-### `src-tauri/src/main.rs`
-- Application entry point
-- Calls `password_saver_lib::run()`
-
-### `src-tauri/Cargo.toml`
-- Rust dependencies
-- Build configuration
-- Release optimizations
-
-### `src-tauri/tauri.conf.json`
-- Tauri application configuration
-- Window settings
-- Build commands
-- Security settings (CSP currently disabled)
+Example:
+```typescript
+try {
+    const result = await invoke('some_command', params);
+} catch (error) {
+    // Display user-friendly message
+    setError('Failed to complete operation. Please try again.');
+    // Log to console for debugging (ensure no sensitive data)
+    console.error('Operation failed:', error);
+}
+```
 
 ---
 
@@ -591,22 +754,25 @@ createRoot(document.getElementById('root')!).render(
 
 ### Common Issues
 
-1. **Tauri commands not found**: Ensure commands are registered in `invoke_handler`
-2. **Database errors**: Check that the database file path is writable
+1. **Tauri commands not found**: Ensure commands are registered in `invoke_handler` in `lib.rs`
+2. **Database errors**: Check that the app data directory is writable
 3. **TypeScript errors**: Run `npm run build` to check TypeScript compilation
 4. **Rust compilation errors**: Run `cargo check` for detailed error messages
+5. **NextUI not working**: Ensure `@nextui-org/react` and `framer-motion` are installed
 
-### Debugging
+### Debugging Commands
 
 ```bash
-# Frontend logs
+# Frontend development logs
 npm run dev
 
 # Backend logs (Rust)
 cargo run -- --verbose
 
-# Inspect database
-sqlite3 ~/.local/share/password-saver/passwords.db "SELECT * FROM passwords;"
+# Check Tauri app data directory location
+# On Windows: %APPDATA%\password-saver\
+# On macOS: ~/Library/Application Support/password-saver/
+# On Linux: ~/.config/password-saver/ or ~/.local/share/password-saver/
 ```
 
 ---
@@ -616,29 +782,30 @@ sqlite3 ~/.local/share/password-saver/passwords.db "SELECT * FROM passwords;"
 - [Tauri Documentation](https://tauri.app/v2/guides/)
 - [React Documentation](https://react.dev/)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [NextUI v2 Documentation](https://nextui.org/)
 - [rusqlite Documentation](https://docs.rs/rusqlite/latest/rusqlite/)
 - [Rust Documentation](https://doc.rust-lang.org/)
 
 ---
 
-## Contact & Contributing
+## Contributing
 
-For questions or issues, refer to the project's GitHub repository.
-
-### IMPORTANT: Git Commit Policy
-**Agents MUST NEVER commit anything to git unless explicitly instructed to do so through the user's prompt.**
-- Do not run `git add`, `git commit`, `git push`, or any git commands
-- Do not create commits, even for documentation changes
-- Wait for explicit user instruction before any git operations
-
-When contributing (for human contributors):
+### For Human Contributors
 1. Create a feature branch
 2. Make minimal, focused changes
 3. Add tests for new functionality
 4. Update this AGENTS.md if project structure changes
 5. Submit a pull request with clear description
 
+### For LLMs (This File's Purpose)
+- Follow all instructions in this document
+- Prioritize functionality first
+- Ask for clarification before making assumptions
+- Always consider security implications
+- Never perform git operations without explicit instruction
+
 ---
 
-*Last updated: 2026-09-16*
-*Project status: Early development (backend complete, frontend not yet started)*
+*Last updated: 2026-09-19*
+*Project status: Backend complete, Frontend to be created, Encryption mandatory before production*
+*Design conventions: Light theme, NextUI v2 + Tailwind CSS, Minimal animations, Slightly rounded borders (radius="sm")*

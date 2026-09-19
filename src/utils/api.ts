@@ -1,209 +1,74 @@
-import { invoke } from '@tauri-apps/api/core';
-import {
-  PasswordEntry,
-  CreatePasswordDto,
-  UpdatePasswordDto,
-} from '../types/password';
+import { invoke } from "@tauri-apps/api/core";
+import { ICredentialsEntry } from "@src/types/credentials";
 
-// Tauri command names (must match Rust backend)
-const COMMANDS = {
-  ADD_PASSWORD: 'add_password',
-  GET_PASSWORD: 'get_password',
-  LIST_PASSWORDS: 'list_passwords',
-  UPDATE_PASSWORD: 'update_password',
-  DELETE_PASSWORD: 'delete_password',
-  SEARCH_PASSWORDS: 'search_passwords',
-} as const;
-
-/**
- * Fetch all passwords from the database
- * @returns Promise<PasswordEntry[]> - Array of all password entries
- */
-export async function fetchPasswords(): Promise<PasswordEntry[]> {
-  try {
-    const result = await invoke<PasswordEntry[]>(COMMANDS.LIST_PASSWORDS);
-    return result || [];
-  } catch (error) {
-    console.error('Failed to fetch passwords:', error);
-    throw new Error('Failed to fetch passwords');
-  }
+// Map the frontend ICredentialsEntry to the backend PasswordEntry format
+export interface IPasswordEntry {
+    id: number | null;
+    title: string;
+    username?: string | null;
+    password?: string | null;
+    url?: string | null;
+    notes?: string | null;
+    created_at: string;
+    updated_at: string;
 }
 
-/**
- * Fetch a single password by ID
- * @param id - The password entry ID
- * @returns Promise<PasswordEntry | null> - The password entry or null if not found
- */
-export async function fetchPassword(id: number): Promise<PasswordEntry | null> {
-  try {
-    const result = await invoke<PasswordEntry | null>(COMMANDS.GET_PASSWORD, {
-      id,
-    });
-    return result;
-  } catch (error) {
-    console.error(`Failed to fetch password with id ${id}:`, error);
-    throw new Error('Failed to fetch password');
-  }
+// Convert frontend credentials to backend format
+function toBackendEntry(cred: ICredentialsEntry, forCreate: boolean = false): IPasswordEntry {
+    return {
+        id: forCreate ? 0 : (cred.id || 0),
+        title: cred.title,
+        username: cred.username || null,
+        password: cred.password || null,
+        url: cred.url || null,
+        notes: cred.note || null,
+        created_at: cred.created_at,
+        updated_at: cred.updated_at,
+    };
 }
 
-/**
- * Create a new password entry
- * @param entry - The password entry to create
- * @returns Promise<PasswordEntry> - The created password entry with ID
- */
-export async function createPassword(entry: CreatePasswordDto): Promise<PasswordEntry> {
-  try {
-    const now = new Date().toISOString();
-    const fullEntry = {
-      ...entry,
-      username: entry.username ?? null,
-      url: entry.url ?? null,
-      notes: entry.notes ?? null,
-      id: null,
-      created_at: now,
-      updated_at: now,
-    } as PasswordEntry;
-    const result = await invoke<PasswordEntry>(COMMANDS.ADD_PASSWORD, {
-      entry: fullEntry,
-    });
-    return result;
-  } catch (error) {
-    console.error('Failed to create password:', error);
-    throw new Error('Failed to create password');
-  }
+// Convert backend entry to frontend format
+function fromBackendEntry(entry: any): ICredentialsEntry {
+    return {
+        id: entry.id,
+        title: entry.title,
+        username: entry.username || undefined,
+        password: entry.password || undefined,
+        url: entry.url || undefined,
+        note: entry.notes || entry.note || undefined,
+        created_at: entry.created_at,
+        updated_at: entry.updated_at,
+    };
 }
 
-/**
- * Update an existing password entry
- * @param id - The password entry ID to update
- * @param entry - The updated password entry data
- * @returns Promise<PasswordEntry> - The updated password entry
- */
-export async function updatePassword(
-  id: number,
-  entry: UpdatePasswordDto
-): Promise<PasswordEntry> {
-  try {
-    const updatedEntry = {
-      ...entry,
-      id,
-      username: entry.username ?? null,
-      url: entry.url ?? null,
-      notes: entry.notes ?? null,
-      updated_at: new Date().toISOString(),
-    } as PasswordEntry;
-    const result = await invoke<PasswordEntry>(COMMANDS.UPDATE_PASSWORD, {
-      id,
-      entry: updatedEntry,
-    });
-    return result;
-  } catch (error) {
-    console.error(`Failed to update password with id ${id}:`, error);
-    throw new Error('Failed to update password');
-  }
+export async function addPassword(cred: ICredentialsEntry): Promise<ICredentialsEntry> {
+    const backendEntry = toBackendEntry(cred, true);
+    const result = await invoke("add_password", { entry: backendEntry });
+    return fromBackendEntry(result);
 }
 
-/**
- * Delete a password entry by ID
- * @param id - The password entry ID to delete
- * @returns Promise<boolean> - True if deletion was successful
- */
+export async function getPassword(id: number): Promise<ICredentialsEntry | null> {
+    const result = await invoke("get_password_command", { id });
+    if (!result) return null;
+    return fromBackendEntry(result);
+}
+
+export async function listPasswords(): Promise<ICredentialsEntry[]> {
+    const result = await invoke("list_passwords_command");
+    return (result as any[]).map(fromBackendEntry);
+}
+
+export async function updatePassword(id: number, cred: ICredentialsEntry): Promise<ICredentialsEntry> {
+    const backendEntry = toBackendEntry(cred);
+    const result = await invoke("update_password_command", { id, entry: backendEntry });
+    return fromBackendEntry(result);
+}
+
 export async function deletePassword(id: number): Promise<boolean> {
-  try {
-    const result = await invoke<boolean>(COMMANDS.DELETE_PASSWORD, {
-      id,
-    });
-    return result;
-  } catch (error) {
-    console.error(`Failed to delete password with id ${id}:`, error);
-    throw new Error('Failed to delete password');
-  }
+    return await invoke("delete_password_command", { id });
 }
 
-/**
- * Search passwords by query
- * @param query - The search query string
- * @returns Promise<PasswordEntry[]> - Array of matching password entries
- */
-export async function searchPasswords(query: string): Promise<PasswordEntry[]> {
-  try {
-    const result = await invoke<PasswordEntry[]>(COMMANDS.SEARCH_PASSWORDS, {
-      query,
-    });
-    return result || [];
-  } catch (error) {
-    console.error(`Failed to search passwords with query "${query}":`, error);
-    throw new Error('Failed to search passwords');
-  }
-}
-
-/**
- * Copy text to clipboard
- * @param text - The text to copy
- * @returns Promise<void>
- */
-export async function copyToClipboard(text: string): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(text);
-    // Clear clipboard after a delay for security
-    setTimeout(async () => {
-      try {
-        await navigator.clipboard.writeText('');
-      } catch {
-        // Ignore clipboard clear errors
-      }
-    }, 10000); // Clear after 10 seconds
-  } catch (error) {
-    console.error('Failed to copy to clipboard:', error);
-    throw new Error('Failed to copy to clipboard');
-  }
-}
-
-/**
- * Open URL in default browser
- * @param url - The URL to open (must include protocol)
- * @returns Promise<void>
- */
-export async function openUrl(url: string): Promise<void> {
-  try {
-    // Ensure URL has a protocol
-    let fullUrl = url;
-    if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-      fullUrl = `https://${url}`;
-    }
-    const { openUrl: tauriOpenUrl } = await import('@tauri-apps/plugin-opener');
-    await tauriOpenUrl(fullUrl);
-  } catch (error) {
-    console.error(`Failed to open URL: ${url}`, error);
-    throw new Error('Failed to open URL');
-  }
-}
-
-/**
- * Generate a random secure password
- * @param length - Desired password length (default: 16)
- * @returns string - Random password
- */
-export function generateRandomPassword(length: number = 16): string {
-  const charset =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-  let password = '';
-  
-  // Use crypto.getRandomValues for secure randomness
-  const randomValues = new Uint32Array(length);
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-    crypto.getRandomValues(randomValues);
-  } else {
-    // Fallback for environments without crypto (less secure)
-    for (let i = 0; i < length; i++) {
-      randomValues[i] = Math.floor(Math.random() * charset.length);
-    }
-  }
-  
-  for (let i = 0; i < length; i++) {
-    const randomIndex = randomValues[i] % charset.length;
-    password += charset[randomIndex];
-  }
-  
-  return password;
+export async function searchPasswords(query: string): Promise<ICredentialsEntry[]> {
+    const result = await invoke("search_passwords_command", { query });
+    return (result as any[]).map(fromBackendEntry);
 }
