@@ -14,7 +14,7 @@ import {
 } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
 import { MdDelete } from "react-icons/md";
-import { UserKey } from "lucide-react";
+import { Lock } from "lucide-react";
 
 interface ScrollableMenuProps {
     passwords?: PasswordEntry[];
@@ -73,7 +73,7 @@ export function ScrollableMenu({
                         >
                             <CardHeader className="flex gap-2">
                                 <div className="flex flex-row gap-2 items-center">
-                                    <UserKey
+                                    <Lock
                                         size={16}
                                         className="text-default-400"
                                     />
@@ -103,7 +103,7 @@ export function ScrollableMenu({
                                 isPressable
                                 onClick={() => handleSelect(password)}
                             >
-                                <CardHeader className="flex gap-2 justify-start">
+                                <CardHeader className="flex gap-2 justify-between">
                                     <div className="flex flex-row gap-2 items-center">
                                         <Lock
                                             size={16}

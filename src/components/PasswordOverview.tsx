@@ -80,6 +80,7 @@ export function PasswordOverview({
                     title={editablePassword.password || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
+                    type="password"
                 />
                 <Divider />
                 <PasswordInput
@@ -87,6 +88,7 @@ export function PasswordOverview({
                     title={editablePassword.url || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
+                    type="url"
                 />
                 <PasswordInput
                     label="Note"
