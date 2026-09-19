@@ -18,7 +18,8 @@ interface ScrollableMenuProps {
     onSelectPassword?: (password: PasswordEntry | null) => void;
     onAddPassword?: () => void;
     onDeletePassword?: (password: PasswordEntry) => void;
-    searchQuery?: string;
+    hasPasswords?: boolean;
+    onClearSearch?: () => void;
 }
 
 export function ScrollableMenu({
@@ -27,7 +28,8 @@ export function ScrollableMenu({
     onSelectPassword = () => {},
     onAddPassword = () => {},
     onDeletePassword = () => {},
-    searchQuery = "",
+    hasPasswords = false,
+    onClearSearch = () => {},
 }: ScrollableMenuProps) {
     const [passwordToDelete, setPasswordToDelete] =
         useState<PasswordEntry | null>(null);
@@ -56,28 +58,21 @@ export function ScrollableMenu({
         setIsDeleteModalOpen(false);
     };
 
-    const filteredPasswords = passwords.filter((password) => {
-        const query = searchQuery.toLowerCase().trim();
-        if (!query) return true;
-        
-        const titleMatch = password.title?.toLowerCase().includes(query);
-        const usernameMatch = password.username?.toLowerCase().includes(query);
-        
-        return titleMatch || usernameMatch;
-    });
-
     return (
         <>
             <ScrollShadow className="w-full max-h-[400px]" hideScrollBar>
                 <div className="gap-2 flex flex-col">
-                    {filteredPasswords.length === 0 ? (
+                    {passwords.length === 0 ? (
                         <Card
                             className="w-full"
                             shadow="sm"
                             radius="sm"
                             isHoverable={onAddPassword !== undefined}
                             isPressable={onAddPassword !== undefined}
-                            onClick={() => onAddPassword()}
+                            onClick={() => {
+                                onAddPassword();
+                                onClearSearch();
+                            }}
                         >
                             <CardHeader className="flex gap-2">
                                 <div className="flex flex-row gap-2 items-center">
@@ -87,11 +82,11 @@ export function ScrollableMenu({
                                     />
                                     <div className="flex flex-col text-left">
                                         <p className="text-md font-semibold text-default-400">
-                                            Click to add password
+                                            {hasPasswords ? "No results found" : "No passwords yet"}
                                         </p>
                                         <p className="text-sm text-default-500">
                                             <span className="text-default-400">
-                                                No passwords yet
+                                                Click to add a password
                                             </span>
                                         </p>
                                     </div>
@@ -101,7 +96,7 @@ export function ScrollableMenu({
                             <CardBody></CardBody>
                         </Card>
                     ) : (
-                        filteredPasswords.map((password, index) => (
+                        passwords.map((password, index) => (
                             <Card
                                 key={index}
                                 className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}

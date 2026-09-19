@@ -17,6 +17,10 @@ export function Dashboard() {
         passwordPanelRef.current?.handleAddPassword();
     };
 
+    const handleClearSearch = () => {
+        setSearchQuery("");
+    };
+
     return (
         <div className="flex flex-col gap-4 p-4 w-full h-full">
             <NavigationBar
@@ -24,7 +28,7 @@ export function Dashboard() {
                 handleSearch={handleSearch}
                 handleAddPassword={handleAddPassword}
             />
-            <PasswordPanel ref={passwordPanelRef} searchQuery={searchQuery} />
+            <PasswordPanel ref={passwordPanelRef} searchQuery={searchQuery} onClearSearch={handleClearSearch} />
         </div>
     );
 }

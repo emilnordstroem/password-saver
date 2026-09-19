@@ -1,4 +1,4 @@
-import { useState, useRef, useImperativeHandle, forwardRef, MouseEvent } from "react";
+import { useState, useRef, useImperativeHandle, forwardRef, MouseEvent, useMemo, useEffect } from "react";
 
 import { PasswordOverview } from "../components/PasswordOverview";
 import { ScrollableMenu } from "../components/ScrollableMenu";
@@ -8,6 +8,7 @@ import { GripVertical } from "lucide-react";
 interface PasswordPanelProps {
     onAddPassword?: () => void;
     searchQuery?: string;
+    onClearSearch?: () => void;
 }
 
 export interface PasswordPanelHandle {
@@ -17,13 +18,38 @@ export interface PasswordPanelHandle {
 const RESIZER_WIDTH = 8;
 
 export const PasswordPanel = forwardRef<PasswordPanelHandle, PasswordPanelProps>(
-    ({ onAddPassword, searchQuery = "" }, ref) => {
+    ({ onAddPassword, searchQuery = "", onClearSearch = () => {} }, ref) => {
         const [passwords, setPasswords] = useState<PasswordEntry[]>([]);
         const [selectedPassword, setSelectedPassword] =
             useState<PasswordEntry | null>(null);
         const [leftWidth, setLeftWidth] = useState(50);
         const [isResizing, setIsResizing] = useState(false);
         const containerRef = useRef<HTMLDivElement>(null);
+
+        const filteredPasswords = useMemo(() => {
+            const query = searchQuery.toLowerCase().trim();
+            let result = [...passwords];
+            
+            if (query) {
+                result = result.filter((password) => {
+                    const titleMatch = password.title?.toLowerCase().includes(query);
+                    const usernameMatch = password.username?.toLowerCase().includes(query);
+                    return titleMatch || usernameMatch;
+                });
+            }
+            
+            return result.sort((a, b) => {
+                const dateA = new Date(a.created_at).getTime();
+                const dateB = new Date(b.created_at).getTime();
+                return dateB - dateA;
+            });
+        }, [passwords, searchQuery]);
+
+        useEffect(() => {
+            if (filteredPasswords.length === 0 && passwords.length > 0) {
+                setSelectedPassword(null);
+            }
+        }, [filteredPasswords.length, passwords.length]);
 
         const handleAddPassword = () => {
             const newPassword: PasswordEntry = {
@@ -103,12 +129,13 @@ export const PasswordPanel = forwardRef<PasswordPanelHandle, PasswordPanelProps>
                     style={{ width: `${leftWidth}%` }}
                 >
                     <ScrollableMenu
-                        passwords={passwords}
+                        passwords={filteredPasswords}
                         onSelectPassword={setSelectedPassword}
                         selectedPassword={selectedPassword}
                         onAddPassword={handleAddPassword}
                         onDeletePassword={handleDeletePassword}
-                        searchQuery={searchQuery}
+                        hasPasswords={passwords.length > 0}
+                        onClearSearch={onClearSearch}
                     />
                 </div>
                 <div
