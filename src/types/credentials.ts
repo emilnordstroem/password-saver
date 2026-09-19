@@ -1,5 +1,5 @@
-// Matches the Rust PasswordEntry structure
-export interface PasswordEntry {
+// Matches the Rust CredentialsEntry structure
+export interface ICredentialsEntry {
     id: number | null;
     title: string; // REQUIRED
     username?: string;

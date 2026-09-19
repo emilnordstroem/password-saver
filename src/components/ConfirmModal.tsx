@@ -26,7 +26,7 @@ export function ConfirmModal({
             backdrop="blur"
         >
             <ModalContent>
-                <ModalHeader>Delete Password</ModalHeader>
+                <ModalHeader>Delete</ModalHeader>
                 <ModalBody>
                     Are you sure you want to delete this password? This action
                     cannot be undone.

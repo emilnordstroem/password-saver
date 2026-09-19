@@ -1,29 +1,26 @@
 import { Input } from "@nextui-org/react";
-import {
-    User,
-    Lock,
-    Globe,
-    FileText,
-    Key,
-    Tag,
-} from "lucide-react";
+import { User, Lock, Globe, FileText, Key, Tag } from "lucide-react";
 import { CopyToClipboardButton } from "./CopyToClipboardButton";
 
-export interface IPasswordInputProps {
+export interface ICredentialInputProps {
     label: string;
     title: string;
     isDisabled: boolean;
     handleChange: any;
     placeholder?: string;
+    isInvalid?: boolean;
+    errorMessage?: string;
 }
 
-export function PasswordInput({
+export function CredentialInput({
     label,
     title,
     isDisabled,
     handleChange,
     placeholder,
-}: IPasswordInputProps) {
+    isInvalid = false,
+    errorMessage,
+}: ICredentialInputProps) {
     const getIcon = () => {
         const lowerLabel = label.toLowerCase();
         if (lowerLabel.includes("username"))
@@ -79,6 +76,8 @@ export function PasswordInput({
                         onValueChange={(value) =>
                             handleChange(getFieldName(), value)
                         }
+                        isInvalid={isInvalid}
+                        errorMessage={errorMessage}
                     />
                     {isPasswordField && (
                         <CopyToClipboardButton

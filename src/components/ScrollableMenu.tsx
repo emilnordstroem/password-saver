@@ -5,56 +5,71 @@ import {
     CardHeader,
     Divider,
     ScrollShadow,
-    Button,
 } from "@nextui-org/react";
-import { PasswordEntry } from "@src/types/password";
-import { MdDelete } from "react-icons/md";
-import { Lock, LockOpen } from "lucide-react";
+import { ICredentialsEntry } from "@src/types/credentials";
+import { Lock } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";
+import { CredentialsMenuItem } from "./CredentialsMenuItem";
 
 interface ScrollableMenuProps {
-    passwords?: PasswordEntry[];
-    selectedPassword?: PasswordEntry | null;
-    onSelectPassword?: (password: PasswordEntry | null) => void;
-    onAddPassword?: () => void;
-    onDeletePassword?: (password: PasswordEntry) => void;
-    hasPasswords?: boolean;
+    credentials?: ICredentialsEntry[];
+    selectedCredential?: ICredentialsEntry | null;
+    onSelectCredential?: (credential: ICredentialsEntry | null) => void;
+    onAddCredentials?: () => void;
+    onDeleteCredentials?: (credential: ICredentialsEntry) => Promise<void>;
+    onSaveCredentials?: (credential: ICredentialsEntry) => Promise<boolean>;
+    hasCredentials?: boolean;
     onClearSearch?: () => void;
+    savedCredentials?: Set<number>;
 }
 
 export function ScrollableMenu({
-    passwords = [],
-    selectedPassword = null,
-    onSelectPassword = () => {},
-    onAddPassword = () => {},
-    onDeletePassword = () => {},
-    hasPasswords = false,
+    credentials: credentialsList = [],
+    selectedCredential: selectedCredential = null,
+    onSelectCredential: onSelectCredential = () => {},
+    onAddCredentials: onAddCredential = () => {},
+    onDeleteCredentials: onDeleteCredential = async () => {},
+    onSaveCredentials: onSaveCredentials = async () => true,
+    hasCredentials: hasCredentialsFlag = false,
     onClearSearch = () => {},
+    savedCredentials = new Set<number>(),
 }: ScrollableMenuProps) {
-    const [passwordToDelete, setPasswordToDelete] =
-        useState<PasswordEntry | null>(null);
+    const [credentialToDelete, setCredentialToDelete] =
+        useState<ICredentialsEntry | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleSelect = (password: PasswordEntry) => {
-        onSelectPassword(password);
+    const handleSelect = (credential: ICredentialsEntry) => {
+        onSelectCredential(credential);
     };
 
-    const handleDelete = (e: React.MouseEvent, password: PasswordEntry) => {
+    const handleSave = async (e: React.MouseEvent, credential: ICredentialsEntry) => {
+        console.log("ScrollableMenu handleSave called for credential:", credential.id, credential.title);
         e.stopPropagation();
-        setPasswordToDelete(password);
+        if (onSaveCredentials) {
+            const result = await onSaveCredentials(credential);
+            console.log("Save result:", result);
+        }
+    };
+
+    const handleDelete = (
+        e: React.MouseEvent,
+        credential: ICredentialsEntry,
+    ) => {
+        e.stopPropagation();
+        setCredentialToDelete(credential);
         setIsDeleteModalOpen(true);
     };
 
-    const handleConfirmDelete = () => {
-        if (passwordToDelete) {
-            onDeletePassword(passwordToDelete);
-            setPasswordToDelete(null);
+    const handleConfirmDelete = async () => {
+        if (credentialToDelete) {
+            await onDeleteCredential(credentialToDelete);
+            setCredentialToDelete(null);
         }
         setIsDeleteModalOpen(false);
     };
 
     const handleCancelDelete = () => {
-        setPasswordToDelete(null);
+        setCredentialToDelete(null);
         setIsDeleteModalOpen(false);
     };
 
@@ -62,15 +77,15 @@ export function ScrollableMenu({
         <>
             <ScrollShadow className="w-full max-h-[400px]" hideScrollBar>
                 <div className="gap-2 flex flex-col">
-                    {passwords.length === 0 ? (
+                    {credentialsList.length === 0 ? (
                         <Card
                             className="w-full"
                             shadow="sm"
                             radius="sm"
-                            isHoverable={onAddPassword !== undefined}
-                            isPressable={onAddPassword !== undefined}
+                            isHoverable={onAddCredential !== undefined}
+                            isPressable={onAddCredential !== undefined}
                             onClick={() => {
-                                onAddPassword();
+                                onAddCredential();
                                 onClearSearch();
                             }}
                         >
@@ -82,7 +97,9 @@ export function ScrollableMenu({
                                     />
                                     <div className="flex flex-col text-left">
                                         <p className="text-md font-semibold text-default-400">
-                                            {hasPasswords ? "No results found" : "No passwords yet"}
+                                            {hasCredentialsFlag
+                                                ? "No results found"
+                                                : "No passwords yet"}
                                         </p>
                                         <p className="text-sm text-default-500">
                                             <span className="text-default-400">
@@ -96,62 +113,17 @@ export function ScrollableMenu({
                             <CardBody></CardBody>
                         </Card>
                     ) : (
-                        passwords.map((password, index) => (
-                            <Card
-                                key={index}
-                                className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}
-                                shadow="sm"
-                                radius="sm"
-                                isHoverable
-                                isPressable
-                                onClick={() => handleSelect(password)}
-                            >
-                                <CardHeader className="flex gap-2 justify-between">
-                                    <div className="flex flex-row gap-2 items-center">
-                                        {selectedPassword === password ? (
-                                            <LockOpen
-                                                size={16}
-                                                className="text-default-400"
-                                            />
-                                        ) : (
-                                            <Lock
-                                                size={16}
-                                                className="text-default-400"
-                                            />
-                                        )}
-                                        <div className="flex flex-col text-left">
-                                            <p className="text-md font-semibold">
-                                                {password.title || (
-                                                    <span className="text-default-400">
-                                                        Empty
-                                                    </span>
-                                                )}
-                                            </p>
-                                            <p className="text-sm text-default-500">
-                                                {password.username || (
-                                                    <span className="text-default-400">
-                                                        No username
-                                                    </span>
-                                                )}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <Button
-                                        isIconOnly
-                                        size="sm"
-                                        variant="light"
-                                        color="danger"
-                                        onClick={(e) =>
-                                            handleDelete(e, password)
-                                        }
-                                        aria-label="Delete password"
-                                    >
-                                        <MdDelete size={16} />
-                                    </Button>
-                                </CardHeader>
-                                <Divider />
-                                <CardBody></CardBody>
-                            </Card>
+                        credentialsList.map((credential, index) => (
+                            <CredentialsMenuItem
+                                key={credential.id || `new-${index}`}
+                                credential={credential}
+                                index={index}
+                                selectedCredential={selectedCredential}
+                                handleSelect={handleSelect}
+                                handleSave={handleSave}
+                                handleDelete={handleDelete}
+                                isSaved={savedCredentials.has(credential.id || 0)}
+                            />
                         ))
                     )}
                 </div>
