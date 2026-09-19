@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "password saver",
+  "productName": "password-saver",
   "version": "0.1.0",
   "identifier": "password-saver",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "password-saver",
+        "title": "",
         "width": 700,
         "height": 500,
         "resizable": false
