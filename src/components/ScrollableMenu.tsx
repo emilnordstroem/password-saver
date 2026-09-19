@@ -9,7 +9,7 @@ import {
 } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
 import { MdDelete } from "react-icons/md";
-import { Lock } from "lucide-react";
+import { Lock, LockOpen } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";
 
 interface ScrollableMenuProps {
@@ -108,10 +108,17 @@ export function ScrollableMenu({
                             >
                                 <CardHeader className="flex gap-2 justify-between">
                                     <div className="flex flex-row gap-2 items-center">
-                                        <Lock
-                                            size={16}
-                                            className="text-default-400"
-                                        />
+                                        {selectedPassword === password ? (
+                                            <LockOpen
+                                                size={16}
+                                                className="text-default-400"
+                                            />
+                                        ) : (
+                                            <Lock
+                                                size={16}
+                                                className="text-default-400"
+                                            />
+                                        )}
                                         <div className="flex flex-col text-left">
                                             <p className="text-md font-semibold">
                                                 {password.title || (
