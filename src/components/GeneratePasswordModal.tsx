@@ -89,9 +89,9 @@ export function GeneratePasswordModal({
             <Modal
                 isOpen={isOpen}
                 onClose={onClose}
-                size="lg"
+                size="md"
                 backdrop="blur"
-                className="max-w-2xl"
+                scrollBehavior="outside"
             >
                 <ModalContent
                     onKeyUp={(event) => {
@@ -101,47 +101,49 @@ export function GeneratePasswordModal({
                             onClose();
                         }
                     }}
+                    className="max-h-[85vh] overflow-hidden"
                 >
-                    <ModalHeader className="flex flex-col gap-1">
-                        Generate Password
+                    <ModalHeader className="flex flex-col gap-1 pb-2">
+                        <span className="text-lg font-semibold">Generate Password</span>
                     </ModalHeader>
-                    <ModalBody>
-                        <div className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
-                                <div className="flex flex-row gap-2">
-                                    <Input
-                                        type="text"
-                                        value={password}
-                                        readOnly
-                                        radius="sm"
-                                        className="flex-1"
-                                    />
-                                    <CopyToClipboardButton text={password} />
-                                    <Button
-                                        radius="sm"
-                                        isIconOnly={true}
-                                        onPress={() =>
-                                            setPassword(generatePassword(options))
-                                        }
-                                        color="default"
-                                        variant="solid"
-                                    >
-                                        <RotateCw size={16} />
-                                    </Button>
-                                </div>
+                    <ModalBody className="overflow-y-auto px-4 pb-2">
+                        <div className="flex flex-col gap-3">
+                            <div className="flex flex-row gap-2">
+                                <Input
+                                    type="text"
+                                    value={password}
+                                    readOnly
+                                    radius="sm"
+                                    className="flex-1 text-sm"
+                                    size="sm"
+                                />
+                                <CopyToClipboardButton text={password} />
+                                <Button
+                                    radius="sm"
+                                    isIconOnly={true}
+                                    onPress={() =>
+                                        setPassword(generatePassword(options))
+                                    }
+                                    color="default"
+                                    variant="light"
+                                    size="sm"
+                                    className="min-w-0 w-8"
+                                >
+                                    <RotateCw size={14} />
+                                </Button>
                             </div>
                             <div className="flex justify-start">
                                 <span
-                                    className={`text-sm font-medium ${getPasswordStrength(password)}`}
+                                    className={`text-xs font-medium ${getPasswordStrength(password)}`}
                                 >
                                     Strength: {getPasswordStrength(password)}
                                 </span>
                             </div>
 
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-1">
                                 <Input
                                     type="range"
-                                    size="md"
+                                    size="sm"
                                     min={MIN_LENGTH.toString()}
                                     max={MAX_LENGTH.toString()}
                                     step="1"
@@ -151,26 +153,27 @@ export function GeneratePasswordModal({
                                             Number(e.target.value),
                                         )
                                     }
-                                    className="mt-4"
                                 />
-                                <div className="flex justify-between text-sm text-default-500">
+                                <div className="flex justify-between text-xs text-default-500">
                                     <span>{MIN_LENGTH}</span>
                                     <span>{options.length}</span>
                                     <span>{MAX_LENGTH}</span>
                                 </div>
                             </div>
 
-                            <div className="flex flex-col gap-3 mt-2">
-                                <div className="text-sm font-medium text-default-600">
+                            <div className="flex flex-col gap-2">
+                                <div className="text-xs font-medium text-default-600">
                                     Character Options
                                 </div>
-                                <div className="flex flex-row flex-wrap gap-4">
+                                <div className="flex flex-row flex-wrap gap-3">
                                     <Checkbox
                                         radius="sm"
                                         isSelected={options.useUppercase}
                                         onValueChange={() =>
                                             handleOptionAfterChange("useUppercase")
                                         }
+                                        size="sm"
+                                        classNames={{ label: "text-xs" }}
                                     >
                                         Uppercase (A-Z)
                                     </Checkbox>
@@ -180,6 +183,8 @@ export function GeneratePasswordModal({
                                         onValueChange={() =>
                                             handleOptionAfterChange("useLowercase")
                                         }
+                                        size="sm"
+                                        classNames={{ label: "text-xs" }}
                                     >
                                         Lowercase (a-z)
                                     </Checkbox>
@@ -189,6 +194,8 @@ export function GeneratePasswordModal({
                                         onValueChange={() =>
                                             handleOptionAfterChange("useNumbers")
                                         }
+                                        size="sm"
+                                        classNames={{ label: "text-xs" }}
                                     >
                                         Numbers (0-9)
                                     </Checkbox>
@@ -200,6 +207,8 @@ export function GeneratePasswordModal({
                                                 "useSpecialChars",
                                             )
                                         }
+                                        size="sm"
+                                        classNames={{ label: "text-xs" }}
                                     >
                                         Special Characters
                                     </Checkbox>
@@ -207,12 +216,13 @@ export function GeneratePasswordModal({
                             </div>
                         </div>
                     </ModalBody>
-                    <ModalFooter>
+                    <ModalFooter className="pt-2">
                         <Button
                             color="default"
                             variant="light"
                             onPress={onClose}
                             radius="sm"
+                            size="sm"
                         >
                             Cancel
                         </Button>
@@ -220,6 +230,7 @@ export function GeneratePasswordModal({
                             color="primary"
                             onPress={handleConfirm}
                             radius="sm"
+                            size="sm"
                             isDisabled={password.length === 0}
                         >
                             Confirm

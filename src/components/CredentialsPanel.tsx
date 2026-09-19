@@ -120,7 +120,7 @@ export const CredentialsPanel = forwardRef<
                 created_at: "",
                 updated_at: "",
             };
-            setCredentials([...credentials, newCredentials]);
+            setCredentials([newCredentials, ...credentials]);
             setSelectedCredential(newCredentials);
             // Mark new credential as dirty (null id represents new, unsaved)
             setDirtyCredentials(prev => {
