@@ -18,20 +18,22 @@ export function PasswordInput({
 }: IPasswordInputProps) {
     const getIcon = () => {
         const lowerLabel = label.toLowerCase();
-        switch (true) {
-            case lowerLabel.includes("username"):
-                return <User className="text-default-400" size={20} />;
-            case lowerLabel.includes("password"):
-                return <Lock className="text-default-400" size={20} />;
-            case lowerLabel.includes("url"):
-                return <Globe className="text-default-400" size={20} />;
-            case lowerLabel.includes("notes"):
-                return <FileText className="text-default-400" size={20} />;
-            case lowerLabel.includes("title"):
-                return <Tag className="text-default-400" size={20} />;
-            default:
-                return <Key className="text-default-400" size={20} />;
-        }
+        if (lowerLabel.includes("username")) return <User className="text-default-400" size={20} />;
+        if (lowerLabel.includes("password")) return <Lock className="text-default-400" size={20} />;
+        if (lowerLabel.includes("url")) return <Globe className="text-default-400" size={20} />;
+        if (lowerLabel.includes("note")) return <FileText className="text-default-400" size={20} />;
+        if (lowerLabel.includes("title")) return <Tag className="text-default-400" size={20} />;
+        return <Key className="text-default-400" size={20} />;
+    };
+
+    const getFieldName = () => {
+        const lowerLabel = label.toLowerCase();
+        if (lowerLabel.includes("username")) return "username";
+        if (lowerLabel.includes("password")) return "password";
+        if (lowerLabel.includes("url")) return "url";
+        if (lowerLabel.includes("note")) return "note";
+        if (lowerLabel.includes("title")) return "title";
+        return label.toLowerCase();
     };
 
     return (
@@ -44,7 +46,7 @@ export function PasswordInput({
                 variant="bordered"
                 type={type}
                 startContent={getIcon()}
-                onValueChange={(value) => handleChange(label, value)}
+                onValueChange={(value) => handleChange(getFieldName(), value)}
             />
         </div>
     );
