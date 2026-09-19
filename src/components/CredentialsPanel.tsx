@@ -158,8 +158,8 @@ export const CredentialsPanel = forwardRef<
                 >
                     <ScrollableMenu
                         credentials={filteredCredentials}
-                        onSelectCredentials={setSelectedCredential}
-                        selectedCredentials={selectedCredential}
+                        onSelectCredential={setSelectedCredential}
+                        selectedCredential={selectedCredential}
                         onAddCredentials={handleAddCredentials}
                         onDeleteCredentials={handleDeleteCredentials}
                         hasCredentials={credentials.length > 0}
