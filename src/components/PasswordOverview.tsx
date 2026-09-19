@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Card, CardBody, CardHeader, Divider, Input } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
+import { PasswordInput } from "./PasswordInput";
 
 interface PasswordOverviewProps {
     password?: PasswordEntry | null;
@@ -21,7 +22,7 @@ export function PasswordOverview({
         username: "",
         password: "",
         url: "",
-        notes: "",
+        note: "",
         created_at: "",
         updated_at: "",
     });
@@ -36,7 +37,7 @@ export function PasswordOverview({
                 username: "",
                 password: "",
                 url: "",
-                notes: "",
+                note: "",
                 created_at: "",
                 updated_at: "",
             });
@@ -59,50 +60,39 @@ export function PasswordOverview({
             isDisabled={isEmpty && !isEditing}
         >
             <CardHeader className="flex gap-2">
-                <Input
+                <PasswordInput
                     label="Title"
-                    value={editablePassword.title}
+                    title={editablePassword.title || ""}
                     isDisabled={isInputDisabled}
-                    className="w-full"
-                    variant="bordered"
-                    onValueChange={(value) => handleChange("title", value)}
+                    handleChange={handleChange}
                 />
             </CardHeader>
             <Divider />
             <CardBody className="flex flex-col gap-4">
-                <Input
+                <PasswordInput
                     label="Username"
-                    value={editablePassword.username || ""}
+                    title={editablePassword.username || ""}
                     isDisabled={isInputDisabled}
-                    className="w-full"
-                    variant="bordered"
-                    onValueChange={(value) => handleChange("username", value)}
+                    handleChange={handleChange}
                 />
-                <Input
+                <PasswordInput
                     label="Password"
-                    value={editablePassword.password || ""}
+                    title={editablePassword.password || ""}
                     isDisabled={isInputDisabled}
-                    className="w-full"
-                    variant="bordered"
-                    type="password"
-                    onValueChange={(value) => handleChange("password", value)}
+                    handleChange={handleChange}
                 />
                 <Divider />
-                <Input
+                <PasswordInput
                     label="URL"
-                    value={editablePassword.url || ""}
+                    title={editablePassword.url || ""}
                     isDisabled={isInputDisabled}
-                    className="w-full"
-                    variant="bordered"
-                    onValueChange={(value) => handleChange("url", value)}
+                    handleChange={handleChange}
                 />
-                <Input
-                    label="Notes"
-                    value={editablePassword.notes || ""}
+                <PasswordInput
+                    label="Note"
+                    title={editablePassword.note || ""}
                     isDisabled={isInputDisabled}
-                    className="w-full"
-                    variant="bordered"
-                    onValueChange={(value) => handleChange("notes", value)}
+                    handleChange={handleChange}
                 />
             </CardBody>
         </Card>
