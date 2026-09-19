@@ -12,7 +12,7 @@ import { CredentialsOverview } from "./CredentialsOverview";
 import { ScrollableMenu } from "./ScrollableMenu";
 import { ICredentialsEntry } from "@src/types/credentials";
 import { GripVertical } from "lucide-react";
-import { addPassword, updatePassword, listPasswords } from "@src/utils/api";
+import { addPassword, updatePassword, listPasswords, deletePassword } from "@src/utils/api";
 
 interface CredentialPanelProps {
     onAddCredentials?: () => void;
@@ -120,9 +120,20 @@ export const CredentialsPanel = forwardRef<
             onAddCredentials?.();
         };
 
-        const handleDeleteCredentials = (
+        const handleDeleteCredentials = async (
             credentialsToDelete: ICredentialsEntry,
         ) => {
+            // If the credential has an id, delete from database
+            if (credentialsToDelete.id !== null) {
+                try {
+                    await deletePassword(credentialsToDelete.id);
+                } catch (error) {
+                    console.error("Failed to delete credential:", error);
+                    return;
+                }
+            }
+            
+            // Remove from local state
             const updatedCredentials = credentials.filter(
                 (p) => p !== credentialsToDelete,
             );

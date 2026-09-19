@@ -16,7 +16,7 @@ interface ScrollableMenuProps {
     selectedCredential?: ICredentialsEntry | null;
     onSelectCredential?: (credential: ICredentialsEntry | null) => void;
     onAddCredentials?: () => void;
-    onDeleteCredentials?: (credential: ICredentialsEntry) => void;
+    onDeleteCredentials?: (credential: ICredentialsEntry) => Promise<void>;
     onSaveCredentials?: (credential: ICredentialsEntry) => Promise<boolean>;
     hasCredentials?: boolean;
     onClearSearch?: () => void;
@@ -28,7 +28,7 @@ export function ScrollableMenu({
     selectedCredential: selectedCredential = null,
     onSelectCredential: onSelectCredential = () => {},
     onAddCredentials: onAddCredential = () => {},
-    onDeleteCredentials: onDeleteCredential = () => {},
+    onDeleteCredentials: onDeleteCredential = async () => {},
     onSaveCredentials: onSaveCredentials = async () => true,
     hasCredentials: hasCredentialsFlag = false,
     onClearSearch = () => {},
@@ -60,9 +60,9 @@ export function ScrollableMenu({
         setIsDeleteModalOpen(true);
     };
 
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
         if (credentialToDelete) {
-            onDeleteCredential(credentialToDelete);
+            await onDeleteCredential(credentialToDelete);
             setCredentialToDelete(null);
         }
         setIsDeleteModalOpen(false);
