@@ -6,7 +6,7 @@ Password Saver is a cross-platform desktop application that stores your credenti
 
 ---
 
-## ✨ Features
+## Features
 
 - **Local Storage**: All passwords stored in SQLite database on your machine
 - **Secure**: Encryption at rest (implemented in backend)
@@ -17,47 +17,41 @@ Password Saver is a cross-platform desktop application that stores your credenti
 
 ---
 
-## 📸 Product Demonstration
+## Product Demonstration
 
 <div align="center">
 
-### 🏠 Main Dashboard
-*The clean, organized dashboard shows all your stored credentials with a searchable list.*
+### Dashboard
+*The clean, organized dashboard shows all your stored credentials with a searchable list.* 
+</br>
+*Click any entry to view full details, including copy-to-clipboard functionality.*
+
 
 <img src="https://github.com/user-attachments/assets/9567668f-5b7b-40fc-b367-6c8094eb03e7" 
      alt="Main Dashboard" 
      width="70%" 
      style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 24px;" />
 
-### ➕ Add New Credential
-*Easily add new password entries with title, username, password, URL, and notes.*
+### Built-in password generator
+*Easily generate strong passwords using industry standard NIST SP 800-63B*
 
 <img src="https://github.com/user-attachments/assets/42c63e8e-3321-4c38-b767-69e68205d6cb" 
-     alt="Add Credential Form" 
+     alt="Generate password" 
      width="70%" 
      style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 24px;" />
-
-### 👁️ View Credential Details
-*Click any entry to view full details, including copy-to-clipboard functionality.*
-
+     
+### Search
+*Instant search across all your saved credentials.*
 <img src="https://github.com/user-attachments/assets/7e6508de-988d-4d8d-8c74-533c1d00a9ee" 
      alt="Credential Details View" 
      width="70%" 
      style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 24px;" />
 
-### 🔍 Search & Filter
-*Instant search across all your saved credentials.*
-
-<img src="https://github.com/user-attachments/assets/2634c635-cff0-4b54-8462-e01778d0c83d" 
-     alt="Search Functionality" 
-     width="70%" 
-     style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
-
 </div>
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -93,7 +87,7 @@ npm run tauri build
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Component | Technology |
 |-----------|------------|
@@ -106,7 +100,7 @@ npm run tauri build
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 password-saver/
@@ -126,25 +120,9 @@ password-saver/
 
 ---
 
-## 🔒 Security
+## Security
 
 - **Encryption at Rest**: AES-256 encryption for sensitive fields
 - **Local-Only**: No data leaves your device
 - **Secure Storage**: Database stored in OS-specific secure app data directory
 - **No Tracking**: Zero telemetry or analytics
-
----
-
-## 📜 License
-
-MIT License
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
-
----
-
-*Built with ❤️ using Tauri and React*
