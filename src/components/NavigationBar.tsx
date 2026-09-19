@@ -1,11 +1,11 @@
 import {
-    Button,
     Input,
     Navbar,
     NavbarBrand,
     NavbarContent,
     NavbarItem,
 } from "@nextui-org/react";
+import { Plus } from "lucide-react";
 
 export interface INavigationBarProps {
     searchQuery: string;
@@ -37,13 +37,11 @@ export function NavigationBar({
             </NavbarContent>
             <NavbarContent justify="end">
                 <NavbarItem>
-                    <Button
-                        color="primary"
-                        variant="solid"
+                    <Plus
+                        className="text-default-400"
+                        size={20}
                         onClick={handleAddPassword}
-                    >
-                        Add Password
-                    </Button>
+                    />
                 </NavbarItem>
             </NavbarContent>
         </Navbar>
