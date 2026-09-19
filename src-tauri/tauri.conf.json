@@ -13,8 +13,9 @@
     "windows": [
       {
         "title": "password-saver",
-        "width": 800,
-        "height": 600
+        "width": 700,
+        "height": 500,
+        "resizable": false
       }
     ],
     "security": {

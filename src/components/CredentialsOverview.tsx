@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, CardBody, CardHeader, Divider, Button } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Button } from "@nextui-org/react";
 import { ICredentialsEntry } from "@src/types/credentials";
 import { CredentialInput } from "./CredentialInput";
 import { GeneratePasswordModal } from "./GeneratePasswordModal";
@@ -78,8 +78,9 @@ export function CredentialsOverview({
             shadow="sm"
             radius="sm"
             isDisabled={isEmpty && !isEditing}
+            classNames={{ base: "p-1" }}
         >
-            <CardHeader className="flex gap-2">
+            <CardHeader className="flex gap-1.5 px-2 py-1">
                 <CredentialInput
                     label="Title"
                     title={editableCredentials.title || ""}
@@ -89,8 +90,7 @@ export function CredentialsOverview({
                     errorMessage={combinedValidationErrors.title}
                 />
             </CardHeader>
-            <Divider />
-            <CardBody className="flex flex-col gap-4">
+            <CardBody className="flex flex-col gap-2 px-2 py-1">
                 <CredentialInput
                     label="Username"
                     title={editableCredentials.username || ""}
@@ -112,12 +112,11 @@ export function CredentialsOverview({
                     color="primary"
                     onClick={() => setIsGenerateModalOpen(true)}
                     isDisabled={isInputDisabled}
-                    startContent={<Shield size={16} />}
-                    className="w-fit"
+                    startContent={<Shield size={14} />}
+                    className="w-fit h-6 text-sm"
                 >
                     Generate password
                 </Button>
-                <Divider />
                 <CredentialInput
                     label="URL"
                     title={editableCredentials.url || ""}

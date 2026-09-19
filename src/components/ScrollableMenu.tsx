@@ -132,6 +132,7 @@ export function ScrollableMenu({
                 isModalOpen={isDeleteModalOpen}
                 handleConfirm={handleConfirmDelete}
                 handleCancel={handleCancelDelete}
+                credential={credentialToDelete}
             />
         </>
     );

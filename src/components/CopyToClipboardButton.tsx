@@ -45,9 +45,9 @@ export function CopyToClipboardButton({
                 onClick={handleCopy}
                 isDisabled={isDisabled || !text}
                 radius="sm"
-                className={className}
+                className={`min-w-0 h-8 w-8 ${className || ""}`}
             >
-                {isCopied ? <Check size={16} /> : <Copy size={16} />}
+                {isCopied ? <Check size={14} /> : <Copy size={14} />}
             </Button>
         </Tooltip>
     );

@@ -99,6 +99,17 @@ export const CredentialsPanel = forwardRef<
         }, [filteredCredentials.length, credentials.length]);
 
         const handleAddCredentials = () => {
+            // Check if there's already an unsaved credential (id: null)
+            const hasUnsavedCredential = credentials.some(c => c.id === null);
+            if (hasUnsavedCredential) {
+                // Focus on the existing unsaved credential instead of adding a new one
+                const existingUnsaved = credentials.find(c => c.id === null);
+                if (existingUnsaved) {
+                    setSelectedCredential(existingUnsaved);
+                }
+                return;
+            }
+            
             const newCredentials: ICredentialsEntry = {
                 id: null,
                 title: "",
@@ -109,7 +120,7 @@ export const CredentialsPanel = forwardRef<
                 created_at: "",
                 updated_at: "",
             };
-            setCredentials([...credentials, newCredentials]);
+            setCredentials([newCredentials, ...credentials]);
             setSelectedCredential(newCredentials);
             // Mark new credential as dirty (null id represents new, unsaved)
             setDirtyCredentials(prev => {
