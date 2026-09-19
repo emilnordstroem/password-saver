@@ -1,36 +1,29 @@
-import { Card, CardBody, CardHeader, Divider, ScrollShadow } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, ScrollShadow, Button } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
+import { MdDelete } from "react-icons/md";
 
 interface ScrollableMenuProps {
     passwords?: PasswordEntry[];
     selectedPassword?: PasswordEntry | null;
     onSelectPassword?: (password: PasswordEntry | null) => void;
+    onAddPassword?: () => void;
+    onDeletePassword?: (password: PasswordEntry) => void;
 }
 
 export function ScrollableMenu({ 
     passwords = [], 
     selectedPassword = null,
-    onSelectPassword = () => {} 
+    onSelectPassword = () => {},
+    onAddPassword = () => {},
+    onDeletePassword = () => {}
 }: ScrollableMenuProps) {
-    const isEmpty = passwords.length === 0;
-    
-    const displayPasswords = isEmpty
-        ? Array(3).fill(null).map(() => ({
-              id: null,
-              title: "",
-              username: "",
-              password: "",
-              url: "",
-              notes: "",
-              created_at: "",
-              updated_at: "",
-          } as PasswordEntry))
-        : passwords;
+    const handleSelect = (password: PasswordEntry) => {
+        onSelectPassword(password);
+    };
 
-    const handleSelect = (password: PasswordEntry | null) => {
-        if (!isEmpty) {
-            onSelectPassword(password);
-        }
+    const handleDelete = (e: React.MouseEvent, password: PasswordEntry) => {
+        e.stopPropagation();
+        onDeletePassword(password);
     };
 
     return (
@@ -39,27 +32,56 @@ export function ScrollableMenu({
             hideScrollBar
         >
             <div className="gap-2 flex flex-col">
-                {displayPasswords.map((password, index) => (
+                {passwords.length === 0 ? (
                     <Card
-                        key={index}
-                        className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}
+                        className="w-full"
                         shadow="sm"
                         radius="sm"
-                        isDisabled={isEmpty}
-                        isHoverable={!isEmpty}
-                        isPressable={!isEmpty}
-                        onClick={() => handleSelect(isEmpty ? null : password)}
+                        isHoverable={onAddPassword !== undefined}
+                        isPressable={onAddPassword !== undefined}
+                        onClick={() => onAddPassword()}
                     >
                         <CardHeader className="flex gap-2">
                             <div className="flex flex-col">
-                                <p className="text-md font-semibold">{password.title || <span className="text-default-400">Empty</span>}</p>
-                                <p className="text-sm text-default-500">{password.username || <span className="text-default-400">No username</span>}</p>
+                                <p className="text-md font-semibold text-default-400">Click to add password</p>
+                                <p className="text-sm text-default-500"><span className="text-default-400">No passwords yet</span></p>
                             </div>
                         </CardHeader>
                         <Divider />
                         <CardBody></CardBody>
                     </Card>
-                ))}
+                ) : (
+                    passwords.map((password, index) => (
+                        <Card
+                            key={index}
+                            className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}
+                            shadow="sm"
+                            radius="sm"
+                            isHoverable
+                            isPressable
+                            onClick={() => handleSelect(password)}
+                        >
+                            <CardHeader className="flex gap-2 justify-between">
+                                <div className="flex flex-col">
+                                    <p className="text-md font-semibold">{password.title || <span className="text-default-400">Empty</span>}</p>
+                                    <p className="text-sm text-default-500">{password.username || <span className="text-default-400">No username</span>}</p>
+                                </div>
+                                <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    color="danger"
+                                    onClick={(e) => handleDelete(e, password)}
+                                    aria-label="Delete password"
+                                >
+                                    <MdDelete size={16} />
+                                </Button>
+                            </CardHeader>
+                            <Divider />
+                            <CardBody></CardBody>
+                        </Card>
+                    ))
+                )}
             </div>
         </ScrollShadow>
     );

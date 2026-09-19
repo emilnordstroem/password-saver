@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { NavigationBar } from "../components/NavigationBar";
-import { PasswordPanel } from "@src/components/PasswordPanel";
+import { PasswordPanel, PasswordPanelHandle } from "@src/components/PasswordPanel";
 
 export function Dashboard() {
     const [searchQuery, setSearchQuery] = useState("");
+    const passwordPanelRef = useRef<PasswordPanelHandle>(null);
 
     const handleSearch = (value: string) => {
         setSearchQuery(value);
@@ -12,8 +13,8 @@ export function Dashboard() {
     };
 
     const handleAddPassword = () => {
-        // Handle add password logic
-        console.log("Add password clicked");
+        // Trigger add password in PasswordPanel
+        passwordPanelRef.current?.handleAddPassword();
     };
 
     return (
@@ -23,7 +24,7 @@ export function Dashboard() {
                 handleSearch={handleSearch}
                 handleAddPassword={handleAddPassword}
             />
-            <PasswordPanel />
+            <PasswordPanel ref={passwordPanelRef} />
         </div>
     );
 }
