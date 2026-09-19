@@ -48,6 +48,34 @@ export function GeneratePasswordModal({
     });
     const [copied, setCopied] = useState(false);
 
+    const getPasswordStrength = useCallback(() => {
+        if (password.length === 0) return "Empty";
+        if (password.length < 8) return "Very Weak";
+
+        let score = 0;
+        if (password.length >= 12) score++;
+        if (password.length >= 16) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^a-zA-Z0-9]/.test(password)) score++;
+
+        if (score >= 5) return "Strong";
+        if (score >= 3) return "Weak";
+    }, [password]);
+
+    const getStrengthColor = useCallback(() => {
+        const strength = getPasswordStrength();
+        switch (strength) {
+            case "Strong":
+                return "text-success";
+            case "Weak":
+                return "text-danger";
+            default:
+                return "text-default-500";
+        }
+    }, [getPasswordStrength]);
+
     const generatePassword = useCallback(() => {
         let chars = "";
         if (options.useUppercase) chars += UPPERCASE_CHARS;
@@ -145,6 +173,13 @@ export function GeneratePasswordModal({
                             >
                                 <RotateCw />
                             </Button>
+                        </div>
+                        <div className="flex justify-start">
+                            <span
+                                className={`text-sm font-medium ${getStrengthColor()}`}
+                            >
+                                Strength: {getPasswordStrength()}
+                            </span>
                         </div>
 
                         <div className="flex flex-col gap-2">
