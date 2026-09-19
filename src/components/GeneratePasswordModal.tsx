@@ -9,27 +9,19 @@ import {
     Checkbox,
 } from "@nextui-org/react";
 import { RotateCw } from "lucide-react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { CopyToClipboardButton } from "./CopyToClipboardButton";
+import { getPasswordStrength } from "@src/services/passwordStrength";
+import {
+    PasswordOptions,
+    generatePassword,
+} from "@src/services/passwordGenerator";
 
 export interface IGeneratePasswordModalProps {
     isOpen: boolean;
     onClose: () => void;
     onGenerate: (password: string) => void;
 }
-
-interface PasswordOptions {
-    length: number;
-    useUppercase: boolean;
-    useLowercase: boolean;
-    useNumbers: boolean;
-    useSpecialChars: boolean;
-}
-
-const UPPERCASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const LOWERCASE_CHARS = "abcdefghijklmnopqrstuvwxyz";
-const NUMBER_CHARS = "0123456789";
-const SPECIAL_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
 const MIN_LENGTH = 8;
 const MAX_LENGTH = 64;
@@ -48,61 +40,11 @@ export function GeneratePasswordModal({
         useSpecialChars: false,
     });
 
-    const getPasswordStrength = useCallback(() => {
-        if (password.length === 0) return "Empty";
-        if (password.length < 8) return "Weak";
-
-        let score = 0;
-        if (password.length >= 12) score++;
-        if (password.length >= 16) score++;
-        if (/[a-z]/.test(password)) score++;
-        if (/[A-Z]/.test(password)) score++;
-        if (/[0-9]/.test(password)) score++;
-        if (/[^a-zA-Z0-9]/.test(password)) score++;
-
-        if (score >= 5) return "Very Strong";
-        if (score >= 3) return "Strong";
-        return "Weak";
-    }, [password]);
-
-    const getStrengthColor = useCallback(() => {
-        const strength = getPasswordStrength();
-        switch (strength) {
-            case "Very Strong":
-            case "Strong":
-                return "text-success";
-            case "Weak":
-                return "text-danger";
-            default:
-                return "text-default-500";
-        }
-    }, [getPasswordStrength]);
-
-    const generatePassword = useCallback(() => {
-        let chars = "";
-        if (options.useUppercase) chars += UPPERCASE_CHARS;
-        if (options.useLowercase) chars += LOWERCASE_CHARS;
-        if (options.useNumbers) chars += NUMBER_CHARS;
-        if (options.useSpecialChars) chars += SPECIAL_CHARS;
-
-        if (chars.length === 0) {
-            setPassword("");
-            return;
-        }
-
-        let newPassword = "";
-        for (let i = 0; i < options.length; i++) {
-            const randomIndex = Math.floor(Math.random() * chars.length);
-            newPassword += chars[randomIndex];
-        }
-        setPassword(newPassword);
-    }, [options]);
-
     useEffect(() => {
         if (isOpen) {
-            generatePassword();
+            setPassword(generatePassword(options));
         }
-    }, [isOpen, generatePassword]);
+    }, [isOpen, options, generatePassword]);
 
     const handleConfirm = () => {
         onGenerate(password);
@@ -111,15 +53,17 @@ export function GeneratePasswordModal({
 
     const handleLengthAfterChange = (value: number) => {
         setOptions((prev) => ({ ...prev, length: value }));
-        generatePassword();
     };
 
     const handleOptionAfterChange = (key: keyof PasswordOptions) => {
-        setOptions((prev) => ({
-            ...prev,
-            [key]: !prev[key],
-        }));
-        generatePassword();
+        setOptions((prev) => {
+            const newOptions = {
+                ...prev,
+                [key]: !prev[key],
+            };
+            setPassword(generatePassword(newOptions));
+            return newOptions;
+        });
     };
 
     return (
@@ -149,7 +93,9 @@ export function GeneratePasswordModal({
                                 <Button
                                     radius="sm"
                                     isIconOnly={true}
-                                    onPress={generatePassword}
+                                    onPress={() =>
+                                        setPassword(generatePassword(options))
+                                    }
                                     color="default"
                                     variant="solid"
                                 >
@@ -159,9 +105,9 @@ export function GeneratePasswordModal({
                         </div>
                         <div className="flex justify-start">
                             <span
-                                className={`text-sm font-medium ${getStrengthColor()}`}
+                                className={`text-sm font-medium ${getPasswordStrength(password)}`}
                             >
-                                Strength: {getPasswordStrength()}
+                                Strength: {getPasswordStrength(password)}
                             </span>
                         </div>
 
