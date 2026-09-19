@@ -24,7 +24,7 @@ export function Dashboard() {
                 handleSearch={handleSearch}
                 handleAddPassword={handleAddPassword}
             />
-            <PasswordPanel ref={passwordPanelRef} />
+            <PasswordPanel ref={passwordPanelRef} searchQuery={searchQuery} />
         </div>
     );
 }

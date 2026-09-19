@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
 import { PasswordInput } from "./PasswordInput";
 

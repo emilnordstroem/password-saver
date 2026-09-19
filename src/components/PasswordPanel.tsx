@@ -7,6 +7,7 @@ import { GripVertical } from "lucide-react";
 
 interface PasswordPanelProps {
     onAddPassword?: () => void;
+    searchQuery?: string;
 }
 
 export interface PasswordPanelHandle {
@@ -16,7 +17,7 @@ export interface PasswordPanelHandle {
 const RESIZER_WIDTH = 8;
 
 export const PasswordPanel = forwardRef<PasswordPanelHandle, PasswordPanelProps>(
-    ({ onAddPassword }, ref) => {
+    ({ onAddPassword, searchQuery = "" }, ref) => {
         const [passwords, setPasswords] = useState<PasswordEntry[]>([]);
         const [selectedPassword, setSelectedPassword] =
             useState<PasswordEntry | null>(null);
@@ -31,7 +32,7 @@ export const PasswordPanel = forwardRef<PasswordPanelHandle, PasswordPanelProps>
                 username: "",
                 password: "",
                 url: "",
-                notes: "",
+                note: "",
                 created_at: "",
                 updated_at: "",
             };
@@ -107,6 +108,7 @@ export const PasswordPanel = forwardRef<PasswordPanelHandle, PasswordPanelProps>
                         selectedPassword={selectedPassword}
                         onAddPassword={handleAddPassword}
                         onDeletePassword={handleDeletePassword}
+                        searchQuery={searchQuery}
                     />
                 </div>
                 <div

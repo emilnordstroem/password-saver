@@ -18,6 +18,7 @@ interface ScrollableMenuProps {
     onSelectPassword?: (password: PasswordEntry | null) => void;
     onAddPassword?: () => void;
     onDeletePassword?: (password: PasswordEntry) => void;
+    searchQuery?: string;
 }
 
 export function ScrollableMenu({
@@ -26,6 +27,7 @@ export function ScrollableMenu({
     onSelectPassword = () => {},
     onAddPassword = () => {},
     onDeletePassword = () => {},
+    searchQuery = "",
 }: ScrollableMenuProps) {
     const [passwordToDelete, setPasswordToDelete] =
         useState<PasswordEntry | null>(null);
@@ -54,11 +56,23 @@ export function ScrollableMenu({
         setIsDeleteModalOpen(false);
     };
 
+    const filteredPasswords = passwords.filter((password) => {
+        const query = searchQuery.toLowerCase().trim();
+        if (!query) return true;
+        
+        return (
+            password.title?.toLowerCase().includes(query) ||
+            password.username?.toLowerCase().includes(query) ||
+            password.url?.toLowerCase().includes(query) ||
+            password.note?.toLowerCase().includes(query)
+        );
+    });
+
     return (
         <>
             <ScrollShadow className="w-full max-h-[400px]" hideScrollBar>
                 <div className="gap-2 flex flex-col">
-                    {passwords.length === 0 ? (
+                    {filteredPasswords.length === 0 ? (
                         <Card
                             className="w-full"
                             shadow="sm"
@@ -89,7 +103,7 @@ export function ScrollableMenu({
                             <CardBody></CardBody>
                         </Card>
                     ) : (
-                        passwords.map((password, index) => (
+                        filteredPasswords.map((password, index) => (
                             <Card
                                 key={index}
                                 className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}
