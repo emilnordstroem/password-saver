@@ -113,12 +113,17 @@ password-saver/
     ├── main.tsx                 # React entry point with NextUI provider
     ├── App.tsx                  # Main application component
     ├── types/                   # TypeScript interfaces
-    │   └── password.ts          # PasswordEntry type definitions
+    │   ├── password.ts          # PasswordEntry type definitions
+    │   └── passwordDTO.ts       # DTO interface for password data (convention)
+    ├── pages/                   # Page components
+    │   └── Dashboard.tsx        # Main dashboard page
     ├── components/              # React components (ALL MUST USE NEXTUI V2)
+    │   ├── NavigationBar.tsx    # Navigation bar component
     │   ├── PasswordList.tsx     # List view of password entries
     │   ├── PasswordForm.tsx     # Add/edit password form
     │   ├── PasswordView.tsx     # View single password details
-    │   └── SearchBar.tsx        # Basic text search component
+    │   ├── PasswordOverview.tsx # Password details overview
+    │   └── ScrollableMenu.tsx   # Scrollable menu for password list
     ├── hooks/                   # Custom React hooks
     │   └── usePasswords.ts      # Password data operations
     └── utils/                   # Utility functions
@@ -138,6 +143,7 @@ password-saver/
 ### When Working on Tasks
 - Open with a brief plan before acting
 - Read all relevant files before making changes
+- **ALWAYS build and run the application to check for errors**: Run `npm run build` to verify TypeScript compilation, then `npm run tauri dev` to test the application. Fix any occurring issues before completing the task.
 - Prove it works (test commands, verify output)
 - Report what changed and why
 - Do NOT make assumptions about unstated requirements
@@ -237,6 +243,86 @@ npm run tauri build
 - Use Prettier for formatting (recommended - not yet configured)
 - Use ESLint for linting (recommended - not yet configured)
 - TypeScript compiler options: `strict: true` (already configured)
+
+---
+
+## Design Conventions
+
+### Theme
+- **Mode**: Light mode only (default in NextUI v2)
+- **Provider**: Use NextUI's `NextUIProvider` (light mode is automatic)
+- **No dark mode toggle**: Do not implement dark mode switching
+
+### Color Palette
+- **Source**: Use NextUI's default color palette
+- **Primary**: Use default NextUI primary color
+- **Semantic colors**: Use NextUI's built-in semantic colors (success, warning, danger, etc.)
+
+### Typography
+- **Font family**: NextUI default (Inter)
+- **No custom fonts**: Do not add custom Google Fonts or local font files
+- **Follow NextUI typography scale**: Use NextUI's built-in heading and text sizes
+
+### Spacing
+- **System**: Tailwind-like spacing via NextUI props
+- **Use NextUI spacing props**: `p`, `m`, `gap`, `w`, `h` with sizes: `sm`, `md`, `lg`, etc.
+- **Avoid inline styles**: Never use inline `style` prop for spacing
+- **Consistent spacing tokens**: Prefer NextUI spacing tokens over raw pixel values
+
+### Layout
+- **Containers**: Full-width containers with padding
+- **Structure**: Use NextUI layout components (`Container`, `Grid`, `Row`, `Col`, `Spacer`)
+- **Responsive**: Use NextUI's built-in responsive props (`xs`, `sm`, `md`, `lg`, `xl`)
+- **No custom breakpoints**: Do not define custom pixel breakpoints
+
+### Component Styling
+- **Border radius**: Slightly rounded - use `radius="sm"` for most components
+- **Cards**: Default NextUI Card styling with `radius="sm"`
+- **Buttons**: NextUI default Button styling
+- **Form inputs**: NextUI default Input/Select/Checkbox styling (not underlined, not flat)
+
+### Animations
+- **Style**: Minimal animations only
+- **Use cases**: Loading states, transitions, modal open/close
+- **Source**: Use NextUI's built-in framer-motion animations
+- **Avoid excessive animations**: No unnecessary hover effects or transitions
+
+### Accessibility
+- **Standard**: Basic accessibility only
+- **Rely on NextUI**: Use NextUI's built-in accessibility features
+- **Keyboard navigation**: Ensure all interactive elements are keyboard accessible
+- **Focus states**: Use NextUI's default focus indicators
+
+### Design System Implementation
+```typescript
+// Example NextUIProvider setup with design conventions (NextUI v2)
+// Light mode is the default in NextUI v2, no explicit theme creation needed
+import { NextUIProvider } from '@nextui-org/react';
+
+createRoot(document.getElementById('root')!).render(
+  <NextUIProvider>
+    <App />
+  </NextUIProvider>
+);
+
+// For NextUI v1 (if used), explicit theme configuration:
+// import { NextUIProvider, createTheme } from '@nextui-org/react';
+// const theme = createTheme({
+//   type: 'light',
+// });
+// createRoot(document.getElementById('root')!).render(
+//   <NextUIProvider theme={theme}>
+//     <App />
+//   </NextUIProvider>
+// );
+```
+
+**Do NOT**:
+- Add custom themes or theme switching
+- Use Tailwind CSS or any other styling library
+- Create custom CSS files
+- Override NextUI's default styles unless explicitly required
+- Add animations beyond minimal functional transitions
 
 #### Style
 - **Naming**: `camelCase` for variables and functions
@@ -443,12 +529,17 @@ src/
 ├── main.tsx                    # React entry point with NextUI provider
 ├── App.tsx                     # Main application component
 ├── types/
-│   └── password.ts             # TypeScript interfaces for PasswordEntry
+│   ├── password.ts             # TypeScript interfaces for PasswordEntry
+│   └── passwordDTO.ts          # DTO interface for password data (convention)
+├── pages/
+│   └── Dashboard.tsx           # Main dashboard page
 ├── components/
+│   ├── NavigationBar.tsx       # Navigation bar component
 │   ├── PasswordList.tsx        # List of password entries (use NextUI Table/Card)
 │   ├── PasswordForm.tsx        # Add/edit password form (use NextUI Input/Button/Modal)
 │   ├── PasswordView.tsx        # View single password (use NextUI Card/Modal)
-│   └── SearchBar.tsx           # Basic text search (use NextUI Input)
+│   ├── PasswordOverview.tsx    # Password details overview
+│   └── ScrollableMenu.tsx      # Scrollable menu for password list
 ├── hooks/
 │   └── usePasswords.ts         # Custom hook for password CRUD operations
 └── utils/
@@ -462,6 +553,7 @@ import { NextUIProvider } from '@nextui-org/react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
+// Light mode is the default in NextUI v2
 createRoot(document.getElementById('root')!).render(
   <NextUIProvider>
     <App />
@@ -482,6 +574,19 @@ export interface PasswordEntry {
     notes?: string;
     created_at: string;        // RFC3339 format
     updated_at: string;        // RFC3339 format
+}
+```
+
+### DTO Type Definition (types/passwordDTO.ts) - Convention
+
+```typescript
+// DTO interface for password data transfer
+export interface IPasswordDTO {
+    title: string;
+    username: string;
+    password: string;
+    url: string;
+    note: string;
 }
 ```
 
@@ -674,3 +779,4 @@ cargo run -- --verbose
 
 *Last updated: 2026-09-18*
 *Project status: Backend complete, Frontend to be created, Encryption mandatory before production*
+*Design conventions: Light theme, NextUI defaults, Tailwind-like spacing via NextUI props, Minimal animations, Slightly rounded borders (radius="sm")*
