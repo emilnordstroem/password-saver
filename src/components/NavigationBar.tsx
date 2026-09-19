@@ -11,13 +11,13 @@ import { Plus } from "lucide-react";
 export interface INavigationBarProps {
     searchQuery: string;
     handleSearch: (value: string) => void;
-    handleAddPassword: () => void;
+    handleAddCredential: () => void;
 }
 
 export function NavigationBar({
     searchQuery,
     handleSearch,
-    handleAddPassword,
+    handleAddCredential,
 }: INavigationBarProps) {
     return (
         <Navbar className="w-full" isBordered>
@@ -38,7 +38,7 @@ export function NavigationBar({
             </NavbarContent>
             <NavbarContent justify="end">
                 <NavbarItem>
-                    <Button onClick={handleAddPassword}>
+                    <Button onClick={handleAddCredential}>
                         <Plus className="text-default-400" size={20} />
                     </Button>
                 </NavbarItem>

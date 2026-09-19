@@ -7,7 +7,7 @@ import {
 
 export function Dashboard() {
     const [searchQuery, setSearchQuery] = useState("");
-    const passwordPanelRef = useRef<CredentialPanelHandle>(null);
+    const credentialsPanelRef = useRef<CredentialPanelHandle>(null);
 
     const handleSearch = (value: string) => {
         setSearchQuery(value);
@@ -15,9 +15,9 @@ export function Dashboard() {
         console.log("Searching for:", value);
     };
 
-    const handleAddPassword = () => {
-        // Trigger add password in PasswordPanel
-        passwordPanelRef.current?.handleAddCredentials();
+    const handleAddCredential = () => {
+        // Trigger add credential in CredentialsPanel
+        credentialsPanelRef.current?.handleAddCredentials();
     };
 
     const handleClearSearch = () => {
@@ -29,10 +29,10 @@ export function Dashboard() {
             <NavigationBar
                 searchQuery={searchQuery}
                 handleSearch={handleSearch}
-                handleAddPassword={handleAddPassword}
+                handleAddCredential={handleAddCredential}
             />
             <CredentialsPanel
-                ref={passwordPanelRef}
+                ref={credentialsPanelRef}
                 searchQuery={searchQuery}
                 onClearSearch={handleClearSearch}
             />

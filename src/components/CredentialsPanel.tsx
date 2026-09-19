@@ -185,4 +185,4 @@ export const CredentialsPanel = forwardRef<
     },
 );
 
-CredentialsPanel.displayName = "PasswordPanel";
+CredentialsPanel.displayName = "CredentialsPanel";

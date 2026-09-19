@@ -15,46 +15,49 @@ import { ConfirmModal } from "./ConfirmModal";
 interface ScrollableMenuProps {
     credentials?: ICredentialsEntry[];
     selectedCredentials?: ICredentialsEntry | null;
-    onSelectCredentials?: (password: ICredentialsEntry | null) => void;
+    onSelectCredentials?: (credential: ICredentialsEntry | null) => void;
     onAddCredentials?: () => void;
-    onDeleteCredentials?: (password: ICredentialsEntry) => void;
+    onDeleteCredentials?: (credential: ICredentialsEntry) => void;
     hasCredentials?: boolean;
     onClearSearch?: () => void;
 }
 
 export function ScrollableMenu({
-    credentials: passwords = [],
-    selectedCredentials: selectedPassword = null,
-    onSelectCredentials: onSelectPassword = () => {},
-    onAddCredentials: onAddPassword = () => {},
-    onDeleteCredentials: onDeletePassword = () => {},
-    hasCredentials: hasPasswords = false,
+    credentials: credentialsList = [],
+    selectedCredentials: selectedCredential = null,
+    onSelectCredentials: onSelectCredential = () => {},
+    onAddCredentials: onAddCredential = () => {},
+    onDeleteCredentials: onDeleteCredential = () => {},
+    hasCredentials: hasCredentialsFlag = false,
     onClearSearch = () => {},
 }: ScrollableMenuProps) {
-    const [passwordToDelete, setPasswordToDelete] =
+    const [credentialToDelete, setCredentialToDelete] =
         useState<ICredentialsEntry | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleSelect = (password: ICredentialsEntry) => {
-        onSelectPassword(password);
+    const handleSelect = (credential: ICredentialsEntry) => {
+        onSelectCredential(credential);
     };
 
-    const handleDelete = (e: React.MouseEvent, password: ICredentialsEntry) => {
+    const handleDelete = (
+        e: React.MouseEvent,
+        credential: ICredentialsEntry,
+    ) => {
         e.stopPropagation();
-        setPasswordToDelete(password);
+        setCredentialToDelete(credential);
         setIsDeleteModalOpen(true);
     };
 
     const handleConfirmDelete = () => {
-        if (passwordToDelete) {
-            onDeletePassword(passwordToDelete);
-            setPasswordToDelete(null);
+        if (credentialToDelete) {
+            onDeleteCredential(credentialToDelete);
+            setCredentialToDelete(null);
         }
         setIsDeleteModalOpen(false);
     };
 
     const handleCancelDelete = () => {
-        setPasswordToDelete(null);
+        setCredentialToDelete(null);
         setIsDeleteModalOpen(false);
     };
 
@@ -62,15 +65,15 @@ export function ScrollableMenu({
         <>
             <ScrollShadow className="w-full max-h-[400px]" hideScrollBar>
                 <div className="gap-2 flex flex-col">
-                    {passwords.length === 0 ? (
+                    {credentialsList.length === 0 ? (
                         <Card
                             className="w-full"
                             shadow="sm"
                             radius="sm"
-                            isHoverable={onAddPassword !== undefined}
-                            isPressable={onAddPassword !== undefined}
+                            isHoverable={onAddCredential !== undefined}
+                            isPressable={onAddCredential !== undefined}
                             onClick={() => {
-                                onAddPassword();
+                                onAddCredential();
                                 onClearSearch();
                             }}
                         >
@@ -82,7 +85,7 @@ export function ScrollableMenu({
                                     />
                                     <div className="flex flex-col text-left">
                                         <p className="text-md font-semibold text-default-400">
-                                            {hasPasswords
+                                            {hasCredentialsFlag
                                                 ? "No results found"
                                                 : "No passwords yet"}
                                         </p>
@@ -98,19 +101,19 @@ export function ScrollableMenu({
                             <CardBody></CardBody>
                         </Card>
                     ) : (
-                        passwords.map((password, index) => (
+                        credentialsList.map((credential, index) => (
                             <Card
                                 key={index}
-                                className={`w-full ${selectedPassword === password ? "border-2 border-primary" : ""}`}
+                                className={`w-full ${selectedCredential === credential ? "border-2 border-primary" : ""}`}
                                 shadow="sm"
                                 radius="sm"
                                 isHoverable
                                 isPressable
-                                onClick={() => handleSelect(password)}
+                                onClick={() => handleSelect(credential)}
                             >
                                 <CardHeader className="flex gap-2 justify-between">
                                     <div className="flex flex-row gap-2 items-center">
-                                        {selectedPassword === password ? (
+                                        {selectedCredential === credential ? (
                                             <LockOpen
                                                 size={16}
                                                 className="text-default-400"
@@ -123,14 +126,14 @@ export function ScrollableMenu({
                                         )}
                                         <div className="flex flex-col text-left">
                                             <p className="text-md font-semibold">
-                                                {password.title || (
+                                                {credential.title || (
                                                     <span className="text-default-400">
                                                         Empty
                                                     </span>
                                                 )}
                                             </p>
                                             <p className="text-sm text-default-500">
-                                                {password.username || (
+                                                {credential.username || (
                                                     <span className="text-default-400">
                                                         No username
                                                     </span>
@@ -144,7 +147,7 @@ export function ScrollableMenu({
                                         variant="light"
                                         color="danger"
                                         onClick={(e) =>
-                                            handleDelete(e, password)
+                                            handleDelete(e, credential)
                                         }
                                         aria-label="Delete password"
                                     >

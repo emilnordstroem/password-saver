@@ -8,7 +8,7 @@ import { Shield } from "lucide-react";
 interface CredentialsOverviewProps {
     credentials?: ICredentialsEntry | null;
     isEditing?: boolean;
-    onUpdate?: (password: ICredentialsEntry) => void;
+    onUpdate?: (credential: ICredentialsEntry) => void;
 }
 
 export function CredentialsOverview({
@@ -98,7 +98,7 @@ export function CredentialsOverview({
                     startContent={<Shield size={16} />}
                     className="w-fit"
                 >
-                    Generate Password
+                    Generate password
                 </Button>
                 <Divider />
                 <CredentialInput
