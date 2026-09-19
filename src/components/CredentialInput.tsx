@@ -62,9 +62,16 @@ export function CredentialInput({
         <div className="flex items-start gap-1.5 w-full">
             <div className="pt-1.5">{getIcon()}</div>
             <div className="flex-1 min-w-0">
-                <label className="block text-xs font-medium mb-0.5">
-                    {label}
-                </label>
+                <div className="flex items-center gap-1 mb-0.5">
+                    <label className="text-xs font-medium">
+                        {label}
+                    </label>
+                    {errorMessage && (
+                        <span className="text-xs text-danger-500 font-medium">
+                            {errorMessage}
+                        </span>
+                    )}
+                </div>
                 <div className="flex gap-1">
                     <Input
                         value={title}
@@ -77,7 +84,6 @@ export function CredentialInput({
                             handleChange(getFieldName(), value)
                         }
                         isInvalid={isInvalid}
-                        errorMessage={errorMessage}
                         size="sm"
                     />
                     {isPasswordField && (
