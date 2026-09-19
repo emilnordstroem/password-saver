@@ -61,8 +61,7 @@ export function GeneratePasswordModal({
         if (/[^a-zA-Z0-9]/.test(password)) score++;
 
         if (score >= 5) return "Very Strong";
-        if (score >= 4) return "Strong";
-        if (score >= 3) return "Medium";
+        if (score >= 3) return "Strong";
         return "Weak";
     }, [password]);
 
@@ -72,8 +71,6 @@ export function GeneratePasswordModal({
             case "Very Strong":
             case "Strong":
                 return "text-success";
-            case "Medium":
-                return "text-warning";
             case "Weak":
             case "Very Weak":
                 return "text-danger";
