@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+import { Button, Card, CardHeader } from "@nextui-org/react";
 import { Lock, LockOpen, Save, SaveCheck, Trash } from "lucide-react";
 import { ICredentialsEntry } from "@src/types/credentials";
 import { getFaviconUrlWithFallback } from "@src/utils/favicon";
@@ -52,9 +52,9 @@ export function CredentialsMenuItem({
     const renderIcon = () => {
         if (!credential.url) {
             return selectedCredential === credential ? (
-                <LockOpen size={16} className="text-default-400" />
+                <LockOpen size={14} className="text-default-400" />
             ) : (
-                <Lock size={16} className="text-default-400" />
+                <Lock size={14} className="text-default-400" />
             );
         }
 
@@ -64,7 +64,7 @@ export function CredentialsMenuItem({
                 <img
                     src={faviconUrl}
                     alt=""
-                    className="w-4 h-4 object-contain"
+                    className="w-3.5 h-3.5 object-contain"
                     onError={handleFaviconError}
                 />
             );
@@ -72,9 +72,9 @@ export function CredentialsMenuItem({
 
         // Fallback to lock icon if favicon fails
         return selectedCredential === credential ? (
-            <LockOpen size={16} className="text-default-400" />
+            <LockOpen size={14} className="text-default-400" />
         ) : (
-            <Lock size={16} className="text-default-400" />
+            <Lock size={14} className="text-default-400" />
         );
     };
 
@@ -86,6 +86,7 @@ export function CredentialsMenuItem({
             radius="sm"
             isHoverable
             tabIndex={0}
+            classNames={{ base: "py-1" }}
             onKeyUp={(event) => {
                 if (event.key === 'Enter') {
                     event.stopPropagation();
@@ -96,19 +97,19 @@ export function CredentialsMenuItem({
                 }
             }}
         >
-            <CardHeader className="flex gap-2 justify-between">
+            <CardHeader className="flex gap-1 justify-between px-2 py-1">
                 <div 
-                    className="flex flex-row gap-2 items-center flex-1 cursor-pointer"
+                    className="flex flex-row gap-1.5 items-center flex-1 cursor-pointer min-w-0"
                     onClick={() => handleSelect(credential)}
                 >
                     {renderIcon()}
-                    <div className="flex flex-col text-left">
-                        <p className="text-md font-semibold">
+                    <div className="flex flex-col text-left min-w-0">
+                        <p className="text-sm font-semibold truncate">
                             {credential.title || (
                                 <span className="text-default-400">Empty</span>
                             )}
                         </p>
-                        <p className="text-sm text-default-500">
+                        <p className="text-xs text-default-500 truncate">
                             {credential.username || (
                                 <span className="text-default-400">
                                     No username
@@ -117,12 +118,13 @@ export function CredentialsMenuItem({
                         </p>
                     </div>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-0.5 shrink-0">
                     <Button
                         isIconOnly
                         size="sm"
                         variant="light"
                         color={isSaved ? "success" : "default"}
+                        className="h-6 w-6 min-w-0"
                         onClick={(event) => {
                             event.stopPropagation();
                             handleSave(event, credential);
@@ -130,9 +132,9 @@ export function CredentialsMenuItem({
                         aria-label="Save password"
                     >
                         {isSaved ? (
-                            <SaveCheck size={16} />
+                            <SaveCheck size={14} />
                         ) : (
-                            <Save size={16} />
+                            <Save size={14} />
                         )}
                     </Button>
                     <Button
@@ -140,18 +142,17 @@ export function CredentialsMenuItem({
                         size="sm"
                         variant="light"
                         color="danger"
+                        className="h-6 w-6 min-w-0"
                         onClick={(event) => {
                             event.stopPropagation();
                             handleDelete(event, credential);
                         }}
                         aria-label="Delete password"
                     >
-                        <Trash size={16} />
+                        <Trash size={14} />
                     </Button>
                 </div>
             </CardHeader>
-            <Divider />
-            <CardBody></CardBody>
         </Card>
     );
 }

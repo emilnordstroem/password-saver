@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { NavigationBar } from "../components/NavigationBar";
+import { Footer } from "../components/Footer";
 import {
     CredentialsPanel,
     CredentialPanelHandle,
@@ -25,17 +26,20 @@ export function Dashboard() {
     };
 
     return (
-        <div className="flex flex-col gap-4 p-4 w-full h-full">
+        <div className="flex flex-col gap-2 pt-1 pb-4 px-4 w-full h-full">
             <NavigationBar
                 searchQuery={searchQuery}
                 handleSearch={handleSearch}
                 handleAddCredential={handleAddCredential}
             />
-            <CredentialsPanel
-                ref={credentialsPanelRef}
-                searchQuery={searchQuery}
-                onClearSearch={handleClearSearch}
-            />
+            <div className="flex-1 min-h-0">
+                <CredentialsPanel
+                    ref={credentialsPanelRef}
+                    searchQuery={searchQuery}
+                    onClearSearch={handleClearSearch}
+                />
+            </div>
+            <Footer />
         </div>
     );
 }

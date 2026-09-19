@@ -24,16 +24,16 @@ export function CredentialInput({
     const getIcon = () => {
         const lowerLabel = label.toLowerCase();
         if (lowerLabel.includes("username"))
-            return <User className="text-default-400" size={20} />;
+            return <User className="text-default-400" size={16} />;
         if (lowerLabel.includes("password"))
-            return <Lock className="text-default-400" size={20} />;
+            return <Lock className="text-default-400" size={16} />;
         if (lowerLabel.includes("url"))
-            return <Globe className="text-default-400" size={20} />;
+            return <Globe className="text-default-400" size={16} />;
         if (lowerLabel.includes("note"))
-            return <FileText className="text-default-400" size={20} />;
+            return <FileText className="text-default-400" size={16} />;
         if (lowerLabel.includes("title"))
-            return <Tag className="text-default-400" size={20} />;
-        return <Key className="text-default-400" size={20} />;
+            return <Tag className="text-default-400" size={16} />;
+        return <Key className="text-default-400" size={16} />;
     };
 
     const getFieldName = () => {
@@ -59,13 +59,13 @@ export function CredentialInput({
     };
 
     return (
-        <div className="flex items-start gap-2 w-full">
-            <div className="pt-2">{getIcon()}</div>
-            <div className="flex-1">
-                <label className="block text-sm font-medium mb-1">
+        <div className="flex items-start gap-1.5 w-full">
+            <div className="pt-1.5">{getIcon()}</div>
+            <div className="flex-1 min-w-0">
+                <label className="block text-xs font-medium mb-0.5">
                     {label}
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                     <Input
                         value={title}
                         isDisabled={isDisabled}
@@ -78,12 +78,13 @@ export function CredentialInput({
                         }
                         isInvalid={isInvalid}
                         errorMessage={errorMessage}
+                        size="sm"
                     />
                     {isPasswordField && (
                         <CopyToClipboardButton
                             text={title}
                             isDisabled={isDisabled}
-                            className="min-w-unit-6 h-unit-6 pt-2"
+                            className="min-w-0 h-8"
                         />
                     )}
                 </div>
