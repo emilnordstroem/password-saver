@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader, Divider, Button } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
 import { PasswordInput } from "./PasswordInput";
 import { GeneratePasswordModal } from "./GeneratePasswordModal";
-import { Shield, WandSparkles } from "lucide-react";
+import { Shield } from "lucide-react";
 
 interface PasswordOverviewProps {
     password?: PasswordEntry | null;
@@ -88,7 +88,6 @@ export function PasswordOverview({
                     title={editablePassword.password || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
-                    type="password"
                 />
                 <Button
                     variant="light"
@@ -106,7 +105,6 @@ export function PasswordOverview({
                     title={editablePassword.url || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
-                    type="url"
                 />
                 <PasswordInput
                     label="Note"

@@ -8,7 +8,7 @@ import {
     Input,
     Checkbox,
 } from "@nextui-org/react";
-import { Check, RotateCw } from "lucide-react";
+import { Check, Copy, RotateCw } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 
 export interface IGeneratePasswordModalProps {
@@ -162,7 +162,7 @@ export function GeneratePasswordModal({
                                 color={copied ? "success" : "default"}
                                 variant={copied ? "flat" : "solid"}
                             >
-                                {copied ? <Check /> : "Copy"}
+                                {copied ? <Check /> : <Copy />}
                             </Button>
                             <Button
                                 radius="sm"
