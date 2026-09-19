@@ -44,6 +44,7 @@ export const CredentialsPanel = forwardRef<
         const [leftWidth, setLeftWidth] = useState(50);
         const [isResizing, setIsResizing] = useState(false);
         const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+        const [dirtyCredentials, setDirtyCredentials] = useState<Set<number | null>>(new Set());
         const containerRef = useRef<HTMLDivElement>(null);
 
         // Load credentials from database on mount
@@ -59,14 +60,14 @@ export const CredentialsPanel = forwardRef<
             loadCredentials();
         }, []);
 
-        // Track which credentials have been saved (have an id)
+        // Track which credentials have been saved (have an id) and are not dirty
         const savedCredentials = useMemo(() => {
             return new Set(
                 credentials
-                    .filter((c) => c.id !== null)
+                    .filter((c) => c.id !== null && !dirtyCredentials.has(c.id))
                     .map((c) => c.id as number)
             );
-        }, [credentials]);
+        }, [credentials, dirtyCredentials]);
 
         const filteredCredentials = useMemo(() => {
             const query = searchQuery.toLowerCase().trim();
@@ -110,6 +111,12 @@ export const CredentialsPanel = forwardRef<
             };
             setCredentials([...credentials, newCredentials]);
             setSelectedCredential(newCredentials);
+            // Mark new credential as dirty (null id represents new, unsaved)
+            setDirtyCredentials(prev => {
+                const newSet = new Set(prev);
+                newSet.add(null);
+                return newSet;
+            });
             onAddCredentials?.();
         };
 
@@ -123,6 +130,12 @@ export const CredentialsPanel = forwardRef<
             if (selectedCredential === credentialsToDelete) {
                 setSelectedCredential(null);
             }
+            // Remove from dirty set
+            setDirtyCredentials(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(credentialsToDelete.id);
+                return newSet;
+            });
         };
 
         const handleUpdateCredentials = (
@@ -144,6 +157,12 @@ export const CredentialsPanel = forwardRef<
                 setCredentials(updated);
             }
             setSelectedCredential(updatedCredentials);
+            // Mark the credential as dirty (has unsaved changes)
+            setDirtyCredentials(prev => {
+                const newSet = new Set(prev);
+                newSet.add(updatedCredentials.id);
+                return newSet;
+            });
         };
 
         // Validate the credential (title is required)
@@ -200,6 +219,17 @@ export const CredentialsPanel = forwardRef<
                     setCredentials(updated);
                     setSelectedCredential(savedCred);
                 }
+
+                // Mark the credential as clean (no longer dirty)
+                setDirtyCredentials(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(savedCred.id);
+                    // If this was a new credential (was null, now has id), also remove null
+                    if (cred.id === null) {
+                        newSet.delete(null);
+                    }
+                    return newSet;
+                });
 
                 // Clear validation errors
                 setValidationErrors({});
