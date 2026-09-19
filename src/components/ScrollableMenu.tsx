@@ -60,12 +60,10 @@ export function ScrollableMenu({
         const query = searchQuery.toLowerCase().trim();
         if (!query) return true;
         
-        return (
-            password.title?.toLowerCase().includes(query) ||
-            password.username?.toLowerCase().includes(query) ||
-            password.url?.toLowerCase().includes(query) ||
-            password.note?.toLowerCase().includes(query)
-        );
+        const titleMatch = password.title?.toLowerCase().includes(query);
+        const usernameMatch = password.username?.toLowerCase().includes(query);
+        
+        return titleMatch || usernameMatch;
     });
 
     return (
