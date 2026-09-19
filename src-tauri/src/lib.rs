@@ -1,3 +1,6 @@
+// Database module for password CRUD operations
+pub mod db;
+
 // Empty Tauri application
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
