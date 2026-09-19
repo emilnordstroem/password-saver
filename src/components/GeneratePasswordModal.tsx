@@ -50,7 +50,7 @@ export function GeneratePasswordModal({
 
     const getPasswordStrength = useCallback(() => {
         if (password.length === 0) return "Empty";
-        if (password.length < 8) return "Very Weak";
+        if (password.length < 8) return "Weak";
 
         let score = 0;
         if (password.length >= 12) score++;
@@ -72,7 +72,6 @@ export function GeneratePasswordModal({
             case "Strong":
                 return "text-success";
             case "Weak":
-            case "Very Weak":
                 return "text-danger";
             default:
                 return "text-default-500";
@@ -137,25 +136,26 @@ export function GeneratePasswordModal({
                 </ModalHeader>
                 <ModalBody>
                     <div className="flex flex-col gap-4">
-                        <div className="flex flex-row gap-2">
-                            <Input
-                                type="text"
-                                value={password}
-                                readOnly
-                                radius="sm"
-                                className="flex-1"
-                                label="Generated Password"
-                            />
-                            <CopyToClipboardButton text={password} />
-                            <Button
-                                radius="sm"
-                                size="md"
-                                onPress={generatePassword}
-                                color="default"
-                                variant="solid"
-                            >
-                                <RotateCw />
-                            </Button>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-row gap-2">
+                                <Input
+                                    type="text"
+                                    value={password}
+                                    readOnly
+                                    radius="sm"
+                                    className="flex-1"
+                                />
+                                <CopyToClipboardButton text={password} />
+                                <Button
+                                    radius="sm"
+                                    isIconOnly={true}
+                                    onPress={generatePassword}
+                                    color="default"
+                                    variant="solid"
+                                >
+                                    <RotateCw size={16} />
+                                </Button>
+                            </div>
                         </div>
                         <div className="flex justify-start">
                             <span
