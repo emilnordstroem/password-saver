@@ -96,8 +96,6 @@ export function PasswordOverview({
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
                 />
-                <Divider />
-                <Button isDisabled={isInputDisabled}>Save</Button>
             </CardBody>
         </Card>
     );
