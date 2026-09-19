@@ -68,11 +68,11 @@ export function PasswordInput({
                 <label className="block text-sm font-medium mb-1">
                     {label}
                 </label>
-                <div className="relative">
+                <div className="flex gap-2">
                     <Input
                         value={title}
                         isDisabled={isDisabled}
-                        className="w-full"
+                        className="flex-1"
                         variant="bordered"
                         type={isPasswordField ? "password" : "text"}
                         placeholder={getPlaceholder()}
@@ -81,13 +81,11 @@ export function PasswordInput({
                         }
                     />
                     {isPasswordField && (
-                        <div className="absolute right-0 top-0 h-full flex items-center pr-2 gap-1">
-                            <CopyToClipboardButton
-                                text={title}
-                                isDisabled={isDisabled}
-                                className="min-w-unit-6 h-unit-6"
-                            />
-                        </div>
+                        <CopyToClipboardButton
+                            text={title}
+                            isDisabled={isDisabled}
+                            className="min-w-unit-6 h-unit-6 pt-2"
+                        />
                     )}
                 </div>
             </div>

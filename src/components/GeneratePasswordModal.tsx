@@ -60,16 +60,22 @@ export function GeneratePasswordModal({
         if (/[0-9]/.test(password)) score++;
         if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-        if (score >= 5) return "Strong";
-        if (score >= 3) return "Weak";
+        if (score >= 5) return "Very Strong";
+        if (score >= 4) return "Strong";
+        if (score >= 3) return "Medium";
+        return "Weak";
     }, [password]);
 
     const getStrengthColor = useCallback(() => {
         const strength = getPasswordStrength();
         switch (strength) {
+            case "Very Strong":
             case "Strong":
                 return "text-success";
+            case "Medium":
+                return "text-warning";
             case "Weak":
+            case "Very Weak":
                 return "text-danger";
             default:
                 return "text-default-500";
