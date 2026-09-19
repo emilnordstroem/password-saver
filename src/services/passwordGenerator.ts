@@ -6,10 +6,9 @@ export interface PasswordOptions {
     useSpecialChars: boolean;
 }
 
-const UPPERCASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const LOWERCASE_CHARS = "abcdefghijklmnopqrstuvwxyz";
-const NUMBER_CHARS = "0123456789";
-const SPECIAL_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+// NIST SP 800-63B: All printable ASCII characters
+// Printable ASCII: 32-126 (95 characters)
+const PRINTABLE_ASCII = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
 function getRandomInt(max: number): number {
     const randomBuffer = new Uint32Array(1);
@@ -18,45 +17,40 @@ function getRandomInt(max: number): number {
 }
 
 export function generatePassword(options: PasswordOptions): string {
-    const charSets = [];
-    if (options.useUppercase) charSets.push(UPPERCASE_CHARS);
-    if (options.useLowercase) charSets.push(LOWERCASE_CHARS);
-    if (options.useNumbers) charSets.push(NUMBER_CHARS);
-    if (options.useSpecialChars) charSets.push(SPECIAL_CHARS);
-
-    if (charSets.length === 0) {
-        return "";
-    }
-
+    // NIST SP 800-63B: Minimum 8 characters
+    const length = Math.max(options.length, 8);
+    
+    // Build character set based on options (for backward compatibility with UI)
+    // But use all printable ASCII when all options are selected (NIST approach)
     let chars = "";
-    if (options.useUppercase) chars += UPPERCASE_CHARS;
-    if (options.useLowercase) chars += LOWERCASE_CHARS;
-    if (options.useNumbers) chars += NUMBER_CHARS;
-    if (options.useSpecialChars) chars += SPECIAL_CHARS;
+    if (options.useUppercase) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (options.useLowercase) chars += "abcdefghijklmnopqrstuvwxyz";
+    if (options.useNumbers) chars += "0123456789";
+    if (options.useSpecialChars) chars += "!@#$%^&*()_+-=[]{}|;:,.<>?";
+    
+    // If all character types are enabled, use full printable ASCII (NIST recommendation)
+    if (options.useUppercase && options.useLowercase && options.useNumbers && options.useSpecialChars) {
+        chars = PRINTABLE_ASCII;
+    }
+    
+    // If no character types are selected, default to all printable ASCII
+    if (chars === "") {
+        chars = PRINTABLE_ASCII;
+    }
 
     let newPassword = "";
-
-    // Ensure at least one character from each selected set
-    for (const charSet of charSets) {
-        const randomIndex = getRandomInt(charSet.length);
-        newPassword += charSet[randomIndex];
-    }
-
-    // Fill the rest of the password with random characters from all selected sets
-    for (let i = newPassword.length; i < options.length; i++) {
+    
+    // Generate password with random characters from the selected set
+    for (let i = 0; i < length; i++) {
         const randomIndex = getRandomInt(chars.length);
         newPassword += chars[randomIndex];
     }
 
-    // Shuffle the password to mix the required characters
-    const passwordArray = newPassword.split("");
-    for (let i = passwordArray.length - 1; i > 0; i--) {
-        const j = getRandomInt(i + 1);
-        [passwordArray[i], passwordArray[j]] = [
-            passwordArray[j],
-            passwordArray[i],
-        ];
-    }
+    return newPassword;
+}
 
-    return passwordArray.join("");
+// NIST SP 800-63B: Verify password meets minimum requirements
+export function meetsNistRequirements(password: string): boolean {
+    // Minimum length of 8 characters
+    return password.length >= 8;
 }
