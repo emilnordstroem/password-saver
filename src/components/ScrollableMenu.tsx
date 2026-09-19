@@ -7,39 +7,39 @@ import {
     ScrollShadow,
     Button,
 } from "@nextui-org/react";
-import { ILoginEntry } from "@src/types/login";
+import { ICredentialsEntry } from "@src/types/credentials";
 import { MdDelete } from "react-icons/md";
 import { Lock, LockOpen } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";
 
 interface ScrollableMenuProps {
-    passwords?: ILoginEntry[];
-    selectedPassword?: ILoginEntry | null;
-    onSelectPassword?: (password: ILoginEntry | null) => void;
-    onAddPassword?: () => void;
-    onDeletePassword?: (password: ILoginEntry) => void;
-    hasPasswords?: boolean;
+    credentials?: ICredentialsEntry[];
+    selectedCredentials?: ICredentialsEntry | null;
+    onSelectCredentials?: (password: ICredentialsEntry | null) => void;
+    onAddCredentials?: () => void;
+    onDeleteCredentials?: (password: ICredentialsEntry) => void;
+    hasCredentials?: boolean;
     onClearSearch?: () => void;
 }
 
 export function ScrollableMenu({
-    passwords = [],
-    selectedPassword = null,
-    onSelectPassword = () => {},
-    onAddPassword = () => {},
-    onDeletePassword = () => {},
-    hasPasswords = false,
+    credentials: passwords = [],
+    selectedCredentials: selectedPassword = null,
+    onSelectCredentials: onSelectPassword = () => {},
+    onAddCredentials: onAddPassword = () => {},
+    onDeleteCredentials: onDeletePassword = () => {},
+    hasCredentials: hasPasswords = false,
     onClearSearch = () => {},
 }: ScrollableMenuProps) {
     const [passwordToDelete, setPasswordToDelete] =
-        useState<ILoginEntry | null>(null);
+        useState<ICredentialsEntry | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleSelect = (password: ILoginEntry) => {
+    const handleSelect = (password: ICredentialsEntry) => {
         onSelectPassword(password);
     };
 
-    const handleDelete = (e: React.MouseEvent, password: ILoginEntry) => {
+    const handleDelete = (e: React.MouseEvent, password: ICredentialsEntry) => {
         e.stopPropagation();
         setPasswordToDelete(password);
         setIsDeleteModalOpen(true);

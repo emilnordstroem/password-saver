@@ -1,41 +1,42 @@
 import { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, Divider, Button } from "@nextui-org/react";
-import { ILoginEntry } from "@src/types/login";
-import { PasswordInput } from "./PasswordInput";
+import { ICredentialsEntry } from "@src/types/credentials";
+import { CredentialInput } from "./CredentialInput";
 import { GeneratePasswordModal } from "./GeneratePasswordModal";
 import { Shield } from "lucide-react";
 
-interface PasswordOverviewProps {
-    password?: ILoginEntry | null;
+interface CredentialsOverviewProps {
+    credentials?: ICredentialsEntry | null;
     isEditing?: boolean;
-    onUpdate?: (password: ILoginEntry) => void;
+    onUpdate?: (password: ICredentialsEntry) => void;
 }
 
-export function PasswordOverview({
-    password = null,
+export function CredentialsOverview({
+    credentials = null,
     isEditing = false,
     onUpdate = () => {},
-}: PasswordOverviewProps) {
-    const isEmpty = password === null;
+}: CredentialsOverviewProps) {
+    const isEmpty = credentials === null;
 
-    const [editablePassword, setEditablePassword] = useState<ILoginEntry>({
-        id: null,
-        title: "",
-        username: "",
-        password: "",
-        url: "",
-        note: "",
-        created_at: "",
-        updated_at: "",
-    });
+    const [editableCredentials, setEditableCredential] =
+        useState<ICredentialsEntry>({
+            id: null,
+            title: "",
+            username: "",
+            password: "",
+            url: "",
+            note: "",
+            created_at: "",
+            updated_at: "",
+        });
 
     const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
 
     useEffect(() => {
-        if (password) {
-            setEditablePassword(password);
+        if (credentials) {
+            setEditableCredential(credentials);
         } else {
-            setEditablePassword({
+            setEditableCredential({
                 id: null,
                 title: "",
                 username: "",
@@ -46,11 +47,11 @@ export function PasswordOverview({
                 updated_at: "",
             });
         }
-    }, [password]);
+    }, [credentials]);
 
-    const handleChange = (field: keyof ILoginEntry, value: string) => {
-        const updated = { ...editablePassword, [field]: value };
-        setEditablePassword(updated);
+    const handleChange = (field: keyof ICredentialsEntry, value: string) => {
+        const updated = { ...editableCredentials, [field]: value };
+        setEditableCredential(updated);
         onUpdate(updated);
     };
 
@@ -68,24 +69,24 @@ export function PasswordOverview({
             isDisabled={isEmpty && !isEditing}
         >
             <CardHeader className="flex gap-2">
-                <PasswordInput
+                <CredentialInput
                     label="Title"
-                    title={editablePassword.title || ""}
+                    title={editableCredentials.title || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
                 />
             </CardHeader>
             <Divider />
             <CardBody className="flex flex-col gap-4">
-                <PasswordInput
+                <CredentialInput
                     label="Username"
-                    title={editablePassword.username || ""}
+                    title={editableCredentials.username || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
                 />
-                <PasswordInput
+                <CredentialInput
                     label="Password"
-                    title={editablePassword.password || ""}
+                    title={editableCredentials.password || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
                 />
@@ -100,15 +101,15 @@ export function PasswordOverview({
                     Generate Password
                 </Button>
                 <Divider />
-                <PasswordInput
+                <CredentialInput
                     label="URL"
-                    title={editablePassword.url || ""}
+                    title={editableCredentials.url || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
                 />
-                <PasswordInput
+                <CredentialInput
                     label="Note"
-                    title={editablePassword.note || ""}
+                    title={editableCredentials.note || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
                 />
