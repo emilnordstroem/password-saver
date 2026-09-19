@@ -42,7 +42,7 @@ export function ScrollableMenu({
         onSelectCredential(credential);
     };
 
-    const handleSave = async (e: React.MouseEvent, credential: ICredentialsEntry) => {
+    const handleSave = async (e: React.MouseEvent | React.KeyboardEvent, credential: ICredentialsEntry) => {
         console.log("ScrollableMenu handleSave called for credential:", credential.id, credential.title);
         e.stopPropagation();
         if (onSaveCredentials) {
@@ -52,7 +52,7 @@ export function ScrollableMenu({
     };
 
     const handleDelete = (
-        e: React.MouseEvent,
+        e: React.MouseEvent | React.KeyboardEvent,
         credential: ICredentialsEntry,
     ) => {
         e.stopPropagation();

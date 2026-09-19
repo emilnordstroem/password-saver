@@ -10,11 +10,11 @@ interface CredentialsMenuItemProps {
     selectedCredential: ICredentialsEntry | null;
     handleSelect: (credential: ICredentialsEntry) => void;
     handleSave: (
-        event: React.MouseEvent,
+        event: React.MouseEvent | React.KeyboardEvent,
         credential: ICredentialsEntry,
     ) => void;
     handleDelete: (
-        event: React.MouseEvent,
+        event: React.MouseEvent | React.KeyboardEvent,
         credential: ICredentialsEntry,
     ) => void;
     isSaved: boolean;
@@ -85,6 +85,16 @@ export function CredentialsMenuItem({
             shadow="sm"
             radius="sm"
             isHoverable
+            tabIndex={0}
+            onKeyUp={(event) => {
+                if (event.key === 'Enter') {
+                    event.stopPropagation();
+                    handleSave(event, credential);
+                } else if (event.key === 'Backspace') {
+                    event.stopPropagation();
+                    handleDelete(event, credential);
+                }
+            }}
         >
             <CardHeader className="flex gap-2 justify-between">
                 <div 

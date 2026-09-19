@@ -36,7 +36,15 @@ export function ConfirmModal({
             size="sm"
             backdrop="blur"
         >
-            <ModalContent>
+            <ModalContent
+                onKeyUp={(event) => {
+                    if (event.key === 'Enter') {
+                        handleConfirm();
+                    } else if (event.key === 'Escape') {
+                        handleCancel();
+                    }
+                }}
+            >
                 <ModalHeader>{title}</ModalHeader>
                 <ModalBody>{message}</ModalBody>
                 <ModalFooter>

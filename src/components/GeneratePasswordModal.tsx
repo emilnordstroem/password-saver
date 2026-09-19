@@ -93,7 +93,15 @@ export function GeneratePasswordModal({
                 backdrop="blur"
                 className="max-w-2xl"
             >
-                <ModalContent>
+                <ModalContent
+                    onKeyUp={(event) => {
+                        if (event.key === 'Enter') {
+                            handleConfirm();
+                        } else if (event.key === 'Escape') {
+                            onClose();
+                        }
+                    }}
+                >
                     <ModalHeader className="flex flex-col gap-1">
                         Generate Password
                     </ModalHeader>
