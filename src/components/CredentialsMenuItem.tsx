@@ -1,6 +1,8 @@
 import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import { Lock, LockOpen, Save, SaveCheck, Trash } from "lucide-react";
 import { ICredentialsEntry } from "@src/types/credentials";
+import { getFaviconUrlWithFallback } from "@src/utils/favicon";
+import { useState, useEffect } from "react";
 
 interface CredentialsMenuItemProps {
     credential: ICredentialsEntry;
@@ -27,6 +29,55 @@ export function CredentialsMenuItem({
     handleDelete,
     isSaved,
 }: CredentialsMenuItemProps) {
+    const [faviconUrl, setFaviconUrl] = useState<string | null>(null);
+    const [faviconError, setFaviconError] = useState<boolean>(false);
+
+    // Get favicon URL when credential URL changes
+    useEffect(() => {
+        if (credential.url) {
+            const url = getFaviconUrlWithFallback(credential.url);
+            setFaviconUrl(url);
+            setFaviconError(false);
+        } else {
+            setFaviconUrl(null);
+            setFaviconError(false);
+        }
+    }, [credential.url]);
+
+    const handleFaviconError = () => {
+        setFaviconError(true);
+    };
+
+    // Show lock icon if no URL, favicon if URL present
+    const renderIcon = () => {
+        if (!credential.url) {
+            return selectedCredential === credential ? (
+                <LockOpen size={16} className="text-default-400" />
+            ) : (
+                <Lock size={16} className="text-default-400" />
+            );
+        }
+
+        // If we have a favicon URL and no error, show the image
+        if (faviconUrl && !faviconError) {
+            return (
+                <img
+                    src={faviconUrl}
+                    alt=""
+                    className="w-4 h-4 object-contain"
+                    onError={handleFaviconError}
+                />
+            );
+        }
+
+        // Fallback to lock icon if favicon fails
+        return selectedCredential === credential ? (
+            <LockOpen size={16} className="text-default-400" />
+        ) : (
+            <Lock size={16} className="text-default-400" />
+        );
+    };
+
     return (
         <Card
             key={index}
@@ -40,11 +91,7 @@ export function CredentialsMenuItem({
                     className="flex flex-row gap-2 items-center flex-1 cursor-pointer"
                     onClick={() => handleSelect(credential)}
                 >
-                    {selectedCredential === credential ? (
-                        <LockOpen size={16} className="text-default-400" />
-                    ) : (
-                        <Lock size={16} className="text-default-400" />
-                    )}
+                    {renderIcon()}
                     <div className="flex flex-col text-left">
                         <p className="text-md font-semibold">
                             {credential.title || (
