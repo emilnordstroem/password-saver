@@ -7,17 +7,17 @@ import {
     ScrollShadow,
     Button,
 } from "@nextui-org/react";
-import { PasswordEntry } from "@src/types/password";
+import { ILoginEntry } from "@src/types/password";
 import { MdDelete } from "react-icons/md";
 import { Lock, LockOpen } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";
 
 interface ScrollableMenuProps {
-    passwords?: PasswordEntry[];
-    selectedPassword?: PasswordEntry | null;
-    onSelectPassword?: (password: PasswordEntry | null) => void;
+    passwords?: ILoginEntry[];
+    selectedPassword?: ILoginEntry | null;
+    onSelectPassword?: (password: ILoginEntry | null) => void;
     onAddPassword?: () => void;
-    onDeletePassword?: (password: PasswordEntry) => void;
+    onDeletePassword?: (password: ILoginEntry) => void;
     hasPasswords?: boolean;
     onClearSearch?: () => void;
 }
@@ -32,14 +32,14 @@ export function ScrollableMenu({
     onClearSearch = () => {},
 }: ScrollableMenuProps) {
     const [passwordToDelete, setPasswordToDelete] =
-        useState<PasswordEntry | null>(null);
+        useState<ILoginEntry | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleSelect = (password: PasswordEntry) => {
+    const handleSelect = (password: ILoginEntry) => {
         onSelectPassword(password);
     };
 
-    const handleDelete = (e: React.MouseEvent, password: PasswordEntry) => {
+    const handleDelete = (e: React.MouseEvent, password: ILoginEntry) => {
         e.stopPropagation();
         setPasswordToDelete(password);
         setIsDeleteModalOpen(true);
@@ -82,7 +82,9 @@ export function ScrollableMenu({
                                     />
                                     <div className="flex flex-col text-left">
                                         <p className="text-md font-semibold text-default-400">
-                                            {hasPasswords ? "No results found" : "No passwords yet"}
+                                            {hasPasswords
+                                                ? "No results found"
+                                                : "No passwords yet"}
                                         </p>
                                         <p className="text-sm text-default-500">
                                             <span className="text-default-400">

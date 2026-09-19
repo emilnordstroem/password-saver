@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Card, CardBody, CardHeader, Divider, Button } from "@nextui-org/react";
-import { PasswordEntry } from "@src/types/password";
+import { ILoginEntry } from "@src/types/password";
 import { PasswordInput } from "./PasswordInput";
 import { GeneratePasswordModal } from "./GeneratePasswordModal";
 import { Shield } from "lucide-react";
 
 interface PasswordOverviewProps {
-    password?: PasswordEntry | null;
+    password?: ILoginEntry | null;
     isEditing?: boolean;
-    onUpdate?: (password: PasswordEntry) => void;
+    onUpdate?: (password: ILoginEntry) => void;
 }
 
 export function PasswordOverview({
@@ -18,7 +18,7 @@ export function PasswordOverview({
 }: PasswordOverviewProps) {
     const isEmpty = password === null;
 
-    const [editablePassword, setEditablePassword] = useState<PasswordEntry>({
+    const [editablePassword, setEditablePassword] = useState<ILoginEntry>({
         id: null,
         title: "",
         username: "",
@@ -48,7 +48,7 @@ export function PasswordOverview({
         }
     }, [password]);
 
-    const handleChange = (field: keyof PasswordEntry, value: string) => {
+    const handleChange = (field: keyof ILoginEntry, value: string) => {
         const updated = { ...editablePassword, [field]: value };
         setEditablePassword(updated);
         onUpdate(updated);
