@@ -2,9 +2,11 @@
 //! Uses SQLite via rusqlite with parameterized queries for security
 
 use chrono::Utc;
-use rusqlite::{Connection, Result, params, Row};
+use rusqlite::{Connection, Result, params, Row, Error as RusqliteError};
 use serde::{Serialize, Deserialize};
 use std::path::Path;
+
+use crate::encryption::{EncryptionConfig, EncryptionError, SharedEncryptionState};
 
 /// Represents a password/credential entry in the database
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -57,7 +59,7 @@ impl PasswordEntry {
 }
 
 /// Initialize the database schema
-/// Creates the passwords table if it doesn't exist
+/// Creates the passwords table and config table if they don't exist
 pub fn initialize_database(conn: &Connection) -> Result<()> {
     conn.execute_batch(
         "CREATE TABLE IF NOT EXISTS passwords (
@@ -71,7 +73,13 @@ pub fn initialize_database(conn: &Connection) -> Result<()> {
             updated_at TEXT NOT NULL
         );
 
-        CREATE INDEX IF NOT EXISTS idx_passwords_title ON passwords (title);",
+        CREATE INDEX IF NOT EXISTS idx_passwords_title ON passwords (title);
+
+        CREATE TABLE IF NOT EXISTS config (
+            id INTEGER PRIMARY KEY,
+            key TEXT NOT NULL UNIQUE,
+            value TEXT
+        );",
     )?;
     Ok(())
 }
@@ -197,6 +205,42 @@ pub fn search_passwords(conn: &Connection, query: &str) -> Result<Vec<PasswordEn
     Ok(entries)
 }
 
+/// Encrypt all sensitive fields in a PasswordEntry
+/// Returns a new PasswordEntry with encrypted fields
+pub fn encrypt_entry(
+    entry: &PasswordEntry,
+    encryption_state: &SharedEncryptionState,
+) -> Result<PasswordEntry, EncryptionError> {
+    Ok(PasswordEntry {
+        id: entry.id,
+        title: entry.title.clone(),
+        username: encryption_state.encrypt_field(&entry.username)?,
+        password: encryption_state.encrypt_field(&entry.password)?,
+        url: encryption_state.encrypt_field(&entry.url)?,
+        notes: encryption_state.encrypt_field(&entry.notes)?,
+        created_at: entry.created_at.clone(),
+        updated_at: entry.updated_at.clone(),
+    })
+}
+
+/// Decrypt all sensitive fields in a PasswordEntry
+/// Returns a new PasswordEntry with decrypted fields
+pub fn decrypt_entry(
+    entry: &PasswordEntry,
+    encryption_state: &SharedEncryptionState,
+) -> Result<PasswordEntry, EncryptionError> {
+    Ok(PasswordEntry {
+        id: entry.id,
+        title: entry.title.clone(),
+        username: encryption_state.decrypt_field(&entry.username)?,
+        password: encryption_state.decrypt_field(&entry.password)?,
+        url: encryption_state.decrypt_field(&entry.url)?,
+        notes: encryption_state.decrypt_field(&entry.notes)?,
+        created_at: entry.created_at.clone(),
+        updated_at: entry.updated_at.clone(),
+    })
+}
+
 /// Check if the database is empty
 pub fn is_database_empty(conn: &Connection) -> Result<bool> {
     let mut stmt = conn.prepare("SELECT COUNT(*) FROM passwords ")?;
@@ -219,6 +263,53 @@ pub fn count_passwords(conn: &Connection) -> Result<i64> {
         Ok(row.get(0)?)
     } else {
         Ok(0)
+    }
+}
+
+/// Config key for encryption configuration
+const CONFIG_KEY_ENCRYPTION: &str = "encryption_config";
+
+/// Save encryption config to database
+pub fn save_encryption_config(conn: &Connection, config: &EncryptionConfig) -> Result<()> {
+    let config_json = serde_json::to_string(config)
+        .map_err(|e| RusqliteError::SqliteFailure(
+            rusqlite::ffi::Error::new(rusqlite::ffi::SQLITE_ERROR),
+            Some(e.to_string()),
+        ))?;
+
+    conn.execute(
+        "INSERT OR REPLACE INTO config (key, value) VALUES (?1, ?2)",
+        params![CONFIG_KEY_ENCRYPTION, config_json],
+    )?;
+    Ok(())
+}
+
+/// Load encryption config from database
+pub fn load_encryption_config(conn: &Connection) -> Result<Option<EncryptionConfig>> {
+    let mut stmt = conn.prepare(
+        "SELECT value FROM config WHERE key = ?1",
+    )?;
+
+    let mut rows = stmt.query(params![CONFIG_KEY_ENCRYPTION])?;
+
+    if let Some(row) = rows.next()? {
+        let config_json: String = row.get(0)?;
+        let config: EncryptionConfig = serde_json::from_str(&config_json)
+            .map_err(|e| RusqliteError::SqliteFailure(
+                rusqlite::ffi::Error::new(rusqlite::ffi::SQLITE_ERROR),
+                Some(e.to_string()),
+            ))?;
+        Ok(Some(config))
+    } else {
+        Ok(None)
+    }
+}
+
+/// Check if encryption is initialized in the database
+pub fn is_encryption_initialized(conn: &Connection) -> Result<bool> {
+    match load_encryption_config(conn)? {
+        Some(config) => Ok(config.initialized),
+        None => Ok(false),
     }
 }
 
