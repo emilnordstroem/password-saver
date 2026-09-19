@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Divider, Button } from "@nextui-org/react";
 import { PasswordEntry } from "@src/types/password";
 import { PasswordInput } from "./PasswordInput";
+import { GeneratePasswordModal } from "./GeneratePasswordModal";
+import { Shield } from "lucide-react";
 
 interface PasswordOverviewProps {
     password?: PasswordEntry | null;
@@ -27,6 +29,8 @@ export function PasswordOverview({
         updated_at: "",
     });
 
+    const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+
     useEffect(() => {
         if (password) {
             setEditablePassword(password);
@@ -51,6 +55,10 @@ export function PasswordOverview({
     };
 
     const isInputDisabled = isEmpty && !isEditing;
+
+    const handleGeneratePassword = (generatedPassword: string) => {
+        handleChange("password", generatedPassword);
+    };
 
     return (
         <Card
@@ -80,15 +88,23 @@ export function PasswordOverview({
                     title={editablePassword.password || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
-                    type="password"
                 />
+                <Button
+                    variant="light"
+                    color="primary"
+                    onClick={() => setIsGenerateModalOpen(true)}
+                    isDisabled={isInputDisabled}
+                    startContent={<Shield size={16} />}
+                    className="w-fit"
+                >
+                    Generate Password
+                </Button>
                 <Divider />
                 <PasswordInput
                     label="URL"
                     title={editablePassword.url || ""}
                     isDisabled={isInputDisabled}
                     handleChange={handleChange}
-                    type="url"
                 />
                 <PasswordInput
                     label="Note"
@@ -97,6 +113,11 @@ export function PasswordOverview({
                     handleChange={handleChange}
                 />
             </CardBody>
+            <GeneratePasswordModal
+                isOpen={isGenerateModalOpen}
+                onClose={() => setIsGenerateModalOpen(false)}
+                onGenerate={handleGeneratePassword}
+            />
         </Card>
     );
 }
