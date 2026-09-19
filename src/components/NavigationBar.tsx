@@ -4,6 +4,7 @@ import {
     NavbarBrand,
     NavbarContent,
     NavbarItem,
+    Button,
 } from "@nextui-org/react";
 import { Plus } from "lucide-react";
 
@@ -37,11 +38,9 @@ export function NavigationBar({
             </NavbarContent>
             <NavbarContent justify="end">
                 <NavbarItem>
-                    <Plus
-                        className="text-default-400"
-                        size={20}
-                        onClick={handleAddPassword}
-                    />
+                    <Button onClick={handleAddPassword}>
+                        <Plus className="text-default-400" size={20} />
+                    </Button>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>
