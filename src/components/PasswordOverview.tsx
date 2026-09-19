@@ -8,7 +8,11 @@ interface PasswordOverviewProps {
     onUpdate?: (password: PasswordEntry) => void;
 }
 
-export function PasswordOverview({ password = null, isEditing = false, onUpdate = () => {} }: PasswordOverviewProps) {
+export function PasswordOverview({
+    password = null,
+    isEditing = false,
+    onUpdate = () => {},
+}: PasswordOverviewProps) {
     const isEmpty = password === null;
 
     const [editablePassword, setEditablePassword] = useState<PasswordEntry>({
@@ -55,15 +59,6 @@ export function PasswordOverview({ password = null, isEditing = false, onUpdate 
             isDisabled={isEmpty && !isEditing}
         >
             <CardHeader className="flex gap-2">
-                <div className="flex flex-col w-full">
-                    <p className="text-md font-semibold">Password Details</p>
-                    <p className="text-sm text-default-500">
-                        {isEmpty && !isEditing ? "No password selected" : isEditing ? "Add new password" : "Edit password fields"}
-                    </p>
-                </div>
-            </CardHeader>
-            <Divider />
-            <CardBody className="flex flex-col gap-4">
                 <Input
                     label="Title"
                     value={editablePassword.title}
@@ -72,6 +67,9 @@ export function PasswordOverview({ password = null, isEditing = false, onUpdate 
                     variant="bordered"
                     onValueChange={(value) => handleChange("title", value)}
                 />
+            </CardHeader>
+            <Divider />
+            <CardBody className="flex flex-col gap-4">
                 <Input
                     label="Username"
                     value={editablePassword.username || ""}
@@ -89,6 +87,7 @@ export function PasswordOverview({ password = null, isEditing = false, onUpdate 
                     type="password"
                     onValueChange={(value) => handleChange("password", value)}
                 />
+                <Divider />
                 <Input
                     label="URL"
                     value={editablePassword.url || ""}
