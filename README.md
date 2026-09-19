@@ -6,7 +6,7 @@ Password Saver is a cross-platform desktop application that stores your credenti
 
 ---
 
-## ✨ Features
+## Features
 
 - **Local Storage**: All passwords stored in SQLite database on your machine
 - **Secure**: Encryption at rest (implemented in backend)
@@ -17,11 +17,11 @@ Password Saver is a cross-platform desktop application that stores your credenti
 
 ---
 
-## 📸 Product Demonstration
+## Product Demonstration
 
 <div align="center">
 
-### 🏠 Main Dashboard
+### Dashboard
 *The clean, organized dashboard shows all your stored credentials with a searchable list.*
 
 <img src="https://github.com/user-attachments/assets/9567668f-5b7b-40fc-b367-6c8094eb03e7" 
@@ -29,7 +29,7 @@ Password Saver is a cross-platform desktop application that stores your credenti
      width="70%" 
      style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 24px;" />
 
-### ➕ Add New Credential
+### Add New Credential
 *Easily add new password entries with title, username, password, URL, and notes.*
 
 <img src="https://github.com/user-attachments/assets/42c63e8e-3321-4c38-b767-69e68205d6cb" 
@@ -37,7 +37,7 @@ Password Saver is a cross-platform desktop application that stores your credenti
      width="70%" 
      style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 24px;" />
 
-### 👁️ View Credential Details
+### View Credential Details
 *Click any entry to view full details, including copy-to-clipboard functionality.*
 
 <img src="https://github.com/user-attachments/assets/7e6508de-988d-4d8d-8c74-533c1d00a9ee" 
@@ -45,7 +45,7 @@ Password Saver is a cross-platform desktop application that stores your credenti
      width="70%" 
      style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 24px;" />
 
-### 🔍 Search & Filter
+### Search
 *Instant search across all your saved credentials.*
 
 <img src="https://github.com/user-attachments/assets/2634c635-cff0-4b54-8462-e01778d0c83d" 
@@ -57,7 +57,7 @@ Password Saver is a cross-platform desktop application that stores your credenti
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -93,7 +93,7 @@ npm run tauri build
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Component | Technology |
 |-----------|------------|
@@ -106,7 +106,7 @@ npm run tauri build
 
 ---
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 password-saver/
@@ -126,7 +126,7 @@ password-saver/
 
 ---
 
-## 🔒 Security
+## Security
 
 - **Encryption at Rest**: AES-256 encryption for sensitive fields
 - **Local-Only**: No data leaves your device
@@ -135,16 +135,14 @@ password-saver/
 
 ---
 
-## 📜 License
+## License
 
 MIT License
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions are welcome! Please open an issue.
 
 ---
-
-*Built with ❤️ using Tauri and React*
