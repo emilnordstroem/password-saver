@@ -11,12 +11,9 @@ export function Dashboard() {
 
     const handleSearch = (value: string) => {
         setSearchQuery(value);
-        // Implement search logic here
-        console.log("Searching for:", value);
     };
 
     const handleAddCredential = () => {
-        // Trigger add credential in CredentialsPanel
         credentialsPanelRef.current?.handleAddCredentials();
     };
 
