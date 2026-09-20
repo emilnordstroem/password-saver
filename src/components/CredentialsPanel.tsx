@@ -12,7 +12,12 @@ import { CredentialsOverview } from "./CredentialsOverview";
 import { ScrollableMenu } from "./ScrollableMenu";
 import { ICredentialsEntry } from "@src/types/credentials";
 import { GripVertical } from "lucide-react";
-import { addPassword, updatePassword, listPasswords, deletePassword } from "@src/utils/api";
+import {
+    addPassword,
+    updatePassword,
+    listPasswords,
+    deletePassword,
+} from "@src/utils/api";
 
 interface CredentialPanelProps {
     onAddCredentials?: () => void;
@@ -43,11 +48,14 @@ export const CredentialsPanel = forwardRef<
             useState<ICredentialsEntry | null>(null);
         const [leftWidth, setLeftWidth] = useState(50);
         const [isResizing, setIsResizing] = useState(false);
-        const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-        const [dirtyCredentials, setDirtyCredentials] = useState<Set<number | null>>(new Set());
+        const [validationErrors, setValidationErrors] = useState<
+            Record<string, string>
+        >({});
+        const [dirtyCredentials, setDirtyCredentials] = useState<
+            Set<number | null>
+        >(new Set());
         const containerRef = useRef<HTMLDivElement>(null);
 
-        // Load credentials from database on mount
         useEffect(() => {
             const loadCredentials = async () => {
                 try {
@@ -60,12 +68,11 @@ export const CredentialsPanel = forwardRef<
             loadCredentials();
         }, []);
 
-        // Track which credentials have been saved (have an id) and are not dirty
         const savedCredentials = useMemo(() => {
             return new Set(
                 credentials
                     .filter((c) => c.id !== null && !dirtyCredentials.has(c.id))
-                    .map((c) => c.id as number)
+                    .map((c) => c.id as number),
             );
         }, [credentials, dirtyCredentials]);
 
@@ -99,17 +106,15 @@ export const CredentialsPanel = forwardRef<
         }, [filteredCredentials.length, credentials.length]);
 
         const handleAddCredentials = () => {
-            // Check if there's already an unsaved credential (id: null)
-            const hasUnsavedCredential = credentials.some(c => c.id === null);
+            const hasUnsavedCredential = credentials.some((c) => c.id === null);
             if (hasUnsavedCredential) {
-                // Focus on the existing unsaved credential instead of adding a new one
-                const existingUnsaved = credentials.find(c => c.id === null);
+                const existingUnsaved = credentials.find((c) => c.id === null);
                 if (existingUnsaved) {
                     setSelectedCredential(existingUnsaved);
                 }
                 return;
             }
-            
+
             const newCredentials: ICredentialsEntry = {
                 id: null,
                 title: "",
@@ -122,8 +127,7 @@ export const CredentialsPanel = forwardRef<
             };
             setCredentials([newCredentials, ...credentials]);
             setSelectedCredential(newCredentials);
-            // Mark new credential as dirty (null id represents new, unsaved)
-            setDirtyCredentials(prev => {
+            setDirtyCredentials((prev) => {
                 const newSet = new Set(prev);
                 newSet.add(null);
                 return newSet;
@@ -134,7 +138,6 @@ export const CredentialsPanel = forwardRef<
         const handleDeleteCredentials = async (
             credentialsToDelete: ICredentialsEntry,
         ) => {
-            // If the credential has an id, delete from database
             if (credentialsToDelete.id !== null) {
                 try {
                     await deletePassword(credentialsToDelete.id);
@@ -143,8 +146,6 @@ export const CredentialsPanel = forwardRef<
                     return;
                 }
             }
-            
-            // Remove from local state
             const updatedCredentials = credentials.filter(
                 (p) => p !== credentialsToDelete,
             );
@@ -152,8 +153,7 @@ export const CredentialsPanel = forwardRef<
             if (selectedCredential === credentialsToDelete) {
                 setSelectedCredential(null);
             }
-            // Remove from dirty set
-            setDirtyCredentials(prev => {
+            setDirtyCredentials((prev) => {
                 const newSet = new Set(prev);
                 newSet.delete(credentialsToDelete.id);
                 return newSet;
@@ -179,15 +179,13 @@ export const CredentialsPanel = forwardRef<
                 setCredentials(updated);
             }
             setSelectedCredential(updatedCredentials);
-            // Mark the credential as dirty (has unsaved changes)
-            setDirtyCredentials(prev => {
+            setDirtyCredentials((prev) => {
                 const newSet = new Set(prev);
                 newSet.add(updatedCredentials.id);
                 return newSet;
             });
         };
 
-        // Validate the credential (title, username, and password are required)
         const validateCredential = (cred: ICredentialsEntry): boolean => {
             const errors: Record<string, string> = {};
             if (!cred.title || cred.title.trim() === "") {
@@ -203,19 +201,16 @@ export const CredentialsPanel = forwardRef<
             return Object.keys(errors).length === 0;
         };
 
-        // Save credential to database
-        const handleSaveCredentials = async (cred: ICredentialsEntry): Promise<boolean> => {
-            console.log("Saving credential:", cred);
-            // Validate first
+        const handleSaveCredentials = async (
+            cred: ICredentialsEntry,
+        ): Promise<boolean> => {
             if (!validateCredential(cred)) {
-                console.log("Validation failed");
                 return false;
             }
 
             try {
                 let savedCred: ICredentialsEntry;
                 if (cred.id === null) {
-                    // Create new entry with timestamps
                     const credWithTimestamps = {
                         ...cred,
                         created_at: new Date().toISOString(),
@@ -223,24 +218,23 @@ export const CredentialsPanel = forwardRef<
                     };
                     savedCred = await addPassword(credWithTimestamps);
                 } else {
-                    // Update existing entry
                     const credWithTimestamp = {
                         ...cred,
                         updated_at: new Date().toISOString(),
                     };
-                    savedCred = await updatePassword(cred.id, credWithTimestamp);
+                    savedCred = await updatePassword(
+                        cred.id,
+                        credWithTimestamp,
+                    );
                 }
 
-                // Update local state
                 if (cred.id === null) {
-                    // New credential - replace the temporary one with the saved one
                     const updated = credentials.map((p) =>
                         p.id === null ? savedCred : p,
                     );
                     setCredentials(updated);
                     setSelectedCredential(savedCred);
                 } else {
-                    // Updated credential
                     const updated = credentials.map((p) =>
                         p.id === savedCred.id ? savedCred : p,
                     );
@@ -248,18 +242,15 @@ export const CredentialsPanel = forwardRef<
                     setSelectedCredential(savedCred);
                 }
 
-                // Mark the credential as clean (no longer dirty)
-                setDirtyCredentials(prev => {
+                setDirtyCredentials((prev) => {
                     const newSet = new Set(prev);
                     newSet.delete(savedCred.id);
-                    // If this was a new credential (was null, now has id), also remove null
                     if (cred.id === null) {
                         newSet.delete(null);
                     }
                     return newSet;
                 });
 
-                // Clear validation errors
                 setValidationErrors({});
                 return true;
             } catch (error) {
