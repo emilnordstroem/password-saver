@@ -282,43 +282,45 @@ export const CredentialsPanel = forwardRef<
         }));
 
         return (
-            <div
-                ref={containerRef}
-                className="flex flex-row w-full h-full relative"
-                onMouseMove={handleResize}
-                onMouseUp={stopResizing}
-                onMouseLeave={stopResizing}
-            >
+            <div className="flex-1 min-h-0 overflow-hidden">
                 <div
-                    className="min-w-0 overflow-hidden"
-                    style={{ width: `${leftWidth}%` }}
+                    ref={containerRef}
+                    className="flex flex-row w-full h-full relative"
+                    onMouseMove={handleResize}
+                    onMouseUp={stopResizing}
+                    onMouseLeave={stopResizing}
                 >
-                    <ScrollableMenu
-                        credentials={filteredCredentials}
-                        onSelectCredential={setSelectedCredential}
-                        selectedCredential={selectedCredential}
-                        onAddCredentials={handleAddCredentials}
-                        onDeleteCredentials={handleDeleteCredentials}
-                        onSaveCredentials={handleSaveCredentials}
-                        hasCredentials={credentials.length > 0}
-                        onClearSearch={onClearSearch}
-                        savedCredentials={savedCredentials}
-                    />
-                </div>
-                <div
-                    className={`cursor-col-resize z-10 flex items-center justify-center bg-default-200 hover:bg-default-300 active:bg-default-400 transition-colors shrink-0`}
-                    style={{ width: RESIZER_WIDTH }}
-                    onMouseDown={startResizing}
-                >
-                    <GripVertical size={16} className="text-default-500" />
-                </div>
-                <div className="flex-1 min-w-0 overflow-hidden">
-                    <CredentialsOverview
-                        credentials={selectedCredential}
-                        isEditing={selectedCredential !== null}
-                        onUpdate={handleUpdateCredentials}
-                        validationErrors={validationErrors}
-                    />
+                    <div
+                        className="min-w-0 overflow-hidden"
+                        style={{ width: `${leftWidth}%` }}
+                    >
+                        <ScrollableMenu
+                            credentials={filteredCredentials}
+                            onSelectCredential={setSelectedCredential}
+                            selectedCredential={selectedCredential}
+                            onAddCredentials={handleAddCredentials}
+                            onDeleteCredentials={handleDeleteCredentials}
+                            onSaveCredentials={handleSaveCredentials}
+                            hasCredentials={credentials.length > 0}
+                            onClearSearch={onClearSearch}
+                            savedCredentials={savedCredentials}
+                        />
+                    </div>
+                    <div
+                        className={`cursor-col-resize z-10 flex items-center justify-center bg-default-200 hover:bg-default-300 active:bg-default-400 transition-colors shrink-0`}
+                        style={{ width: RESIZER_WIDTH }}
+                        onMouseDown={startResizing}
+                    >
+                        <GripVertical size={16} className="text-default-500" />
+                    </div>
+                    <div className="flex-1 min-w-0 overflow-hidden">
+                        <CredentialsOverview
+                            credentials={selectedCredential}
+                            isEditing={selectedCredential !== null}
+                            onUpdate={handleUpdateCredentials}
+                            validationErrors={validationErrors}
+                        />
+                    </div>
                 </div>
             </div>
         );

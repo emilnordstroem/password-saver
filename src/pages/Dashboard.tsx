@@ -28,13 +28,11 @@ export function Dashboard() {
                 handleSearch={handleSearch}
                 handleAddCredential={handleAddCredential}
             />
-            <div className="flex-1 min-h-0 overflow-hidden">
-                <CredentialsPanel
-                    ref={credentialsPanelRef}
-                    searchQuery={searchQuery}
-                    onClearSearch={handleClearSearch}
-                />
-            </div>
+            <CredentialsPanel
+                ref={credentialsPanelRef}
+                searchQuery={searchQuery}
+                onClearSearch={handleClearSearch}
+            />
         </div>
     );
 }
