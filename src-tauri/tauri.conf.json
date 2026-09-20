@@ -26,5 +26,11 @@
     "active": true,
     "targets": "all",
     "icon": ["icons/icon.ico", "icons/icon.png", "icons/icon.svg"]
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": ["https://github.com/emilnordstroem/password-saver/releases"],
+      "pubkey": ""
+    }
   }
 }
