@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "password-saver",
+  "productName": "Password Saver",
   "version": "0.1.0",
-  "identifier": "password-saver",
+  "identifier": "com.emilnordstroem.passwordsaver",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "",
+        "title": "Password Saver",
         "width": 700,
         "height": 500,
         "resizable": false
@@ -25,7 +25,16 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": ["icons/icon.ico", "icons/icon.png", "icons/icon.svg"]
+    "icon": [
+      "icons/icon.ico",
+      "icons/icon.png",
+      "icons/icon.svg",
+      "icons/icon.icns"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "hardenedRuntime": true
+    }
   },
   "plugins": {
     "updater": {
