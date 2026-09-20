@@ -11,12 +11,9 @@ export function Dashboard() {
 
     const handleSearch = (value: string) => {
         setSearchQuery(value);
-        // Implement search logic here
-        console.log("Searching for:", value);
     };
 
     const handleAddCredential = () => {
-        // Trigger add credential in CredentialsPanel
         credentialsPanelRef.current?.handleAddCredentials();
     };
 
@@ -31,13 +28,11 @@ export function Dashboard() {
                 handleSearch={handleSearch}
                 handleAddCredential={handleAddCredential}
             />
-            <div className="flex-1 min-h-0 overflow-hidden">
-                <CredentialsPanel
-                    ref={credentialsPanelRef}
-                    searchQuery={searchQuery}
-                    onClearSearch={handleClearSearch}
-                />
-            </div>
+            <CredentialsPanel
+                ref={credentialsPanelRef}
+                searchQuery={searchQuery}
+                onClearSearch={handleClearSearch}
+            />
         </div>
     );
 }

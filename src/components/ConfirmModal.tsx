@@ -80,6 +80,7 @@ export function ConfirmModal({
             size="sm"
             backdrop="blur"
             scrollBehavior="outside"
+            hideCloseButton={true}
         >
             <ModalContent
                 onKeyUp={(event) => {
