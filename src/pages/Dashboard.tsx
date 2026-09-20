@@ -1,4 +1,6 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
+import { useAppDispatch, useAppSelector } from "../store";
+import { setSearchQuery, clearSearchQuery } from "../store/features/searchSlice";
 import { NavigationBar } from "../components/NavigationBar";
 import {
     CredentialsPanel,
@@ -6,11 +8,12 @@ import {
 } from "@src/components/CredentialsPanel";
 
 export function Dashboard() {
-    const [searchQuery, setSearchQuery] = useState("");
+    const dispatch = useAppDispatch();
+    const searchQuery = useAppSelector((state) => state.search.searchQuery);
     const credentialsPanelRef = useRef<CredentialPanelHandle>(null);
 
     const handleSearch = (value: string) => {
-        setSearchQuery(value);
+        dispatch(setSearchQuery(value));
     };
 
     const handleAddCredential = () => {
@@ -18,7 +21,7 @@ export function Dashboard() {
     };
 
     const handleClearSearch = () => {
-        setSearchQuery("");
+        dispatch(clearSearchQuery());
     };
 
     return (
