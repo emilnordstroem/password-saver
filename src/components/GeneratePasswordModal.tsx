@@ -92,6 +92,7 @@ export function GeneratePasswordModal({
                 size="md"
                 backdrop="blur"
                 scrollBehavior="outside"
+                hideCloseButton={true}
             >
                 <ModalContent
                     onKeyUp={(event) => {
