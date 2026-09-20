@@ -76,6 +76,33 @@ export const CredentialsPanel = forwardRef<
             );
         }, [credentials, dirtyCredentials]);
 
+        const isCredentialSaved = (cred: ICredentialsEntry | null): boolean => {
+            if (!cred) return true;
+            if (cred.id === null) return false;
+            return !dirtyCredentials.has(cred.id);
+        };
+
+        const handleSelectCredential = async (cred: ICredentialsEntry | null) => {
+            if (!cred) {
+                setSelectedCredential(null);
+                return;
+            }
+            
+            const currentIsUnsaved = selectedCredential && !isCredentialSaved(selectedCredential);
+            
+            if (currentIsUnsaved && selectedCredential !== cred) {
+                try {
+                    const savedCredentials = await listPasswords();
+                    setCredentials(savedCredentials);
+                    setDirtyCredentials(new Set());
+                } catch (error) {
+                    console.error("Failed to reload credentials:", error);
+                }
+            }
+            
+            setSelectedCredential(cred);
+        };
+
         const filteredCredentials = useMemo(() => {
             const query = searchQuery.toLowerCase().trim();
             let result = [...credentials];
@@ -295,7 +322,7 @@ export const CredentialsPanel = forwardRef<
                 >
                     <ScrollableMenu
                         credentials={filteredCredentials}
-                        onSelectCredential={setSelectedCredential}
+                        onSelectCredential={handleSelectCredential}
                         selectedCredential={selectedCredential}
                         onAddCredentials={handleAddCredentials}
                         onDeleteCredentials={handleDeleteCredentials}
