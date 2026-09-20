@@ -10,7 +10,7 @@ export interface ICredentialsListProps {
     onAddCredential: () => void;
     onClearSearch: () => void;
     savedCredentials: Set<number>;
-    handleSelect: (credential: ICredentialsEntry) => void;
+    handleSelect: (credential: ICredentialsEntry) => Promise<void> | void;
     handleSave: (e: React.MouseEvent | React.KeyboardEvent, credential: ICredentialsEntry) => Promise<void>;
     handleDelete: (e: React.MouseEvent | React.KeyboardEvent, credential: ICredentialsEntry) => void;
 }

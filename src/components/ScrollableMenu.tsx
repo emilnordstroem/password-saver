@@ -7,7 +7,7 @@ import { CredentialsList } from "./CredentialsList";
 interface ScrollableMenuProps {
     credentials?: ICredentialsEntry[];
     selectedCredential?: ICredentialsEntry | null;
-    onSelectCredential?: (credential: ICredentialsEntry | null) => void;
+    onSelectCredential?: (credential: ICredentialsEntry | null) => Promise<void> | void;
     onAddCredentials?: () => void;
     onDeleteCredentials?: (credential: ICredentialsEntry) => Promise<void>;
     onSaveCredentials?: (credential: ICredentialsEntry) => Promise<boolean>;
@@ -31,8 +31,8 @@ export function ScrollableMenu({
         useState<ICredentialsEntry | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleSelect = (credential: ICredentialsEntry) => {
-        onSelectCredential(credential);
+    const handleSelect = async (credential: ICredentialsEntry) => {
+        await onSelectCredential?.(credential);
     };
 
     const handleSave = async (
