@@ -144,7 +144,7 @@ password-saver/
 ### When Working on Tasks
 - Open with a brief plan before acting
 - Read all relevant files before making changes
-- **ALWAYS build and run the application to check for errors**: Run `npm run build` to verify TypeScript compilation, then `npm run tauri dev` to test the application. Fix any occurring issues before completing the task.
+- **ALWAYS build the application after any implementation to verify it compiles and runs correctly**: Run `npm run build` to verify TypeScript compilation, then `npm run tauri dev` or `npm run tauri build` to test the application. This is mandatory - do not consider a task complete until the build passes. Fix any occurring issues before completing the task.
 - Prove it works (test commands, verify output)
 - Report what changed and why
 - Do NOT make assumptions about unstated requirements
@@ -806,6 +806,6 @@ cargo run -- --verbose
 
 ---
 
-*Last updated: 2026-09-19*
+*Last updated: 2026-09-21*
 *Project status: Backend complete, Frontend to be created, Encryption mandatory before production*
 *Design conventions: Light theme, NextUI v2 + Tailwind CSS, Minimal animations, Slightly rounded borders (radius="sm")*
