@@ -2,7 +2,7 @@
 name = "password-saver"
 version = "1.0.0"
 description = "A secure, local-first password manager built with Tauri and React"
-authors = ["Emil Nordstroem <emil@nordstroem.se>"]
+authors = ["Emil Nordstroem"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
