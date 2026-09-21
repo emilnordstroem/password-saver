@@ -1,20 +1,13 @@
 import { useState } from "react";
-import {
-    Card,
-    CardBody,
-    CardHeader,
-    Divider,
-    ScrollShadow,
-} from "@nextui-org/react";
+import { ScrollShadow } from "@nextui-org/react";
 import { ICredentialsEntry } from "@src/types/credentials";
-import { Lock } from "lucide-react";
 import { ConfirmModal } from "./ConfirmModal";
-import { CredentialsMenuItem } from "./CredentialsMenuItem";
+import { CredentialsList } from "./CredentialsList";
 
 interface ScrollableMenuProps {
     credentials?: ICredentialsEntry[];
     selectedCredential?: ICredentialsEntry | null;
-    onSelectCredential?: (credential: ICredentialsEntry | null) => void;
+    onSelectCredential?: (credential: ICredentialsEntry | null) => Promise<void> | void;
     onAddCredentials?: () => void;
     onDeleteCredentials?: (credential: ICredentialsEntry) => Promise<void>;
     onSaveCredentials?: (credential: ICredentialsEntry) => Promise<boolean>;
@@ -38,12 +31,19 @@ export function ScrollableMenu({
         useState<ICredentialsEntry | null>(null);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleSelect = (credential: ICredentialsEntry) => {
-        onSelectCredential(credential);
+    const handleSelect = async (credential: ICredentialsEntry) => {
+        await onSelectCredential?.(credential);
     };
 
-    const handleSave = async (e: React.MouseEvent | React.KeyboardEvent, credential: ICredentialsEntry) => {
-        console.log("ScrollableMenu handleSave called for credential:", credential.id, credential.title);
+    const handleSave = async (
+        e: React.MouseEvent | React.KeyboardEvent,
+        credential: ICredentialsEntry,
+    ) => {
+        console.log(
+            "ScrollableMenu handleSave called for credential:",
+            credential.id,
+            credential.title,
+        );
         e.stopPropagation();
         if (onSaveCredentials) {
             const result = await onSaveCredentials(credential);
@@ -76,57 +76,17 @@ export function ScrollableMenu({
     return (
         <>
             <ScrollShadow className="w-full max-h-[400px]" hideScrollBar>
-                <div className="gap-2 flex flex-col">
-                    {credentialsList.length === 0 ? (
-                        <Card
-                            className="w-full"
-                            shadow="sm"
-                            radius="sm"
-                            isHoverable={onAddCredential !== undefined}
-                            isPressable={onAddCredential !== undefined}
-                            onClick={() => {
-                                onAddCredential();
-                                onClearSearch();
-                            }}
-                        >
-                            <CardHeader className="flex gap-2">
-                                <div className="flex flex-row gap-2 items-center">
-                                    <Lock
-                                        size={16}
-                                        className="text-default-400"
-                                    />
-                                    <div className="flex flex-col text-left">
-                                        <p className="text-md font-semibold text-default-400">
-                                            {hasCredentialsFlag
-                                                ? "No results found"
-                                                : "No passwords yet"}
-                                        </p>
-                                        <p className="text-sm text-default-500">
-                                            <span className="text-default-400">
-                                                Click to add a password
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </CardHeader>
-                            <Divider />
-                            <CardBody></CardBody>
-                        </Card>
-                    ) : (
-                        credentialsList.map((credential, index) => (
-                            <CredentialsMenuItem
-                                key={credential.id || `new-${index}`}
-                                credential={credential}
-                                index={index}
-                                selectedCredential={selectedCredential}
-                                handleSelect={handleSelect}
-                                handleSave={handleSave}
-                                handleDelete={handleDelete}
-                                isSaved={savedCredentials.has(credential.id || 0)}
-                            />
-                        ))
-                    )}
-                </div>
+                <CredentialsList
+                    credentialsList={credentialsList}
+                    hasCredentials={hasCredentialsFlag}
+                    selectedCredential={selectedCredential}
+                    onAddCredential={onAddCredential}
+                    onClearSearch={onClearSearch}
+                    savedCredentials={savedCredentials}
+                    handleSelect={handleSelect}
+                    handleSave={handleSave}
+                    handleDelete={handleDelete}
+                />
             </ScrollShadow>
             <ConfirmModal
                 isModalOpen={isDeleteModalOpen}

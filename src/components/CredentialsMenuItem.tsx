@@ -8,7 +8,7 @@ interface CredentialsMenuItemProps {
     credential: ICredentialsEntry;
     index: number;
     selectedCredential: ICredentialsEntry | null;
-    handleSelect: (credential: ICredentialsEntry) => void;
+    handleSelect: (credential: ICredentialsEntry) => Promise<void> | void;
     handleSave: (
         event: React.MouseEvent | React.KeyboardEvent,
         credential: ICredentialsEntry,
@@ -100,7 +100,7 @@ export function CredentialsMenuItem({
             <CardHeader className="flex gap-1 justify-between px-2 py-1">
                 <div 
                     className="flex flex-row gap-1.5 items-center flex-1 cursor-pointer min-w-0"
-                    onClick={() => handleSelect(credential)}
+                    onClick={async () => await handleSelect(credential)}
                 >
                     {renderIcon()}
                     <div className="flex flex-col text-left min-w-0">

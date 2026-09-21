@@ -7,12 +7,42 @@ use db::{PasswordEntry, create_password, get_password, list_passwords, update_pa
 use encryption::{EncryptionConfig, SharedEncryptionState};
 use std::path::PathBuf;
 
-/// Get the database connection path using Tauri's path API
+/// Get the database connection path using cross-platform approach
+/// Uses OS-specific standard locations for app data
 fn get_db_path() -> Result<PathBuf, String> {
-    // In Tauri 2, we can use tauri::api::path
-    let app_data_dir = std::env::var("APPDATA").or_else(|_| std::env::var("HOME"))
-        .map(|p| PathBuf::from(p).join("password-saver"))
-        .unwrap_or_else(|_| PathBuf::from(".password-saver"));
+    // Cross-platform app data directory detection
+    // On macOS: ~/Library/Application Support/password-saver/
+    // On Linux: ~/.config/password-saver/ or ~/.local/share/password-saver/
+    // On Windows: %APPDATA%\password-saver\
+    
+    let app_data_dir = if cfg!(target_os = "macos") {
+        if let Some(home) = std::env::var("HOME").ok() {
+            PathBuf::from(home).join("Library").join("Application Support").join("password-saver")
+        } else {
+            PathBuf::from(".password-saver")
+        }
+    } else if cfg!(target_os = "linux") {
+        if let Some(home) = std::env::var("HOME").ok() {
+            let config_dir = PathBuf::from(&home).join(".config").join("password-saver");
+            let data_dir = PathBuf::from(&home).join(".local").join("share").join("password-saver");
+            // Try config dir first
+            if std::fs::create_dir_all(&config_dir).is_ok() {
+                config_dir
+            } else {
+                data_dir
+            }
+        } else {
+            PathBuf::from(".password-saver")
+        }
+    } else {
+        if let Some(app_data) = std::env::var("APPDATA").ok() {
+            PathBuf::from(app_data).join("password-saver")
+        } else if let Some(home) = std::env::var("HOME").ok() {
+            PathBuf::from(home).join(".password-saver")
+        } else {
+            PathBuf::from(".password-saver")
+        }
+    };
     
     let db_path = app_data_dir.join("passwords.db");
     
@@ -227,6 +257,7 @@ fn save_encryption_config(config: EncryptionConfig) -> Result<bool, String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(create_app_state())
         .invoke_handler(tauri::generate_handler![
             add_password,

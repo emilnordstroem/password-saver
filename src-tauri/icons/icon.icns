@@ -1,0 +1,21 @@
+ICNS
+==============
+
+This is a placeholder file. For macOS support, you need to generate a proper .icns file.
+
+To generate a .icns file:
+
+1. Use ImageMagick:
+   convert icon.png -resize 16x16 icon_16.png
+   convert icon.png -resize 32x32 icon_32.png
+   convert icon.png -resize 64x64 icon_64.png
+   convert icon.png -resize 128x128 icon_128.png
+   convert icon.png -resize 256x256 icon_256.png
+   convert icon.png -resize 512x512 icon_512.png
+   iconutil -c icns -o icon.icns icon_*.png
+
+2. Or use online tools:
+   - https://iconverticons.com/convert/
+   - https://icoconvert.com/
+
+Replace this file with the generated .icns file.

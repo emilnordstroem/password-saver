@@ -1,14 +1,10 @@
 import { useState } from "react";
-import { Button, Tooltip } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { Copy, Check } from "lucide-react";
 
 export interface ICopyToClipboardButtonProps {
     text: string;
     isDisabled?: boolean;
-    tooltipContent?: {
-        default: string;
-        copied: string;
-    };
     onCopy?: () => void;
     className?: string;
 }
@@ -16,7 +12,6 @@ export interface ICopyToClipboardButtonProps {
 export function CopyToClipboardButton({
     text,
     isDisabled = false,
-    tooltipContent = { default: "Copy to clipboard", copied: "Copied!" },
     onCopy,
     className,
 }: ICopyToClipboardButtonProps) {

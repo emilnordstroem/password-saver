@@ -1,6 +1,8 @@
 import { Input } from "@nextui-org/react";
 import { User, Lock, Globe, FileText, Key, Tag } from "lucide-react";
 import { CopyToClipboardButton } from "./CopyToClipboardButton";
+import { ShowPasswordButton } from "./ShowPasswordButton";
+import { useState } from "react";
 
 export interface ICredentialInputProps {
     label: string;
@@ -21,6 +23,8 @@ export function CredentialInput({
     isInvalid = false,
     errorMessage,
 }: ICredentialInputProps) {
+    const [showPassword, setShowPassword] = useState(true);
+
     const getIcon = () => {
         const lowerLabel = label.toLowerCase();
         if (lowerLabel.includes("username"))
@@ -78,7 +82,7 @@ export function CredentialInput({
                         isDisabled={isDisabled}
                         className="flex-1"
                         variant="bordered"
-                        type={isPasswordField ? "password" : "text"}
+                        type={isPasswordField ? (showPassword ? "text" : "password") : "text"}
                         placeholder={getPlaceholder()}
                         onValueChange={(value) =>
                             handleChange(getFieldName(), value)
@@ -87,11 +91,18 @@ export function CredentialInput({
                         size="sm"
                     />
                     {isPasswordField && (
-                        <CopyToClipboardButton
-                            text={title}
-                            isDisabled={isDisabled}
-                            className="min-w-0 h-8"
-                        />
+                        <>
+                            <ShowPasswordButton
+                                showPassword={showPassword}
+                                onToggle={() => setShowPassword(!showPassword)}
+                                isDisabled={isDisabled}
+                            />
+                            <CopyToClipboardButton
+                                text={title}
+                                isDisabled={isDisabled}
+                                className="min-w-0 h-8"
+                            />
+                        </>
                     )}
                 </div>
             </div>

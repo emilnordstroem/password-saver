@@ -33,10 +33,14 @@ export function CredentialsOverview({
         });
 
     const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
-    const [internalValidationErrors, setInternalValidationErrors] = useState<Record<string, string>>({});
-    
-    // Combine external and internal validation errors
-    const combinedValidationErrors = { ...internalValidationErrors, ...externalValidationErrors };
+    const [internalValidationErrors, setInternalValidationErrors] = useState<
+        Record<string, string>
+    >({});
+
+    const combinedValidationErrors = {
+        ...internalValidationErrors,
+        ...externalValidationErrors,
+    };
 
     useEffect(() => {
         if (credentials) {
@@ -59,10 +63,12 @@ export function CredentialsOverview({
         const updated = { ...editableCredentials, [field]: value };
         setEditableCredential(updated);
         onUpdate(updated);
-        
-        // Clear internal validation error for this field when it changes
+
         if (internalValidationErrors[field as string]) {
-            setInternalValidationErrors({ ...internalValidationErrors, [field]: "" });
+            setInternalValidationErrors({
+                ...internalValidationErrors,
+                [field]: "",
+            });
         }
     };
 
