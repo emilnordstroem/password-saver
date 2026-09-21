@@ -2,7 +2,7 @@
 
 > **A secure, local-first password manager built with Tauri and React**
 
-Password Saver is a cross-platform desktop application that stores your credentials securely on your device. All data remains local — no cloud sync, no network transmission.
+Password Saver stores your credentials securely on your device. All data remains local — no cloud sync, no network transmission.
 
 ---
 
@@ -64,7 +64,7 @@ Password Saver is a cross-platform desktop application that stores your credenti
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo/password-saver.git
+git clone https://github.com/emilnordstroem/password-saver.git
 cd password-saver
 
 # Install dependencies
